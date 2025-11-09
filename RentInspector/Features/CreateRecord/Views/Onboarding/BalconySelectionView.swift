@@ -17,7 +17,7 @@ struct BalconySelectionView: View {
                     .font(.system(size: 60))
                     .foregroundColor(AppTheme.primaryColor)
                 
-                Text("Балкон чи лоджія?")
+                Text("Чи є у вас балкон, лоджа?")
                     .font(AppTheme.title)
                     .foregroundColor(AppTheme.textPrimary)
                 
@@ -39,7 +39,7 @@ struct BalconySelectionView: View {
                 
                 toggleOption(
                     icon: "rectangle.stack.fill",
-                    title: "Лоджія",
+                    title: "Лоджа",
                     isOn: $viewModel.hasLoggia
                 )
             }

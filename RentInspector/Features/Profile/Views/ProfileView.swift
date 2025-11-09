@@ -12,7 +12,6 @@ struct ProfileView: View {
     
     var body: some View {
         ZStack {
-            ScrollView {
                 VStack(spacing: 32) {
                     // Аватар
                     avatarSection
@@ -26,9 +25,8 @@ struct ProfileView: View {
                     Spacer()
                 }
                 .padding()
-            }
-            .navigationTitle("Профіль")
-            .navigationBarTitleDisplayMode(.large)
+                .navigationTitle("Профіль")
+                .navigationBarTitleDisplayMode(.inline)
             
             // Success Toast
             if viewModel.showSuccessMessage {
