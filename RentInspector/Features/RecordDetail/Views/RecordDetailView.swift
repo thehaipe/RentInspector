@@ -328,7 +328,7 @@ struct RecordDetailView: View {
 
 // MARK: - Int Extension for Identifiable
 
-extension Int: Identifiable {
+extension Int: @retroactive Identifiable {
     public var id: Int { self }
 }
 
