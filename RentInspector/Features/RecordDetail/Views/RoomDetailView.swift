@@ -215,58 +215,70 @@ struct RoomDetailView: View {
     
     private var photosGrid: some View {
         VStack(spacing: 16) {
-            LazyVGrid(columns: [
-                GridItem(.flexible(), spacing: 12),
-                GridItem(.flexible(), spacing: 12),
-                GridItem(.flexible(), spacing: 12)
-            ], spacing: 12) {
-                // Кнопка додавання фото
-                if room.photoData.count < Constants.Limits.maxPhotosPerRoom {
-                    PhotosPicker(
-                        selection: $selectedPhotos,
-                        maxSelectionCount: Constants.Limits.maxPhotosPerRoom - room.photoData.count,
-                        matching: .images
-                    ) {
-                        VStack(spacing: 8) {
-                            Image(systemName: "plus")
-                                .font(.title2)
-                            Text("Додати")
-                                .font(AppTheme.caption)
-                        }
-                        .foregroundColor(AppTheme.primaryColor)
-                        .frame(height: 100)
-                        .frame(maxWidth: .infinity)
-                        .background(AppTheme.tertiaryBackgroundColor)
-                        .cornerRadius(AppTheme.cornerRadiusSmall)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: AppTheme.cornerRadiusSmall)
-                                .stroke(AppTheme.primaryColor, style: StrokeStyle(lineWidth: 2, dash: [5]))
-                        )
+            // Кнопка додавання фото (зверху)
+            if room.photoData.count < Constants.Limits.maxPhotosPerRoom {
+                PhotosPicker(
+                    selection: $selectedPhotos,
+                    maxSelectionCount: Constants.Limits.maxPhotosPerRoom - room.photoData.count,
+                    matching: .images
+                ) {
+                    HStack(spacing: 12) {
+                        Image(systemName: "plus.circle.fill")
+                            .font(.title2)
+                        Text("Додати фото")
+                            .font(AppTheme.callout)
                     }
+                    .foregroundColor(AppTheme.primaryColor)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 50)
+                    .background(AppTheme.tertiaryBackgroundColor)
+                    .cornerRadius(AppTheme.cornerRadiusSmall)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: AppTheme.cornerRadiusSmall)
+                            .stroke(AppTheme.primaryColor, style: StrokeStyle(lineWidth: 2, dash: [5]))
+                    )
                 }
-                
-                // Фотографії
-                ForEach(Array(room.photoData.enumerated()), id: \.offset) { index, photoData in
-                    photoThumbnail(photoData: photoData, index: index)
+            }
+            
+            // Список фото (вертикально)
+            if !room.photoData.isEmpty {
+                LazyVStack(spacing: 12) {
+                    ForEach(Array(room.photoData.enumerated()), id: \.offset) { index, photoData in
+                        photoThumbnailHorizontal(photoData: photoData, index: index)
+                    }
                 }
             }
         }
     }
-    
-    private func photoThumbnail(photoData: Data, index: Int) -> some View {
+
+    private func photoThumbnailHorizontal(photoData: Data, index: Int) -> some View {
         Button(action: {
             selectedPhotoIndex = index
         }) {
-            ZStack(alignment: .topTrailing) {
+            HStack(spacing: 12) {
+                // Фото
                 if let uiImage = UIImage(data: photoData) {
                     Image(uiImage: uiImage)
                         .resizable()
                         .scaledToFill()
-                        .frame(height: 100)
-                        .frame(maxWidth: .infinity)
+                        .frame(width: 80, height: 80)
                         .cornerRadius(AppTheme.cornerRadiusSmall)
                         .clipped()
                 }
+                
+                // Інфо
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Фото \(index + 1)")
+                        .font(AppTheme.callout)
+                        .fontWeight(.semibold)
+                        .foregroundColor(AppTheme.textPrimary)
+                    
+                    Text("Натисніть для перегляду")
+                        .font(AppTheme.caption)
+                        .foregroundColor(AppTheme.textSecondary)
+                }
+                
+                Spacer()
                 
                 // Кнопка видалення
                 Button(action: {
@@ -274,16 +286,17 @@ struct RoomDetailView: View {
                         viewModel.removePhotoFromRoom(roomIndex: roomIndex, photoIndex: index)
                     }
                 }) {
-                    Image(systemName: "xmark.circle.fill")
+                    Image(systemName: "trash.fill")
                         .foregroundColor(.white)
-                        .background(
-                            Circle()
-                                .fill(Color.red)
-                                .frame(width: 24, height: 24)
-                        )
+                        .frame(width: 36, height: 36)
+                        .background(AppTheme.errorColor)
+                        .cornerRadius(8)
                 }
-                .offset(x: 8, y: -8)
+                .buttonStyle(PlainButtonStyle())
             }
+            .padding(12)
+            .background(AppTheme.tertiaryBackgroundColor)
+            .cornerRadius(AppTheme.cornerRadiusMedium)
         }
         .buttonStyle(PlainButtonStyle())
     }

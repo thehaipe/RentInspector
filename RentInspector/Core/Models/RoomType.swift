@@ -22,7 +22,7 @@ enum RoomType: String, Codable, CaseIterable {
         case .kitchen: return "Кухня"
         case .bathroom: return "Санвузол"
         case .balcony: return "Балкон"
-        case .loggia: return "Лоджія"
+        case .loggia: return "Лоджа"
         case .wardrobe: return "Гардероб"
         case .storage: return "Кладова"
         case .other: return "Інше"

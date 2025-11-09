@@ -7,7 +7,6 @@
 import SwiftUI
 
 struct RecordsView: View {
-    @AppStorage(Constants.UserDefaultsKeys.userName) private var userName = Constants.Defaults.defaultUserName
     @StateObject private var viewModel = RecordsViewModel()
     @State private var showCreateRecord = false
     @State private var showFilterSheet = false
@@ -22,9 +21,18 @@ struct RecordsView: View {
                 recordsList
             }
         }
-        .navigationBarTitleDisplayMode(.large)
-        .navigationTitle(!viewModel.records.isEmpty ? "Records" : "")
+        .navigationBarTitleDisplayMode(.inline)
         .toolbar {
+            ToolbarItem(placement: .principal) {
+                HStack {
+                    Text("Records")
+                        .font(AppTheme.title2)
+                        .fontWeight(.bold)
+                    Spacer()
+                }
+            }
+            
+            // Кнопки 
             ToolbarItem(placement: .topBarTrailing) {
                 if !viewModel.records.isEmpty {
                     HStack(spacing: 16) {
@@ -33,6 +41,7 @@ struct RecordsView: View {
                             viewModel.toggleSearch()
                         }) {
                             Image(systemName: "magnifyingglass")
+                                .font(.title3)
                         }
                         
                         // Кнопка фільтрації
@@ -40,6 +49,7 @@ struct RecordsView: View {
                             showFilterSheet = true
                         }) {
                             Image(systemName: "line.3.horizontal.decrease.circle")
+                                .font(.title3)
                         }
                         
                         // Кнопка створення

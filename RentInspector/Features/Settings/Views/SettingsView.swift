@@ -33,13 +33,13 @@ struct SettingsView: View {
                 Section {
                     aboutRow(icon: "info.circle.fill", title: "Версія", value: Constants.AppInfo.version)
                     aboutRow(icon: "number.circle.fill", title: "Збірка", value: Constants.AppInfo.build)
-                    aboutRow(icon: "hammer.fill", title: "Розробник", value: "Your Name")
+                    aboutRow(icon: "hammer.fill", title: "Розробник", value: "Miedientsov Valentin")
                 } header: {
                     Text("Про додаток")
                 }
             }
             .navigationTitle("Налаштування")
-            .navigationBarTitleDisplayMode(.large)
+            .navigationBarTitleDisplayMode(.inline)
             .sheet(isPresented: $showThemeSheet) {
                 themeSelectionSheet
             }

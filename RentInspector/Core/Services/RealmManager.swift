@@ -14,10 +14,11 @@ class RealmManager: ObservableObject {
     private var realm: Realm?
     
     @Published var records: [Record] = []
+    @Published var isLoading: Bool = true  // ← Додано
     
     private init() {
         setupRealm()
-        loadRecords()
+        loadRecordsSync()
     }
     
     // MARK: - Setup
@@ -39,6 +40,7 @@ class RealmManager: ObservableObject {
             print("✅ Realm initialized at: \(realm?.configuration.fileURL?.path ?? "unknown")")
         } catch {
             print("❌ Error initializing Realm: \(error.localizedDescription)")
+            isLoading = false  // ← Додано
         }
     }
     
@@ -51,19 +53,22 @@ class RealmManager: ObservableObject {
             try realm.write {
                 realm.add(record)
             }
-            loadRecords()
+            loadRecordsSync()
             print("✅ Record created: \(record.displayTitle)")
         } catch {
             print("❌ Error creating record: \(error.localizedDescription)")
         }
     }
-    
+    private func loadRecordsSync() {
+            guard let realm = realm else { return }
+            
+            let results = realm.objects(Record.self).sorted(byKeyPath: "createdAt", ascending: false)
+            records = Array(results)
+            
+            print("📊 Loaded \(records.count) records")
+        }
     func loadRecords() {
-        guard let realm = realm else { return }
-        
-        let results = realm.objects(Record.self).sorted(byKeyPath: "createdAt", ascending: false)
-        records = Array(results)
-        print("📊 Loaded \(records.count) records")
+        loadRecordsSync()
     }
     
     func updateRecord(_ record: Record, title: String? = nil, stage: RecordStage? = nil, reminderInterval: Int? = nil) {
@@ -87,7 +92,7 @@ class RealmManager: ObservableObject {
                 }
                 recordToUpdate.updatedAt = Date()
             }
-            loadRecords()
+            loadRecordsSync()
             print("✅ Record updated: \(recordToUpdate.displayTitle)")
         } catch {
             print("❌ Error updating record: \(error.localizedDescription)")
@@ -103,7 +108,7 @@ class RealmManager: ObservableObject {
                 realm.delete(recordToDelete.rooms)
                 realm.delete(recordToDelete)
             }
-            loadRecords()
+            loadRecordsSync()
             print("✅ Record deleted")
         } catch {
             print("❌ Error deleting record: \(error.localizedDescription)")
@@ -120,7 +125,7 @@ class RealmManager: ObservableObject {
                 recordToUpdate.rooms.append(room)
                 recordToUpdate.updatedAt = Date()
             }
-            loadRecords()
+            loadRecordsSync()
             print("✅ Room added to record")
         } catch {
             print("❌ Error adding room: \(error.localizedDescription)")
@@ -153,7 +158,7 @@ class RealmManager: ObservableObject {
             try realm.write {
                 roomToUpdate.photoData.append(photoData)
             }
-            loadRecords()
+            loadRecordsSync()
             print("✅ Photo added to room")
         } catch {
             print("❌ Error adding photo: \(error.localizedDescription)")
@@ -168,7 +173,7 @@ class RealmManager: ObservableObject {
             try realm.write {
                 roomToUpdate.photoData.remove(at: index)
             }
-            loadRecords()
+            loadRecordsSync()
             print("✅ Photo removed from room")
         } catch {
             print("❌ Error removing photo: \(error.localizedDescription)")
@@ -188,7 +193,7 @@ class RealmManager: ObservableObject {
                 realm.delete(roomToDelete)
                 recordToUpdate.updatedAt = Date()
             }
-            loadRecords()
+            loadRecordsSync()
             print("✅ Room deleted")
         } catch {
             print("❌ Error deleting room: \(error.localizedDescription)")
@@ -224,7 +229,7 @@ class RealmManager: ObservableObject {
             try realm.write {
                 realm.deleteAll()
             }
-            loadRecords()
+            loadRecordsSync()
             print("✅ All data cleared")
         } catch {
             print("❌ Error clearing data: \(error.localizedDescription)")

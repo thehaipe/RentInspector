@@ -7,6 +7,7 @@
 import SwiftUI
 internal import Combine
 
+@MainActor
 class RecordsViewModel: ObservableObject {
     @Published var records: [Record] = []
     @Published var searchText: String = ""
@@ -25,8 +26,10 @@ class RecordsViewModel: ObservableObject {
     }
     
     init() {
+        self.records = realmManager.records
+        
+        // Потім підписуємось на зміни
         setupBindings()
-        loadRecords()
     }
     
     private func setupBindings() {
@@ -91,4 +94,3 @@ class RecordsViewModel: ObservableObject {
         }
     }
 }
-

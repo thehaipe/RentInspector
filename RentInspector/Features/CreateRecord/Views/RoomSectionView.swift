@@ -193,32 +193,35 @@ struct RoomSectionView: View {
     }
     
     private func photoThumbnail(photoData: Data, index: Int) -> some View {
-        ZStack(alignment: .topTrailing) {
-            if let uiImage = UIImage(data: photoData) {
-                Image(uiImage: uiImage)
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: 100, height: 100)
-                    .cornerRadius(AppTheme.cornerRadiusSmall)
-                    .clipped()
-            }
-            
-            // Кнопка видалення
-            Button(action: {
-                withAnimation {
-                    viewModel.removePhotoFromRoom(at: roomIndex, photoIndex: index)
+        Button(action: {
+            // TODO: Повноекранний перегляд фото
+        }) {
+            ZStack(alignment: .topTrailing) {
+                if let uiImage = UIImage(data: photoData) {
+                    Image(uiImage: uiImage)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 100, height: 100)
+                        .cornerRadius(AppTheme.cornerRadiusSmall)
+                        .clipped()
                 }
-            }) {
-                Image(systemName: "xmark.circle.fill")
-                    .foregroundColor(.white)
-                    .background(
-                        Circle()
-                            .fill(Color.red)
-                            .frame(width: 20, height: 20)
-                    )
+                
+                // Кнопка видалення (правильне позиціонування)
+                Button(action: {
+                    withAnimation {
+                        viewModel.removePhotoFromRoom(at: roomIndex, photoIndex: index)
+                    }
+                }) {
+                    Image(systemName: "xmark.circle.fill")
+                        .font(.system(size: 24))
+                        .foregroundStyle(.white, .red)
+                        .shadow(color: .black.opacity(0.3), radius: 2)
+                }
+                .buttonStyle(PlainButtonStyle())
+                .padding(6)
             }
-            .offset(x: 8, y: -8)
         }
+        .buttonStyle(PlainButtonStyle())
     }
     
     // MARK: - Load Photos
