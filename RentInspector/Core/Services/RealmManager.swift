@@ -1,9 +1,7 @@
-//
-//  RealmManager.swift
-//  RentInspector
-//
-//  Created by Valentyn on 07.11.2025.
-//
+/*
+ Клас для роботи з локальною базою данних Realm. Всі критичні моменти проходять через транзакцію realm.wrire, яка валить додаток при невдачі.
+ На майбутнє: Написати міграцію. Видалити поле "updatedAt", додати квадратуру квартири. 
+ */
 import Foundation
 import RealmSwift
 internal import Combine
@@ -28,7 +26,7 @@ class RealmManager: ObservableObject {
                 schemaVersion: 1,
                 migrationBlock: { migration, oldSchemaVersion in
                     if oldSchemaVersion < 1 {
-                        // Міграції при оновленні схеми, додати нові поля при необіхдності, але ліпше не робити цього..
+                        // Міграції при оновленні схеми, додати поле "squreMeters", видалити поле "updatedAt"
                     }
                 }
             )

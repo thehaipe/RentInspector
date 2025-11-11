@@ -1,9 +1,6 @@
-//
-//  RecordFormView.swift
-//  RentInspector
-//
-//  Created by Valentyn on 07.11.2025.
-//
+/*
+ Екран форми звіту. На цьому екрані заповнюється вся інформація про квартиру, додаються фото, коментарі, встановлюються нагадування.
+ */
 import SwiftUI
 import PhotosUI
 

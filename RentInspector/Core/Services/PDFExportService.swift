@@ -1,9 +1,7 @@
-//
-//  PDFExportService.swift
-//  RentInspector
-//
-//  Created by Valentyn on 07.11.2025.
-//
+/*
+ Класс для формування PDF-версії звіту для відправки.
+ На майбутнє: Розтягнути зображення у звіті для кращої читабельності. 
+ */
 import UIKit
 import PDFKit
 

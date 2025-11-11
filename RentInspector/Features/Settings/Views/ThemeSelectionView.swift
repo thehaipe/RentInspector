@@ -1,9 +1,6 @@
-//
-//  ThemeSelectionView.swift
-//  RentInspector
-//
-//  Created by Valentyn on 07.11.2025.
-//
+/*
+ UI-компонент: Зміна теми додатку
+ */
 import SwiftUI
 
 struct ThemeSelectionView: View {

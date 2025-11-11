@@ -1,9 +1,6 @@
-//
-//  RoomCardView.swift
-//  RentInspector
-//
-//  Created by Valentyn on 08.11.2025.
-//
+/*
+ Екран-елемент RecordDetailView
+ */
 import SwiftUI
 
 struct RoomCardView: View {

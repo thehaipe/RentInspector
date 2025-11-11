@@ -1,9 +1,6 @@
-//
-//  RecordsViewModel.swift
-//  RentInspector
-//
-//  Created by Valentyn on 07.11.2025.
-//
+/*
+ Клас для роботи з готовими записами. Фільтація, завантаження з БД, видалення. 
+ */
 import SwiftUI
 internal import Combine
 

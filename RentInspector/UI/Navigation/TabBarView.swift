@@ -1,9 +1,6 @@
-//
-//  TabBarView.swift
-//  RentInspector
-//
-//  Created by Valentyn on 07.11.2025.
-//
+/*
+ UI-елемент: Навігація
+ */
 import SwiftUI
 
 struct TabBarView: View {

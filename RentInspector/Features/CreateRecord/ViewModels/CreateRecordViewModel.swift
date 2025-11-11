@@ -1,9 +1,6 @@
-//
-//  CreateRecordViewModel.swift
-//  RentInspector
-//
-//  Created by Valentyn on 07.11.2025.
-//
+/*
+ Клас для створення звіту за шаблоном (кількість кімнат, наявність балкону чи лоджі, гардеробу, кладової або іншої кімнати). Тільки цей клас обслуговує створення звіту.
+ */
 import SwiftUI
 internal import Combine
 import RealmSwift

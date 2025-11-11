@@ -1,9 +1,6 @@
-//
-//  BalconySelectionView.swift
-//  RentInspector
-//
-//  Created by Valentyn on 07.11.2025.
-//
+/*
+ Екран додавання балкону, лоджі
+ */
 import SwiftUI
 
 struct BalconySelectionView: View {

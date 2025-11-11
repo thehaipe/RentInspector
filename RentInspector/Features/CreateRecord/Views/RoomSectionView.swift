@@ -1,9 +1,6 @@
-//
-//  RoomSectionView.swift
-//  RentInspector
-//
-//  Created by Valentyn on 07.11.2025.
-//
+/*
+ Шаблон кімнати, використовується як фабрика для інших кімнат у формі.
+ */
 import SwiftUI
 import PhotosUI
 

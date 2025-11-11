@@ -1,15 +1,12 @@
-//
-//  CreateRecordCoordinator.swift
-//  RentInspector
-//
-//  Created by Valentyn on 08.11.2025.
-//
+/*
+ Керування стадіями онбордінгу. 
+ */
 import SwiftUI
 
 struct CreateRecordCoordinator: View {
     @StateObject private var viewModel = CreateRecordViewModel()
     @Environment(\.dismiss) var dismiss
-    @State private var createdRecord: Record? = nil  // ← Додано
+    @State private var createdRecord: Record? = nil
     
     var body: some View {
         NavigationStack {
@@ -29,9 +26,9 @@ struct CreateRecordCoordinator: View {
                     }
                 } else {
                     // Success View
-                    if let record = createdRecord {  // ← Змінено
+                    if let record = createdRecord {
                         RecordSuccessView(
-                            record: record,  // ← Передаємо Record об'єкт
+                            record: record,  //Передаємо Record об'єкт
                             onExportPDF: {
                                 exportPDF(record: record)
                             },

@@ -1,9 +1,6 @@
-//
-//  RecordDetailView.swift
-//  RentInspector
-//
-//  Created by Valentyn on 07.11.2025.
-//
+/*
+ Екран перегляду готового звіту та елементи взаємодії з ним. 
+ */
 import SwiftUI
 import RealmSwift
 

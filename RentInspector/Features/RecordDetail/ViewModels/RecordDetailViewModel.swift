@@ -1,9 +1,6 @@
-//
-//  RecordDetailViewModel.swift
-//  RentInspector
-//
-//  Created by Valentyn on 07.11.2025.
-//
+/*
+ Клас для роботи з уже створеним звітом. Станом на зараз, він відповідає за зміну інформації запису. (Фото, назви, етап) проте у майбутньому створений звіт буде статичним, залишиться лише можливість експортувати його. 
+ */
 import SwiftUI
 internal import Combine
 import RealmSwift

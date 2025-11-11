@@ -1,9 +1,6 @@
-//
-//  PhotoViewerView.swift
-//  RentInspector
-//
-//  Created by Valentyn on 08.11.2025.
-//
+/*
+ UI-елемент: Перегляд фото
+ */
 import SwiftUI
 
 struct PhotoViewerView: View {
@@ -29,69 +26,69 @@ struct PhotoViewerView: View {
                         .onChanged { value in
                             let delta = value / lastScale
                             lastScale = value
-                                                        scale = min(max(scale * delta, 1.0), 5.0)
-                                                    }
-                                                    .onEnded { _ in
-                                                        lastScale = 1.0
-                                                        if scale < 1.0 {
-                                                            withAnimation(.spring(response: 0.3)) {
-                                                                scale = 1.0
-                                                                offset = .zero
-                                                            }
-                                                        }
-                                                    }
-                                            )
-                                            .gesture(
-                                                DragGesture()
-                                                    .onChanged { value in
-                                                        if scale > 1.0 {
-                                                            offset = CGSize(
-                                                                width: lastOffset.width + value.translation.width,
-                                                                height: lastOffset.height + value.translation.height
-                                                            )
-                                                        }
-                                                    }
-                                                    .onEnded { _ in
-                                                        lastOffset = offset
-                                                    }
-                                            )
-                                            .onTapGesture(count: 2) {
-                                                withAnimation(.spring(response: 0.3)) {
-                                                    if scale > 1.0 {
-                                                        scale = 1.0
-                                                        offset = .zero
-                                                        lastOffset = .zero
-                                                    } else {
-                                                        scale = 2.0
-                                                    }
-                                                }
-                                            }
-                                        
-                                        // Close Button
-                                        VStack {
-                                            HStack {
-                                                Spacer()
-                                                
-                                                Button(action: {
-                                                    onDismiss()
-                                                }) {
-                                                    Image(systemName: "xmark.circle.fill")
-                                                        .font(.system(size: 30))
-                                                        .foregroundColor(.white)
-                                                        .shadow(color: .black.opacity(0.3), radius: 5)
-                                                }
-                                                .padding()
-                                            }
-                                            
-                                            Spacer()
-                                        }
-                                    }
+                            scale = min(max(scale * delta, 1.0), 5.0)
+                        }
+                        .onEnded { _ in
+                            lastScale = 1.0
+                            if scale < 1.0 {
+                                withAnimation(.spring(response: 0.3)) {
+                                    scale = 1.0
+                                    offset = .zero
                                 }
                             }
-
-                            #Preview {
-                                PhotoViewerView(
-                                    image: UIImage(systemName: "photo")!,
-                                    onDismiss: {}
+                        }
+                )
+                .gesture(
+                    DragGesture()
+                        .onChanged { value in
+                            if scale > 1.0 {
+                                offset = CGSize(
+                                    width: lastOffset.width + value.translation.width,
+                                    height: lastOffset.height + value.translation.height
                                 )
                             }
+                        }
+                        .onEnded { _ in
+                            lastOffset = offset
+                        }
+                )
+                .onTapGesture(count: 2) {
+                    withAnimation(.spring(response: 0.3)) {
+                        if scale > 1.0 {
+                            scale = 1.0
+                            offset = .zero
+                            lastOffset = .zero
+                        } else {
+                            scale = 2.0
+                        }
+                    }
+                }
+            
+            // Close Button
+            VStack {
+                HStack {
+                    Spacer()
+                    
+                    Button(action: {
+                        onDismiss()
+                    }) {
+                        Image(systemName: "xmark.circle.fill")
+                            .font(.system(size: 30))
+                            .foregroundColor(.white)
+                            .shadow(color: .black.opacity(0.3), radius: 5)
+                    }
+                    .padding()
+                }
+                
+                Spacer()
+            }
+        }
+    }
+}
+
+#Preview {
+    PhotoViewerView(
+        image: UIImage(systemName: "photo")!,
+        onDismiss: {}
+    )
+}

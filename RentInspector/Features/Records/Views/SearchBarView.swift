@@ -1,9 +1,6 @@
-//
-//  SearchBarView.swift
-//  RentInspector
-//
-//  Created by Valentyn on 07.11.2025.
-//
+/*
+ UI-елемент: строка пошуку за назвою
+ */
 import SwiftUI
 
 struct SearchBar: View {

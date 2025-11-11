@@ -1,9 +1,6 @@
-//
-//  RoomType.swift
-//  RentInspector
-//
-//  Created by Valentyn on 07.11.2025.
-//
+/*
+ Опис типів кімнат. Тут описані базові, у майбутньому цей enum легко розширити без переписування всього додатку
+ */
 import Foundation
 
 enum RoomType: String, Codable, CaseIterable {

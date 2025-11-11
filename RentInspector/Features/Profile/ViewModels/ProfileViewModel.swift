@@ -1,9 +1,6 @@
-//
-//  ProfileViewModel.swift
-//  RentInspector
-//
-//  Created by Valentyn on 07.11.2025.
-//
+/*
+ Клас для роботи з профілем користувача (відображення статистики, юзернейму)
+ */
 import SwiftUI
 internal import Combine
 

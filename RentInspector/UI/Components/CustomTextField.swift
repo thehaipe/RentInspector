@@ -1,9 +1,6 @@
-//
-//  CustomTextField.swift
-//  RentInspector
-//
-//  Created by Valentyn on 07.11.2025.
-//
+/*
+ UI-елемент: Поле пошуку
+ */
 import SwiftUI
 
 struct CustomTextFieldStyle: TextFieldStyle {

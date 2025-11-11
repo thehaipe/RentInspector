@@ -1,9 +1,6 @@
-//
-//  RecordCardView.swift
-//  RentInspector
-//
-//  Created by Valentyn on 07.11.2025.
-//
+/*
+ Екран-карточка запису для ScrollView, щоб відобразити його мініатюру у RecordsView
+ */
 import SwiftUI
 import RealmSwift
 

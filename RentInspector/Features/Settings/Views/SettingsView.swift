@@ -1,9 +1,6 @@
-//
-//  SettingsView.swift
-//  RentInspector
-//
-//  Created by Valentyn on 07.11.2025.
-//
+/*
+ Екран налаштувань додатку
+ */
 import SwiftUI
 
 struct SettingsView: View {

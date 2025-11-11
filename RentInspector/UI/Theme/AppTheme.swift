@@ -1,9 +1,6 @@
-//
-//  AppTheme.swift
-//  RentInspector
-//
-//  Created by Valentyn on 07.11.2025.
-//
+/*
+ Кольорова гамма, стандартизовано для використання в різних частинах програми
+ */
 import SwiftUI
 
 struct AppTheme {

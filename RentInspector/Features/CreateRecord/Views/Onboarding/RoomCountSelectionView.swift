@@ -1,9 +1,6 @@
-//
-//  RoomCountSelectionView.swift
-//  RentInspector
-//
-//  Created by Valentyn on 07.11.2025.
-//
+/*
+ Екран вибору кількості кімнат
+ */
 import SwiftUI
 
 struct RoomCountSelectionView: View {

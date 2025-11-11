@@ -1,9 +1,6 @@
-//
-//  RecordSuccessView.swift
-//  RentInspector
-//
-//  Created by Valentyn on 07.11.2025.
-//
+/*
+ Екран успішно створеного звіту. Звідси існує можливість перейти до звітів або одразу надіслати його у PDF форматі у інші сервіси (наприклад у Telegram, WhatsApp, Viber і тд.)
+ */
 import SwiftUI
 
 struct RecordSuccessView: View {
@@ -11,7 +8,6 @@ struct RecordSuccessView: View {
     let onExportPDF: () -> Void
     let onDismiss: () -> Void
     
-    //@State private var showShareSheet = false
     @State private var pdfURL: URL?
     
     var body: some View {

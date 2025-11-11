@@ -1,9 +1,6 @@
-//
-//  ProfileView.swift
-//  RentInspector
-//
-//  Created by Valentyn on 07.11.2025.
-//
+/*
+ Екран профілю користувача
+ */
 import SwiftUI
 
 struct ProfileView: View {

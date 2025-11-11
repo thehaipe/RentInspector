@@ -1,9 +1,6 @@
-//
-//  AdditionalRoomsSelectionView.swift
-//  RentInspector
-//
-//  Created by Valentyn on 07.11.2025.
-//
+/*
+ Екран додоаткових кімнат, які можуть як бути в квартирі, так їх може і не бути (гардероб, кладова, інше). 
+ */
 import SwiftUI
 
 struct AdditionalRoomsSelectionView: View {

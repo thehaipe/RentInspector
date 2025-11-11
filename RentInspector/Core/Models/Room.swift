@@ -1,9 +1,13 @@
-//
-//  Room.swift
-//  RentInspector
-//
-//  Created by Valentyn on 07.11.2025.
-//
+/*
+ Опис структури кімнати (Частина запису)
+ Поля:
+ @Persisted(primaryKey: true) var id: ObjectId - Унікальний ідентифікатор
+ @Persisted var type: String // RoomType.rawValue - Фаза
+ @Persisted var customName: String - Довільне імʼя кімнаті, яке може дати користувач. За замовчуванням поле пусте та не застосовується
+ @Persisted var comment: String - Коментар до кімнати, на що слід звернути увагу при перевірці у майбутньому
+ @Persisted var photoData: List<Data> // Зберігаємо фото як Data - Фотограції
+ @Persisted var createdAt: Date = Date() - Дата створення
+ */
 import Foundation
 import RealmSwift
 

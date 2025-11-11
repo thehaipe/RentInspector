@@ -1,9 +1,6 @@
-//
-//  RecordStage.swift
-//  RentInspector
-//
-//  Created by Valentyn on 07.11.2025.
-//
+/*
+ Опис стадій. Заселення, Проживання, Виселення
+ */
 import Foundation
 
 enum RecordStage: String, Codable, CaseIterable {

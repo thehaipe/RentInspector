@@ -1,9 +1,6 @@
-//
-//  EmptyRecordsView.swift
-//  RentInspector
-//
-//  Created by Valentyn on 07.11.2025.
-//
+/*
+ Екран, при випадку коли звітів ще не створено
+ */
 import SwiftUI
 
 struct EmptyRecordsView: View {

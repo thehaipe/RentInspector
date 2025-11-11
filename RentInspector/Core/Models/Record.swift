@@ -1,9 +1,15 @@
-//
-//  Record.swift
-//  RentInspector
-//
-//  Created by Valentyn on 07.11.2025.
-//
+/*
+ Опис структури звіту (Record).
+ Поля:
+ @Persisted(primaryKey: true) var id: ObjectId - унікальний ідентифікатор
+ @Persisted var title: String - Заголовок звіту
+ @Persisted var stage: String - Стадія (Заселення, Проживання, Виселення)
+ @Persisted var rooms: List<Room> - Кімнати
+ @Persisted var reminderInterval: Int = 0 - Днів до нагадування (0 = вимкнено)
+ @Persisted var nextReminderDate: Date? - Дата нагадування про візит
+ @Persisted var createdAt: Date = Date() - Дата створення звіту
+ @Persisted var updatedAt: Date = Date() - Дата оновлення звіту (планується забрати до версії 2.0)
+ */
 import Foundation
 import RealmSwift
 
