@@ -11,7 +11,7 @@ struct RecordSuccessView: View {
     let onExportPDF: () -> Void
     let onDismiss: () -> Void
     
-    @State private var showShareSheet = false
+    //@State private var showShareSheet = false
     @State private var pdfURL: URL?
     
     var body: some View {
@@ -77,19 +77,16 @@ struct RecordSuccessView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(AppTheme.backgroundColor)
-        .sheet(isPresented: $showShareSheet) {
-            if let url = pdfURL {
-                ShareSheet(items: [url])
-            }
+        .sheet(item: $pdfURL) { url in
+            ShareSheet(items: [url, record.displayTitle])
         }
     }
     
     private func exportPDF() {
-        if let url = PDFExportService.shared.generatePDF(for: record) {
-            pdfURL = url
-            showShareSheet = true
+            if let url = PDFExportService.shared.generatePDF(for: record) {
+                pdfURL = url
+            }
         }
-    }
 }
 
 // Share Sheet для SwiftUI

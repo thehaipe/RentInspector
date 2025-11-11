@@ -75,7 +75,8 @@ class PDFExportService {
         }
         
         // Зберігання PDF
-        return savePDF(data: data, filename: "\(record.displayTitle).pdf")
+        let safeFilename = "report-\(UUID().uuidString).pdf"
+        return savePDF(data: data, filename: safeFilename)
     }
     
     // MARK: - Drawing Methods
@@ -329,13 +330,15 @@ class PDFExportService {
     }
     
     // MARK: - Save PDF
-    
+
     private func savePDF(data: Data, filename: String) -> URL? {
-        let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+        let documentsPath = FileManager.default.temporaryDirectory
+        
+        // Створюємо повний шлях до файлу
         let pdfPath = documentsPath.appendingPathComponent(filename)
         
         do {
-            try data.write(to: pdfPath)
+            try data.write(to: pdfPath, options: .atomic)
             print("✅ PDF saved at: \(pdfPath.path)")
             return pdfPath
         } catch {

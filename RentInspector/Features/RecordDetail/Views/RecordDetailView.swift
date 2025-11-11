@@ -12,7 +12,6 @@ struct RecordDetailView: View {
     @Environment(\.dismiss) var dismiss
     @FocusState private var isTitleFocused: Bool
     
-    @State private var showShareSheet = false  // ← Додано
     @State private var pdfURL: URL?
     init(record: Record) {
         _viewModel = StateObject(wrappedValue: RecordDetailViewModel(record: record))
@@ -67,10 +66,8 @@ struct RecordDetailView: View {
                 }
             }
         }
-        .sheet(isPresented: $showShareSheet) {
-            if let url = pdfURL {
-                ShareSheet(items: [url])
-            }
+        .sheet(item: $pdfURL) { url in
+            ShareSheet(items: [url, viewModel.record.displayTitle])
         }
         .alert("Редагувати назву", isPresented: $viewModel.isEditingTitle) {
             TextField("Назва звіту", text: $viewModel.editedTitle)
@@ -195,10 +192,9 @@ struct RecordDetailView: View {
     }
     private func exportPDF() {
         if let url = PDFExportService.shared.generatePDF(for: viewModel.record) {
-            pdfURL = url
-            showShareSheet = true
+                pdfURL = url
+            }
         }
-    }
     
     // MARK: - Reminder Section
     
