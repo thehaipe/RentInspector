@@ -15,7 +15,6 @@ class Room: Object, ObjectKeyIdentifiable {
     @Persisted var photoData: List<Data> // Зберігаємо фото як Data
     @Persisted var createdAt: Date = Date()
     
-    // Computed property для зручності
     var roomType: RoomType {
         get { RoomType(rawValue: type) ?? .other }
         set { type = newValue.rawValue }
@@ -30,4 +29,19 @@ class Room: Object, ObjectKeyIdentifiable {
         self.type = type.rawValue
         self.customName = customName
     }
+    func detached() -> Room {
+            let detachedRoom = Room()
+            detachedRoom.id = self.id
+            detachedRoom.type = self.type
+            detachedRoom.customName = self.customName
+            detachedRoom.comment = self.comment
+            detachedRoom.createdAt = self.createdAt
+            
+            // Копіюємо фото
+            for photo in self.photoData {
+                detachedRoom.photoData.append(photo)
+            }
+            
+            return detachedRoom
+        }
 }

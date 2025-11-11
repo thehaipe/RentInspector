@@ -7,9 +7,12 @@
 import SwiftUI
 
 struct RecordSuccessView: View {
-    let recordTitle: String
+    let record: Record  
     let onExportPDF: () -> Void
     let onDismiss: () -> Void
+    
+    @State private var showShareSheet = false
+    @State private var pdfURL: URL?
     
     var body: some View {
         VStack(spacing: 32) {
@@ -32,7 +35,7 @@ struct RecordSuccessView: View {
                     .font(AppTheme.title)
                     .foregroundColor(AppTheme.textPrimary)
                 
-                Text(recordTitle)
+                Text(record.displayTitle)
                     .font(AppTheme.body)
                     .foregroundColor(AppTheme.textSecondary)
                     .multilineTextAlignment(.center)
@@ -42,7 +45,9 @@ struct RecordSuccessView: View {
             
             // Кнопки
             VStack(spacing: 16) {
-                Button(action: onExportPDF) {
+                Button(action: {
+                    exportPDF()
+                }) {
                     HStack(spacing: 12) {
                         Image(systemName: "arrow.down.doc.fill")
                             .font(.title3)
@@ -72,13 +77,40 @@ struct RecordSuccessView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(AppTheme.backgroundColor)
+        .sheet(isPresented: $showShareSheet) {
+            if let url = pdfURL {
+                ShareSheet(items: [url])
+            }
+        }
+    }
+    
+    private func exportPDF() {
+        if let url = PDFExportService.shared.generatePDF(for: record) {
+            pdfURL = url
+            showShareSheet = true
+        }
     }
 }
 
+// Share Sheet для SwiftUI
+struct ShareSheet: UIViewControllerRepresentable {
+    let items: [Any]
+    
+    func makeUIViewController(context: Context) -> UIActivityViewController {
+        let controller = UIActivityViewController(activityItems: items, applicationActivities: nil)
+        return controller
+    }
+    
+    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
+}
+
 #Preview {
-    RecordSuccessView(
-        recordTitle: "Квартира на Шевченка",
+    let record = Record(title: "Квартира на Шевченка", stage: .moveIn)
+    
+    return RecordSuccessView(
+        record: record,
         onExportPDF: {},
         onDismiss: {}
     )
 }
+

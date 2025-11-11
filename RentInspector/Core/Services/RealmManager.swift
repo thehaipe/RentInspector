@@ -14,7 +14,6 @@ class RealmManager: ObservableObject {
     private var realm: Realm?
     
     @Published var records: [Record] = []
-    @Published var isLoading: Bool = true  // ← Додано
     
     private init() {
         setupRealm()
@@ -29,7 +28,7 @@ class RealmManager: ObservableObject {
                 schemaVersion: 1,
                 migrationBlock: { migration, oldSchemaVersion in
                     if oldSchemaVersion < 1 {
-                        // Міграції при оновленні схеми
+                        // Міграції при оновленні схеми, додати нові поля при необіхдності, але ліпше не робити цього..
                     }
                 }
             )
@@ -40,7 +39,6 @@ class RealmManager: ObservableObject {
             print("✅ Realm initialized at: \(realm?.configuration.fileURL?.path ?? "unknown")")
         } catch {
             print("❌ Error initializing Realm: \(error.localizedDescription)")
-            isLoading = false  // ← Додано
         }
     }
     
@@ -59,20 +57,31 @@ class RealmManager: ObservableObject {
             print("❌ Error creating record: \(error.localizedDescription)")
         }
     }
+    
     private func loadRecordsSync() {
-            guard let realm = realm else { return }
-            
-            let results = realm.objects(Record.self).sorted(byKeyPath: "createdAt", ascending: false)
-            records = Array(results)
-            
-            print("📊 Loaded \(records.count) records")
-        }
+        guard let realm = realm else { return }
+        
+        let results = realm.objects(Record.self).sorted(byKeyPath: "createdAt", ascending: false)
+        
+        // Конвертуємо Results<Record> в [Record], потім в detached. Deatached потрібен, бо при видаленні обʼекту з Realm, View все одно тримає звʼязки на нього, і якщо не зробити "легку" копію, впаде додаток. Перевірено. Тричі.
+        let managedRecords = Array(results)
+        self.records = managedRecords.map { $0.detached() }
+        
+        print("📊 Loaded \(records.count) records")
+    }
+    
     func loadRecords() {
         loadRecordsSync()
     }
     
     func updateRecord(_ record: Record, title: String? = nil, stage: RecordStage? = nil, reminderInterval: Int? = nil) {
-        guard let realm = realm, let recordToUpdate = realm.object(ofType: Record.self, forPrimaryKey: record.id) else { return }
+        guard let realm = realm else { return }
+        
+        // Знаходимо об'єкт заново через primary key
+        guard let recordToUpdate = realm.object(ofType: Record.self, forPrimaryKey: record.id) else {
+            print("⚠️ Record not found")
+            return
+        }
         
         do {
             try realm.write {
@@ -100,7 +109,14 @@ class RealmManager: ObservableObject {
     }
     
     func deleteRecord(_ record: Record) {
-        guard let realm = realm, let recordToDelete = realm.object(ofType: Record.self, forPrimaryKey: record.id) else { return }
+        guard let realm = realm else { return }
+        
+        // Пошук об'єкт заново
+        guard let recordToDelete = realm.object(ofType: Record.self, forPrimaryKey: record.id) else {
+            print("⚠️ Record not found or already deleted")
+            loadRecordsSync() // Оновлюємо список
+            return
+        }
         
         do {
             try realm.write {
@@ -118,7 +134,12 @@ class RealmManager: ObservableObject {
     // MARK: - Operations for Room
     
     func addRoom(to record: Record, room: Room) {
-        guard let realm = realm, let recordToUpdate = realm.object(ofType: Record.self, forPrimaryKey: record.id) else { return }
+        guard let realm = realm else { return }
+        
+        guard let recordToUpdate = realm.object(ofType: Record.self, forPrimaryKey: record.id) else {
+            print("⚠️ Record not found")
+            return
+        }
         
         do {
             try realm.write {
@@ -133,7 +154,12 @@ class RealmManager: ObservableObject {
     }
     
     func updateRoom(_ room: Room, customName: String? = nil, comment: String? = nil) {
-        guard let realm = realm, let roomToUpdate = realm.object(ofType: Room.self, forPrimaryKey: room.id) else { return }
+        guard let realm = realm else { return }
+        
+        guard let roomToUpdate = realm.object(ofType: Room.self, forPrimaryKey: room.id) else {
+            print("⚠️ Room not found")
+            return
+        }
         
         do {
             try realm.write {
@@ -144,7 +170,7 @@ class RealmManager: ObservableObject {
                     roomToUpdate.comment = comment
                 }
             }
-            loadRecords()
+            loadRecordsSync()
             print("✅ Room updated")
         } catch {
             print("❌ Error updating room: \(error.localizedDescription)")
@@ -152,7 +178,12 @@ class RealmManager: ObservableObject {
     }
     
     func addPhotoToRoom(_ room: Room, photoData: Data) {
-        guard let realm = realm, let roomToUpdate = realm.object(ofType: Room.self, forPrimaryKey: room.id) else { return }
+        guard let realm = realm else { return }
+        
+        guard let roomToUpdate = realm.object(ofType: Room.self, forPrimaryKey: room.id) else {
+            print("⚠️ Room not found")
+            return
+        }
         
         do {
             try realm.write {
@@ -166,7 +197,13 @@ class RealmManager: ObservableObject {
     }
     
     func removePhotoFromRoom(_ room: Room, at index: Int) {
-        guard let realm = realm, let roomToUpdate = realm.object(ofType: Room.self, forPrimaryKey: room.id) else { return }
+        guard let realm = realm else { return }
+        
+        guard let roomToUpdate = realm.object(ofType: Room.self, forPrimaryKey: room.id) else {
+            print("⚠️ Room not found")
+            return
+        }
+        
         guard index >= 0 && index < roomToUpdate.photoData.count else { return }
         
         do {
@@ -181,9 +218,13 @@ class RealmManager: ObservableObject {
     }
     
     func deleteRoom(_ room: Room, from record: Record) {
-        guard let realm = realm,
-              let recordToUpdate = realm.object(ofType: Record.self, forPrimaryKey: record.id),
-              let roomToDelete = realm.object(ofType: Room.self, forPrimaryKey: room.id) else { return }
+        guard let realm = realm else { return }
+        
+        guard let recordToUpdate = realm.object(ofType: Record.self, forPrimaryKey: record.id),
+              let roomToDelete = realm.object(ofType: Room.self, forPrimaryKey: room.id) else {
+            print("⚠️ Record or Room not found")
+            return
+        }
         
         do {
             try realm.write {
@@ -226,14 +267,19 @@ class RealmManager: ObservableObject {
         guard let realm = realm else { return }
         
         do {
+            // Спочатку очищуємо UI на main thread
+            DispatchQueue.main.async { [weak self] in
+                self?.records = []
+            }
+            
+            // Потім видаляємо з realm
             try realm.write {
                 realm.deleteAll()
             }
-            loadRecordsSync()
+            
             print("✅ All data cleared")
         } catch {
             print("❌ Error clearing data: \(error.localizedDescription)")
         }
     }
 }
-

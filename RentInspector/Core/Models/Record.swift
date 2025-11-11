@@ -38,4 +38,21 @@ class Record: Object, ObjectKeyIdentifiable {
         self.createdAt = Date()
         self.updatedAt = Date()
     }
+    func detached() -> Record {
+            let detachedRecord = Record()
+            detachedRecord.id = self.id
+            detachedRecord.title = self.title
+            detachedRecord.stage = self.stage
+            detachedRecord.reminderInterval = self.reminderInterval
+            detachedRecord.nextReminderDate = self.nextReminderDate
+            detachedRecord.createdAt = self.createdAt
+            detachedRecord.updatedAt = self.updatedAt
+            
+            // Копіюємо кімнати
+            for room in self.rooms {
+                detachedRecord.rooms.append(room.detached())
+            }
+            
+            return detachedRecord
+        }
 }

@@ -5,6 +5,7 @@
 //  Created by Valentyn on 07.11.2025.
 //
 import SwiftUI
+import RealmSwift
 
 struct RecordsView: View {
     @StateObject private var viewModel = RecordsViewModel()
@@ -85,14 +86,16 @@ struct RecordsView: View {
             ScrollView {
                 LazyVStack(spacing: 12) {
                     ForEach(viewModel.filteredRecords) { record in
-                        RecordCardView(record: record)
-                            .contextMenu {
-                                Button(role: .destructive) {
-                                    viewModel.deleteRecord(record)
-                                } label: {
-                                    Label("Видалити", systemImage: "trash")
+                        if !record.isInvalidated { 
+                            RecordCardView(record: record)
+                                .contextMenu {
+                                    Button(role: .destructive) {
+                                        viewModel.deleteRecord(record)
+                                    } label: {
+                                        Label("Видалити", systemImage: "trash")
+                                    }
                                 }
-                            }
+                        }
                     }
                 }
                 .padding()

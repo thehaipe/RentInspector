@@ -11,6 +11,8 @@ struct RecordFormView: View {
     @ObservedObject var viewModel: CreateRecordViewModel
     @Environment(\.dismiss) var dismiss
     @State private var showReminderPicker = false
+    @State private var savedRecord: Record? = nil
+    var onRecordSaved: ((Record) -> Void)?
     
     var body: some View {
         ScrollView {
@@ -230,12 +232,12 @@ struct RecordFormView: View {
     
     private var saveButton: some View {
         Button(action: {
-            viewModel.saveRecord { success in
-                if success {
-                    // Показуємо success view
+            viewModel.saveRecord { record in
+                if let record = record {
+                    onRecordSaved?(record)  
                 }
             }
-        }) {
+            }) {
             HStack(spacing: 12) {
                 if viewModel.isLoading {
                     ProgressView()

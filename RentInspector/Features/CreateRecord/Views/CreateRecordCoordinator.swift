@@ -9,6 +9,7 @@ import SwiftUI
 struct CreateRecordCoordinator: View {
     @StateObject private var viewModel = CreateRecordViewModel()
     @Environment(\.dismiss) var dismiss
+    @State private var createdRecord: Record? = nil  // ← Додано
     
     var body: some View {
         NavigationStack {
@@ -28,19 +29,19 @@ struct CreateRecordCoordinator: View {
                     }
                 } else {
                     // Success View
-                    RecordSuccessView(
-                        recordTitle: viewModel.recordTitle.isEmpty
-                            ? "Record \(Date().formatted(date: .abbreviated, time: .omitted))"
-                            : viewModel.recordTitle,
-                        onExportPDF: {
-                            exportPDF()
-                        },
-                        onDismiss: {
-                            viewModel.reset()
-                            dismiss()
-                        }
-                    )
-                    .transition(.scale.combined(with: .opacity))
+                    if let record = createdRecord {  // ← Змінено
+                        RecordSuccessView(
+                            record: record,  // ← Передаємо Record об'єкт
+                            onExportPDF: {
+                                exportPDF(record: record)
+                            },
+                            onDismiss: {
+                                viewModel.reset()
+                                dismiss()
+                            }
+                        )
+                        .transition(.scale.combined(with: .opacity))
+                    }
                 }
             }
             .animation(.easeInOut(duration: 0.3), value: viewModel.currentStep)
@@ -120,15 +121,19 @@ struct CreateRecordCoordinator: View {
             AdditionalRoomsSelectionView(viewModel: viewModel)
             
         case .recordForm:
-            RecordFormView(viewModel: viewModel)
+            RecordFormView(viewModel: viewModel, onRecordSaved: { record in
+                createdRecord = record  // ← Зберігаємо створений запис
+            })
         }
     }
     
     // MARK: - PDF Export
     
-    private func exportPDF() {
-        // TODO: Реалізація експорту PDF
-        print("📄 Експорт PDF для звіту: \(viewModel.recordTitle)")
+    private func exportPDF(record: Record) {
+        if let url = PDFExportService.shared.generatePDF(for: record) {
+            print("📄 PDF створено: \(url.path)")
+            //TODO: Share sheet
+        }
     }
 }
 

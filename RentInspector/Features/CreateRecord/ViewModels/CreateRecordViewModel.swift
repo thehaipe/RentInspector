@@ -17,7 +17,7 @@ class CreateRecordViewModel: ObservableObject {
     // Step 1: Кількість кімнат
     @Published var selectedRoomCount: Int = 1
     
-    // Step 2: Балкон/Лоджія
+    // Step 2: Балкон/Лоджа
     @Published var hasBalcony: Bool = false
     @Published var hasLoggia: Bool = false
     
@@ -216,7 +216,7 @@ class CreateRecordViewModel: ObservableObject {
     
     // MARK: - Save Record
     
-    func saveRecord(completion: @escaping (Bool) -> Void) {
+    func saveRecord(completion: @escaping (Record?) -> Void) {
         isLoading = true
         
         // Створюємо новий Record
@@ -244,7 +244,7 @@ class CreateRecordViewModel: ObservableObject {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
             self?.isLoading = false
             self?.showSuccessView = true
-            completion(true)
+            completion(newRecord.detached())  // Повертаємо DEATACHED копію!!!!!!!!!!!!!!!!!, бо звичайна валить View
         }
     }
     
