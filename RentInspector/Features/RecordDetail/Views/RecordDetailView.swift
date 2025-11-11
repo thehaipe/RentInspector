@@ -12,6 +12,8 @@ struct RecordDetailView: View {
     @Environment(\.dismiss) var dismiss
     @FocusState private var isTitleFocused: Bool
     
+    @State private var showShareSheet = false  // ← Додано
+    @State private var pdfURL: URL?
     init(record: Record) {
         _viewModel = StateObject(wrappedValue: RecordDetailViewModel(record: record))
     }
@@ -49,6 +51,7 @@ struct RecordDetailView: View {
                     
                     Button(action: {
                         // TODO: Export PDF
+                        exportPDF()
                         print("Export PDF")
                     }) {
                         Label("Експорт PDF", systemImage: "arrow.down.doc")
@@ -62,6 +65,11 @@ struct RecordDetailView: View {
                 } label: {
                     Image(systemName: "ellipsis.circle")
                 }
+            }
+        }
+        .sheet(isPresented: $showShareSheet) {
+            if let url = pdfURL {
+                ShareSheet(items: [url])
             }
         }
         .alert("Редагувати назву", isPresented: $viewModel.isEditingTitle) {
@@ -183,6 +191,12 @@ struct RecordDetailView: View {
                     : AppTheme.tertiaryBackgroundColor
             )
             .cornerRadius(AppTheme.cornerRadiusMedium)
+        }
+    }
+    private func exportPDF() {
+        if let url = PDFExportService.shared.generatePDF(for: viewModel.record) {
+            pdfURL = url
+            showShareSheet = true
         }
     }
     
@@ -325,6 +339,7 @@ struct RecordDetailView: View {
         .padding(.top, 16)
     }
 }
+
 
 // MARK: - Int Extension for Identifiable
 

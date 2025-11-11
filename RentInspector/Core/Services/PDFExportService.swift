@@ -347,15 +347,15 @@ class PDFExportService {
     // MARK: - Share PDF
     
     func sharePDF(url: URL, from viewController: UIViewController) {
-        let activityVC = UIActivityViewController(activityItems: [url], applicationActivities: nil)
-        
-        // Для iPad
-        if let popoverController = activityVC.popoverPresentationController {
-            popoverController.sourceView = viewController.view
-            popoverController.sourceRect = CGRect(x: viewController.view.bounds.midX, y: viewController.view.bounds.midY, width: 0, height: 0)
-            popoverController.permittedArrowDirections = []
+            let activityVC = UIActivityViewController(activityItems: [url], applicationActivities: nil)
+            
+            // Для iPad
+            if let popoverController = activityVC.popoverPresentationController {
+                popoverController.sourceView = viewController.view
+                popoverController.sourceRect = CGRect(x: viewController.view.bounds.midX, y: viewController.view.bounds.midY, width: 0, height: 0)
+                popoverController.permittedArrowDirections = []
+            }
+            
+            viewController.present(activityVC, animated: true)
         }
-        
-        viewController.present(activityVC, animated: true)
-    }
 }
