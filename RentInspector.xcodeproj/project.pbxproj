@@ -33,7 +33,7 @@
 		A3AD9E012EC12A5200DF2120 /* Exceptions for "RentInspector" folder in "RentInspector" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				info.plist,
+				Info.plist,
 			);
 			target = A3ABBDE42EB790470079B59C /* RentInspector */;
 		};
@@ -44,7 +44,7 @@
 			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
 			buildPhase = A3ABBDE12EB790470079B59C /* Sources */;
 			membershipExceptions = (
-				info.plist,
+				Info.plist,
 			);
 		};
 /* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
@@ -226,7 +226,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				"INFOPLIST_FILE[sdk=*]" = RentInspector/info.plist;
+				"INFOPLIST_FILE[sdk=*]" = RentInspector/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
@@ -284,7 +284,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				"INFOPLIST_FILE[sdk=*]" = RentInspector/info.plist;
+				"INFOPLIST_FILE[sdk=*]" = RentInspector/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
