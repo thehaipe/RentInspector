@@ -9,6 +9,7 @@ struct ProfileView: View {
     
     var body: some View {
         ZStack {
+            ScrollView {
                 VStack(spacing: 32) {
                     // Аватар
                     avatarSection
@@ -22,14 +23,44 @@ struct ProfileView: View {
                     Spacer()
                 }
                 .padding()
-                .navigationTitle("Профіль")
-                .navigationBarTitleDisplayMode(.inline)
+            }
+            .navigationTitle("Профіль")
+            .navigationBarTitleDisplayMode(.large)
             
             // Success Toast
             if viewModel.showSuccessMessage {
                 successToast
             }
+            
+            // ← ДОДАНО: Error Toast
+            if viewModel.showErrorMessage {
+                errorToast
+            }
         }
+    }
+    
+    private var errorToast: some View {
+        VStack {
+            HStack(spacing: 12) {
+                Image(systemName: "xmark.circle.fill")
+                    .foregroundColor(AppTheme.errorColor)
+                
+                Text(viewModel.errorMessage)
+                    .font(AppTheme.callout)
+                    .foregroundColor(AppTheme.textPrimary)
+                
+                Spacer()
+            }
+            .padding()
+            .background(AppTheme.secondaryBackgroundColor)
+            .cornerRadius(AppTheme.cornerRadiusMedium)
+            .shadow(color: AppTheme.shadowColor, radius: 10, y: 5)
+            .padding(.horizontal)
+            
+            Spacer()
+        }
+        .padding(.top, 16)
+        .transition(.move(edge: .top).combined(with: .opacity))
     }
     
     // MARK: - Avatar Section

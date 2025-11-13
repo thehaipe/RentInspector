@@ -261,14 +261,19 @@ class RealmManager: ObservableObject {
         return records.count
     }
     
-    func clearAllData() {
-        guard let realm = realm else { return }
+    func clearAllData() throws {
+        // Перевірка чи є що видаляти
+        guard !records.isEmpty else {
+            throw RealmError.noRecordsToDelete
+        }
+        
+        guard let realm = realm else {
+            throw RealmError.operationFailed("Realm не ініціалізований")
+        }
         
         do {
-            // Спочатку очищуємо UI на main thread
-            DispatchQueue.main.async { [weak self] in
-                self?.records = []
-            }
+            // Спочатку очищуємо UI
+            records.removeAll()
             
             // Потім видаляємо з realm
             try realm.write {
@@ -277,7 +282,7 @@ class RealmManager: ObservableObject {
             
             print("✅ All data cleared")
         } catch {
-            print("❌ Error clearing data: \(error.localizedDescription)")
+            throw RealmError.operationFailed(error.localizedDescription)
         }
     }
 }

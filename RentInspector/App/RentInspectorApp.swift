@@ -1,9 +1,4 @@
-//
-//  RentInspectorApp.swift
-//  RentInspector
-//
-//  Created by Valentyn on 02.11.2025.
-//
+//Entry Point
 import SwiftUI
 import RealmSwift
 internal import Combine

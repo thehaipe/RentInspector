@@ -18,9 +18,13 @@ struct RecordsView: View {
             } else {
                 recordsList
             }
+            if viewModel.showErrorToast {
+                errorToast
+            }
         }
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
+            // Title (по центру, але зліва від кнопок)
             ToolbarItem(placement: .principal) {
                 HStack {
                     Text("Records")
@@ -30,15 +34,31 @@ struct RecordsView: View {
                 }
             }
             
-            // Кнопки 
+            // Кнопки (справа)
             ToolbarItem(placement: .topBarTrailing) {
                 if !viewModel.records.isEmpty {
                     HStack(spacing: 16) {
                         // Кнопка пошуку
                         Button(action: {
                             viewModel.toggleSearch()
+                            
                         }) {
                             Image(systemName: "magnifyingglass")
+                                .font(.title3)
+                        }
+                        Menu {
+                            ForEach(RecordsViewModel.SortOrder.allCases, id: \.self) { order in
+                                Button(action: {
+                                    viewModel.setSortOrder(order)
+                                }) {
+                                    Label(
+                                        order.rawValue,
+                                        systemImage: viewModel.sortOrder == order ? "arrow.down.circle" : order.icon
+                                    )
+                                }
+                            }
+                        } label: {
+                            Image(systemName: "arrow.up.arrow.down.circle")
                                 .font(.title3)
                         }
                         
@@ -83,22 +103,44 @@ struct RecordsView: View {
             ScrollView {
                 LazyVStack(spacing: 12) {
                     ForEach(viewModel.filteredRecords) { record in
-                        if !record.isInvalidated { 
-                            RecordCardView(record: record)
-                                .contextMenu {
-                                    Button(role: .destructive) {
-                                        viewModel.deleteRecord(record)
-                                    } label: {
-                                        Label("Видалити", systemImage: "trash")
-                                    }
+                        RecordCardView(record: record)
+                            .contextMenu {
+                                Button(role: .destructive) {
+                                    viewModel.deleteRecord(record)
+                                } label: {
+                                    Label("Видалити", systemImage: "trash")
                                 }
-                        }
+                            }
                     }
                 }
                 .padding()
             }
         }
         .animation(.easeInOut, value: viewModel.isSearching)
+    }
+    private var errorToast: some View {
+        VStack {
+            HStack(spacing: 12) {
+                Image(systemName: "magnifyingglass")
+                    .foregroundColor(AppTheme.warningColor)
+                
+                Text(viewModel.errorMessage)
+                    .font(AppTheme.callout)
+                    .foregroundColor(AppTheme.textPrimary)
+                    .lineLimit(2)
+                
+                Spacer()
+            }
+            .padding()
+            .background(AppTheme.secondaryBackgroundColor)
+            .cornerRadius(AppTheme.cornerRadiusMedium)
+            .shadow(color: AppTheme.shadowColor, radius: 10, y: 5)
+            .padding(.horizontal)
+            
+            Spacer()
+        }
+        .padding(.top, 16)
+        .transition(.move(edge: .top).combined(with: .opacity))
     }
     
     private var filterSheet: some View {

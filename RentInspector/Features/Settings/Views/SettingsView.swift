@@ -9,51 +9,56 @@ struct SettingsView: View {
     @State private var showThemeSheet = false
     
     var body: some View {
-        ZStack {
-            List {
-                // Секція Appearance
-                Section {
-                    themeButton
-                } header: {
-                    Text("Зовнішній вигляд")
+            ZStack {
+                List {
+                    // Секція Appearance
+                    Section {
+                        themeButton
+                    } header: {
+                        Text("Зовнішній вигляд")
+                    }
+                    
+                    // Секція Data
+                    Section {
+                        storageInfo
+                        clearDataButton
+                    } header: {
+                        Text("Дані")
+                    }
+                    
+                    // Секція About
+                    Section {
+                        aboutRow(icon: "info.circle.fill", title: "Версія", value: Constants.AppInfo.version)
+                        aboutRow(icon: "number.circle.fill", title: "Збірка", value: Constants.AppInfo.build)
+                        aboutRow(icon: "hammer.fill", title: "Розробник", value: "Your Name")
+                    } header: {
+                        Text("Про додаток")
+                    }
+                }
+                .navigationTitle("Налаштування")
+                .navigationBarTitleDisplayMode(.large)
+                .sheet(isPresented: $showThemeSheet) {
+                    themeSelectionSheet
+                }
+                .alert("Очистити всі дані?", isPresented: $viewModel.showClearDataAlert) {
+                    Button("Скасувати", role: .cancel) { }
+                    Button("Видалити", role: .destructive) {
+                        viewModel.clearAllData()
+                    }
+                } message: {
+                    Text("Всі звіти будуть видалені назавжди. Цю дію неможливо скасувати.")
                 }
                 
-                // Секція Data
-                Section {
-                    storageInfo
-                    clearDataButton
-                } header: {
-                    Text("Дані")
+                // Success Toast
+                if viewModel.showSuccessToast {
+                    successToast
                 }
                 
-                // Секція About
-                Section {
-                    aboutRow(icon: "info.circle.fill", title: "Версія", value: Constants.AppInfo.version)
-                    aboutRow(icon: "number.circle.fill", title: "Збірка", value: Constants.AppInfo.build)
-                    aboutRow(icon: "hammer.fill", title: "Розробник", value: "Miedientsov Valentin")
-                } header: {
-                    Text("Про додаток")
+                // Error Toast
+                if viewModel.showErrorToast {
+                    errorToast
                 }
             }
-            .navigationTitle("Налаштування")
-            .navigationBarTitleDisplayMode(.inline)
-            .sheet(isPresented: $showThemeSheet) {
-                themeSelectionSheet
-            }
-            .alert("Очистити всі дані?", isPresented: $viewModel.showClearDataAlert) {
-                Button("Скасувати", role: .cancel) { }
-                Button("Видалити", role: .destructive) {
-                    viewModel.clearAllData()
-                }
-            } message: {
-                Text("Всі звіти будуть видалені назавжди. Цю дію неможливо скасувати.")
-            }
-            
-            // Success Toast
-            if viewModel.showClearDataSuccess {
-                successToast
-            }
-        }
     }
     
     // MARK: - Theme Button
@@ -181,28 +186,52 @@ struct SettingsView: View {
     // MARK: - Success Toast
     
     private var successToast: some View {
-        VStack {
-            HStack(spacing: 12) {
-                Image(systemName: "checkmark.circle.fill")
-                    .foregroundColor(AppTheme.successColor)
-                
-                Text("Дані успішно видалено")
-                    .font(AppTheme.callout)
-                    .foregroundColor(AppTheme.textPrimary)
+            VStack {
+                HStack(spacing: 12) {
+                    Image(systemName: "checkmark.circle.fill")
+                        .foregroundColor(AppTheme.successColor)
+                    
+                    Text("Дані успішно видалено")
+                        .font(AppTheme.callout)
+                        .foregroundColor(AppTheme.textPrimary)
+                    
+                    Spacer()
+                }
+                .padding()
+                .background(AppTheme.secondaryBackgroundColor)
+                .cornerRadius(AppTheme.cornerRadiusMedium)
+                .shadow(color: AppTheme.shadowColor, radius: 10, y: 5)
+                .padding(.horizontal)
                 
                 Spacer()
             }
-            .padding()
-            .background(AppTheme.secondaryBackgroundColor)
-            .cornerRadius(AppTheme.cornerRadiusMedium)
-            .shadow(color: AppTheme.shadowColor, radius: 10, y: 5)
-            .padding(.horizontal)
-            
-            Spacer()
+            .padding(.top, 16)
+            .transition(.move(edge: .top).combined(with: .opacity))
         }
-        .padding(.top, 16)
-        .transition(.move(edge: .top).combined(with: .opacity))
-    }
+    // MARK: - Error Toast
+    private var errorToast: some View {
+            VStack {
+                HStack(spacing: 12) {
+                    Image(systemName: "xmark.circle.fill")
+                        .foregroundColor(AppTheme.warningColor)
+                    
+                    Text(viewModel.errorMessage)
+                        .font(AppTheme.callout)
+                        .foregroundColor(AppTheme.textPrimary)
+                    
+                    Spacer()
+                }
+                .padding()
+                .background(AppTheme.secondaryBackgroundColor)
+                .cornerRadius(AppTheme.cornerRadiusMedium)
+                .shadow(color: AppTheme.shadowColor, radius: 10, y: 5)
+                .padding(.horizontal)
+                
+                Spacer()
+            }
+            .padding(.top, 16)
+            .transition(.move(edge: .top).combined(with: .opacity))
+        }
 }
 
 #Preview {
