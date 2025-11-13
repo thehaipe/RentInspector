@@ -5,7 +5,7 @@ import SwiftUI
 
 struct RoomCountSelectionView: View {
     @ObservedObject var viewModel: CreateRecordViewModel
-    
+    @Environment(\.dismiss) var dismiss
     private let roomOptions = [1, 2, 3, 4, 5]
     
     var body: some View {
@@ -32,6 +32,13 @@ struct RoomCountSelectionView: View {
             VStack(spacing: 16) {
                 ForEach(roomOptions, id: \.self) { count in
                     roomOptionButton(count: count)
+                }
+            }
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button("Скасувати") {
+                        dismiss()
+                    }
                 }
             }
             .padding(.horizontal, 24)
