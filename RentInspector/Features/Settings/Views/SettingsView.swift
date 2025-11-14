@@ -20,7 +20,9 @@ struct SettingsView: View {
                     
                     // Секція Data
                     Section {
-                        storageInfo
+                        NavigationLink(destination: RecordsView()) {
+                            storageInfo
+                        }
                         clearDataButton
                     } header: {
                         Text("Дані")
@@ -30,13 +32,20 @@ struct SettingsView: View {
                     Section {
                         aboutRow(icon: "info.circle.fill", title: "Версія", value: Constants.AppInfo.version)
                         aboutRow(icon: "number.circle.fill", title: "Збірка", value: Constants.AppInfo.build)
-                        aboutRow(icon: "hammer.fill", title: "Розробник", value: "Your Name")
+                        aboutRow(icon: "hammer.fill", title: "Розробник", value: "")
                     } header: {
                         Text("Про додаток")
                     }
                 }
-                .navigationTitle("Налаштування")
-                .navigationBarTitleDisplayMode(.large)
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    //розташування або principal, або largeTitle, чекаю оновлення аби подивитись Canvas
+                    ToolbarItem(placement: .principal) {
+                        Text("Налаштування")
+                            .font(AppTheme.title2)
+                            .fontWeight(.bold)
+                    }
+                }
                 .sheet(isPresented: $showThemeSheet) {
                     themeSelectionSheet
                 }

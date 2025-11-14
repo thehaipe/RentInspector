@@ -58,7 +58,8 @@ struct RoomCountSelectionView: View {
                     .cornerRadius(AppTheme.cornerRadiusMedium)
             }
             .padding(.horizontal, 24)
-            .padding(.bottom, 32)
+            //БАГ-РЕПОРТ: Тестувальник №6, кнопка залазить в Safe Area, попереднє значення: 32
+            .padding(.bottom, 70)
             .disabled(!viewModel.canProceed)
             .opacity(viewModel.canProceed ? 1 : 0.6)
         }

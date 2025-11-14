@@ -24,15 +24,23 @@ struct ProfileView: View {
                 }
                 .padding()
             }
-            .navigationTitle("Профіль")
-            .navigationBarTitleDisplayMode(.large)
+            
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                //розташування або principal, або largeTitle, чекаю оновлення аби подивитись Canvas
+                ToolbarItem(placement: .principal) {
+                    Text("Профіль")
+                        .font(AppTheme.title2)
+                        .fontWeight(.bold)
+                }
+            }
             
             // Success Toast
             if viewModel.showSuccessMessage {
                 successToast
             }
             
-            // ← ДОДАНО: Error Toast
+            // Error Toast
             if viewModel.showErrorMessage {
                 errorToast
             }
@@ -169,7 +177,7 @@ struct ProfileView: View {
                 .frame(width: 30)
             
             Text(title)
-                .font(AppTheme.body)
+                .font(AppTheme.callout)
                 .foregroundColor(AppTheme.textSecondary)
             
             Spacer()
@@ -179,6 +187,7 @@ struct ProfileView: View {
                 .fontWeight(.semibold)
                 .foregroundColor(AppTheme.textPrimary)
         }
+        //Зміено, спроба зробити перехід до RecordsView(), результат потрібно провалідувати після оновлення симулятора
     }
     
     private var installDate: String {
