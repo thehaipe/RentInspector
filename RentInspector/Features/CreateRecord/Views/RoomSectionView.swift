@@ -113,9 +113,33 @@ struct RoomSectionView: View {
     
     private var commentField: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Коментар")
-                .font(AppTheme.callout)
-                .foregroundColor(AppTheme.textSecondary)
+            HStack {
+                Text("Коментар")
+                    .font(AppTheme.callout)
+                    .foregroundColor(AppTheme.textSecondary)
+                
+                Spacer()
+                
+                // Виразна кнопка завершення редагування
+                if isCommentFocused {
+                    Button(action: {
+                        isCommentFocused = false
+                    }) {
+                        HStack(spacing: 4) {
+                            Image(systemName: "checkmark.circle.fill")
+                                .font(.caption)
+                            Text("Готово")
+                                .font(AppTheme.caption)
+                                .fontWeight(.semibold)
+                        }
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 6)
+                        .background(AppTheme.primaryColor)
+                        .cornerRadius(12)
+                    }
+                }
+            }
             
             TextEditor(text: Binding(
                 get: { roomData.comment },
@@ -126,19 +150,11 @@ struct RoomSectionView: View {
             .background(AppTheme.tertiaryBackgroundColor)
             .cornerRadius(AppTheme.cornerRadiusSmall)
             .focused($isCommentFocused)
+            .scrollContentBackground(.hidden) // Прибирає дефолтний background TextEditor
             .onChange(of: roomData.comment) { oldValue, newValue in
-                    // Перевірка на натискання Return (останній символ — новий рядок)
-                    if newValue.last == "\n" {
-                        // Видаляємо символ нового рядка
-                        let cleanComment = String(newValue.dropLast())
-                        viewModel.updateRoomComment(at: roomIndex, comment: cleanComment)
-                        // Ховаємо клавіатуру
-                        isCommentFocused = false
-                        return
-                    }
-                    if newValue.count > Constants.Limits.maxCommentLength {
-                        viewModel.updateRoomComment(at: roomIndex, comment: String(newValue.prefix(Constants.Limits.maxCommentLength)))
-                    }
+                if newValue.count > Constants.Limits.maxCommentLength {
+                    viewModel.updateRoomComment(at: roomIndex, comment: String(newValue.prefix(Constants.Limits.maxCommentLength)))
+                }
             }
             
             Text("\(roomData.comment.count)/\(Constants.Limits.maxCommentLength)")
