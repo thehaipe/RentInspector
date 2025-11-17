@@ -127,9 +127,18 @@ struct RoomSectionView: View {
             .cornerRadius(AppTheme.cornerRadiusSmall)
             .focused($isCommentFocused)
             .onChange(of: roomData.comment) { oldValue, newValue in
-                if newValue.count > Constants.Limits.maxCommentLength {
-                    viewModel.updateRoomComment(at: roomIndex, comment: String(newValue.prefix(Constants.Limits.maxCommentLength)))
-                }
+                    // Перевірка на натискання Return (останній символ — новий рядок)
+                    if newValue.last == "\n" {
+                        // Видаляємо символ нового рядка
+                        let cleanComment = String(newValue.dropLast())
+                        viewModel.updateRoomComment(at: roomIndex, comment: cleanComment)
+                        // Ховаємо клавіатуру
+                        isCommentFocused = false
+                        return
+                    }
+                    if newValue.count > Constants.Limits.maxCommentLength {
+                        viewModel.updateRoomComment(at: roomIndex, comment: String(newValue.prefix(Constants.Limits.maxCommentLength)))
+                    }
             }
             
             Text("\(roomData.comment.count)/\(Constants.Limits.maxCommentLength)")
