@@ -85,7 +85,23 @@ class RecordDetailViewModel: ObservableObject {
         realmManager.removePhotoFromRoom(room, at: photoIndex)
         refreshRecord()
     }
-    
+    func canDeleteRoom(at index: Int) -> Bool {
+            guard index >= 0 && index < record.rooms.count else { return false }
+            
+            let room = record.rooms[index]
+            
+            switch room.roomType {
+            case .bedroom, .kitchen:
+                return false
+            case .bathroom:
+                if let firstBathroomIndex = record.rooms.firstIndex(where: { $0.roomType == .bathroom }) {
+                    return index != firstBathroomIndex
+                }
+                return true
+            default:
+                return true
+            }
+        }
     func deleteRoom(at index: Int) {
         guard index < record.rooms.count else { return }
         let room = record.rooms[index]

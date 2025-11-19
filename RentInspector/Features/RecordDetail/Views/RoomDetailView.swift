@@ -43,8 +43,8 @@ struct RoomDetailView: View {
                     // Photos Section
                     photosSection
                     
-                    // Delete Room Button (якщо це не єдина кімната)
-                    if viewModel.record.rooms.count > 1 && room.roomType != .kitchen {
+                    // Delete Room Button (якщо це не основні кімнати: Кімната 1-n, Санвузол 1, Кухня)
+                    if viewModel.canDeleteRoom(at: roomIndex) {
                         deleteRoomButton
                     }
                 }
@@ -66,6 +66,7 @@ struct RoomDetailView: View {
                     }
                 }
             }
+            
             .alert("Видалити кімнату?", isPresented: $showDeleteAlert) {
                 Button("Скасувати", role: .cancel) { }
                 Button("Видалити", role: .destructive) {
