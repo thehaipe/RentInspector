@@ -14,6 +14,7 @@ struct RoomSectionView: View {
     @FocusState private var isNameFocused: Bool
     @FocusState private var isCommentFocused: Bool
     
+    @State private var showDeleteAlert: Bool = false
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             // Заголовок секції
@@ -74,12 +75,31 @@ struct RoomSectionView: View {
                     .background(AppTheme.primaryColor.opacity(0.15))
                     .cornerRadius(8)
                 }
-                
+                if viewModel.canDeleteRoom(at: roomIndex) {
+                    Button(action: {
+                        showDeleteAlert = true
+                    }) {
+                        Image(systemName: "trash.fill")
+                            .foregroundColor(AppTheme.errorColor)
+                            .padding(8)
+                    }
+                    .buttonStyle(PlainButtonStyle()) // Щоб не спрацьовувало розгортання секції
+                }
                 Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
                     .font(.caption)
                     .foregroundColor(AppTheme.textSecondary)
             }
             .padding(16)
+        }
+        .alert("Видалити кімнату?", isPresented: $showDeleteAlert) {
+            Button("Скасувати", role: .cancel) { }
+            Button("Видалити", role: .destructive) {
+                withAnimation {
+                    viewModel.deleteRoom(at: roomIndex)
+                }
+            }
+        } message: {
+            Text("Ви впевнені, що хочете видалити цю кімнату та всі введені дані?")
         }
     }
     

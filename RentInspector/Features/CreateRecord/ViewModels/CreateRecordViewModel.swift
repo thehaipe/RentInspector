@@ -211,6 +211,25 @@ class CreateRecordViewModel: ObservableObject {
         ))
     }
     
+    func canDeleteRoom(at index: Int) -> Bool {
+            guard index < rooms.count else { return false }
+            let room = rooms[index]
+            
+            switch room.type {
+            case .bedroom, .kitchen:
+                return false
+            case .bathroom:
+                let firstBathroomIndex = rooms.firstIndex(where: { $0.type == .bathroom })
+                return index != firstBathroomIndex
+            default:
+                return true
+            }
+        }
+    
+    func deleteRoom(at index: Int) {
+            guard index < rooms.count else { return }
+            rooms.remove(at: index)
+        }
     // MARK: - Save Record
     
     func saveRecord(completion: @escaping (Record?) -> Void) {
