@@ -77,9 +77,20 @@ struct RoomDetailView: View {
                 Text("Ця кімната та всі її фото будуть видалені.")
             }
             .fullScreenCover(item: $selectedPhotoIndex) { index in
-                if index < room.photoData.count, let uiImage = UIImage(data: room.photoData[index]) {
+                // 1. Беремо ім'я файлу зі списку шляхів (photoPaths)
+                // 2. Просимо ImageManager завантажити картинку з диска
+                if index < room.photoPaths.count,
+                   let uiImage = ImageManager.shared.loadImage(named: room.photoPaths[index]) {
+                    
                     PhotoViewerView(image: uiImage) {
                         selectedPhotoIndex = nil
+                    }
+                } else {
+                    //Заглушка, якщо файл не знайдено або індекс невірний
+                    ZStack {
+                        Color.black.ignoresSafeArea()
+                        ProgressView()
+                            .onAppear { selectedPhotoIndex = nil }
                     }
                 }
             }
@@ -168,12 +179,12 @@ struct RoomDetailView: View {
                 
                 Spacer()
                 
-                Text("\(room.photoData.count)/\(Constants.Limits.maxPhotosPerRoom)")
+                Text("\(room.photoPaths.count)/\(Constants.Limits.maxPhotosPerRoom)")
                     .font(AppTheme.caption)
                     .foregroundColor(AppTheme.textSecondary)
             }
             
-            if room.photoData.isEmpty {
+            if room.photoPaths.isEmpty {
                 emptyPhotosView
             } else {
                 photosGrid
@@ -214,10 +225,10 @@ struct RoomDetailView: View {
     private var photosGrid: some View {
         VStack(spacing: 16) {
             // Кнопка додавання фото (зверху)
-            if room.photoData.count < Constants.Limits.maxPhotosPerRoom {
+            if room.photoPaths.count < Constants.Limits.maxPhotosPerRoom {
                 PhotosPicker(
                     selection: $selectedPhotos,
-                    maxSelectionCount: Constants.Limits.maxPhotosPerRoom - room.photoData.count,
+                    maxSelectionCount: Constants.Limits.maxPhotosPerRoom - room.photoPaths.count,
                     matching: .images
                 ) {
                     HStack(spacing: 12) {
@@ -237,31 +248,33 @@ struct RoomDetailView: View {
                     )
                 }
             }
-            
             // Список фото (вертикально)
-            if !room.photoData.isEmpty {
+            if !room.photoPaths.isEmpty {
                 LazyVStack(spacing: 12) {
-                    ForEach(Array(room.photoData.enumerated()), id: \.offset) { index, photoData in
-                        photoThumbnailHorizontal(photoData: photoData, index: index)
+                    //Тепер перебираємо рядки імен файлів, а не Data. Такий підхід значно отримальніший за перебір масив байтів (Data)
+                    ForEach(Array(room.photoPaths.enumerated()), id: \.offset) { index, photoPath in
+                        photoThumbnailHorizontal(photoPath: photoPath, index: index)
                     }
                 }
             }
         }
     }
 
-    private func photoThumbnailHorizontal(photoData: Data, index: Int) -> some View {
+    private func photoThumbnailHorizontal(photoPath: String, index: Int) -> some View {
         Button(action: {
             selectedPhotoIndex = index
         }) {
             HStack(spacing: 12) {
-                // Фото
-                if let uiImage = UIImage(data: photoData) {
+                if let uiImage = ImageManager.shared.loadImage(named: photoPath) {
                     Image(uiImage: uiImage)
                         .resizable()
                         .scaledToFill()
                         .frame(width: 80, height: 80)
                         .cornerRadius(AppTheme.cornerRadiusSmall)
                         .clipped()
+                } else {
+                    Image(systemName: "photo.badge.exclamationmark")
+                        .frame(width: 80, height: 80)
                 }
                 
                 // Інфо

@@ -4,6 +4,7 @@
  */
 import UIKit
 import PDFKit
+import RealmSwift
 
 class PDFExportService {
     static let shared = PDFExportService()
@@ -203,7 +204,7 @@ class PDFExportService {
             ]
             
             let commentText = "Коментар: \(room.comment)"
-            let commentBounds = CGRect(x: 40, y: currentY, width: pageRect.width - 80, height: 1000)
+            
             let commentSize = commentText.boundingRect(
                 with: CGSize(width: pageRect.width - 80, height: 1000),
                 options: [.usesLineFragmentOrigin, .usesFontLeading],
@@ -216,7 +217,7 @@ class PDFExportService {
         }
         
         // Фотографії
-        if !room.photoData.isEmpty {
+        if !room.photoPaths.isEmpty {
             let photoTitleFont = UIFont.boldSystemFont(ofSize: 14)
             let photoTitleAttributes: [NSAttributedString.Key: Any] = [
                 .font: photoTitleFont,
@@ -229,15 +230,16 @@ class PDFExportService {
             photoTitleText.draw(in: photoTitleRect, withAttributes: photoTitleAttributes)
             currentY += photoTitleSize.height + 12
             
-            // Рендеринг кожного фото
-            for (photoIndex, photoData) in room.photoData.enumerated() {
+            for (photoIndex, photoPath) in room.photoPaths.enumerated() {
+                
                 // Перевірка чи потрібна нова сторінка
                 if currentY > pageRect.height - 300 {
                     context.beginPage()
                     currentY = 60
                 }
                 
-                if let image = UIImage(data: photoData) {
+                // Використовуємо photoPath безпосередньо з циклу
+                if let image = ImageManager.shared.loadImage(named: photoPath) {
                     let maxWidth: CGFloat = pageRect.width - 120
                     let maxHeight: CGFloat = 250
                     

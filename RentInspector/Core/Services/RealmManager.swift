@@ -5,6 +5,7 @@
 import Foundation
 import RealmSwift
 internal import Combine
+internal import Realm
 
 class RealmManager: ObservableObject {
     static let shared = RealmManager()
@@ -23,10 +24,28 @@ class RealmManager: ObservableObject {
     private func setupRealm() {
         do {
             let config = Realm.Configuration(
-                schemaVersion: 1,
+                schemaVersion: 2, // ПІДНІМАЄМО ВЕРСІЮ!
                 migrationBlock: { migration, oldSchemaVersion in
-                    if oldSchemaVersion < 1 {
-                        // Міграції при оновленні схеми, додати поле "squreMeters", видалити поле "updatedAt"
+                    if oldSchemaVersion < 2 {
+                        // Проходимося по всіх кімнатах
+                        migration.enumerateObjects(ofType: Room.className()) { oldObject, newObject in
+                            guard let oldObject = oldObject, let newObject = newObject else { return }
+                            
+                            // Отримуємо старий список даних фото (якщо він був)
+                            if let oldPhotoDataList = oldObject["photoData"] as? List<Data> {
+                                let newPhotoPathsList = List<String>()
+                                
+                                // Зберігаємо кожне фото на диск і записуємо шлях
+                                for data in oldPhotoDataList {
+                                    if let fileName = ImageManager.shared.saveImage(data) {
+                                        newPhotoPathsList.append(fileName)
+                                    }
+                                }
+                                
+                                // Присвоюємо новий список новій властивості
+                                newObject["photoPaths"] = newPhotoPathsList
+                            }
+                        }
                     }
                 }
             )
@@ -176,23 +195,33 @@ class RealmManager: ObservableObject {
     }
     
     func addPhotoToRoom(_ room: Room, photoData: Data) {
-        guard let realm = realm else { return }
-        
-        guard let roomToUpdate = realm.object(ofType: Room.self, forPrimaryKey: room.id) else {
-            print("⚠️ Room not found")
-            return
-        }
-        
-        do {
-            try realm.write {
-                roomToUpdate.photoData.append(photoData)
+            guard let realm = realm else { return }
+            
+            guard let roomToUpdate = realm.object(ofType: Room.self, forPrimaryKey: room.id) else {
+                print("⚠️ Room not found")
+                return
             }
-            loadRecordsSync()
-            print("✅ Photo added to room")
-        } catch {
-            print("❌ Error adding photo: \(error.localizedDescription)")
+            
+            //Спочатку зберігаємо фото на диск і отримуємо ім'я файлу
+            guard let fileName = ImageManager.shared.saveImage(photoData) else {
+                print("❌ Failed to save image to disk")
+                return
+            }
+            
+            do {
+                try realm.write {
+                    //Тепер додаємо в базу лише ім'я файлу
+                    roomToUpdate.photoPaths.append(fileName)
+                }
+                loadRecordsSync()
+                print("✅ Photo added to room: \(fileName)")
+            } catch {
+                print("❌ Error adding photo to DB: \(error.localizedDescription)")
+                
+                //Якщо запис в БД не вдався, видалити файл, щоб не займати місце
+                ImageManager.shared.deleteImage(named: fileName)
+            }
         }
-    }
     
     func removePhotoFromRoom(_ room: Room, at index: Int) {
         guard let realm = realm else { return }
@@ -202,11 +231,11 @@ class RealmManager: ObservableObject {
             return
         }
         
-        guard index >= 0 && index < roomToUpdate.photoData.count else { return }
+        guard index >= 0 && index < roomToUpdate.photoPaths.count else { return }
         
         do {
             try realm.write {
-                roomToUpdate.photoData.remove(at: index)
+                roomToUpdate.photoPaths.remove(at: index)
             }
             loadRecordsSync()
             print("✅ Photo removed from room")

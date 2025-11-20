@@ -233,36 +233,38 @@ class CreateRecordViewModel: ObservableObject {
     // MARK: - Save Record
     
     func saveRecord(completion: @escaping (Record?) -> Void) {
-        isLoading = true
-        
-        // Створюємо новий Record
-        let newRecord = Record(
-            title: recordTitle.isEmpty ? "Record \(Date().formatted(date: .abbreviated, time: .omitted))" : recordTitle,
-            stage: recordStage
-        )
-        newRecord.reminderInterval = reminderInterval
-        
-        if reminderInterval > 0 {
-            newRecord.nextReminderDate = Calendar.current.date(byAdding: .day, value: reminderInterval, to: Date())
+            isLoading = true
+            let newRecord = Record(
+                title: recordTitle.isEmpty ? "Record \(Date().formatted(date: .abbreviated, time: .omitted))" : recordTitle,
+                stage: recordStage
+            )
+            newRecord.reminderInterval = reminderInterval
+            
+            if reminderInterval > 0 {
+                newRecord.nextReminderDate = Calendar.current.date(byAdding: .day, value: reminderInterval, to: Date())
+            }
+            
+            // Створюємо Room об'єкти
+            for roomData in rooms {
+                let room = Room(type: roomData.type, customName: roomData.customName)
+                room.comment = roomData.comment
+                for photoData in roomData.photos {
+                    if let fileName = ImageManager.shared.saveImage(photoData) {
+                        room.photoPaths.append(fileName)
+                    }
+                }
+                newRecord.rooms.append(room)
+            }
+            
+            // Зберігаємо в Realm
+            realmManager.createRecord(newRecord)
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+                self?.isLoading = false
+                self?.showSuccessView = true
+                completion(newRecord.detached())  // Повертаємо DEATACHED копію, бо звичайна ламає View
+            }
         }
-        
-        // Створюємо Room об'єкти
-        for roomData in rooms {
-            let room = Room(type: roomData.type, customName: roomData.customName)
-            room.comment = roomData.comment
-            room.photoData.append(objectsIn: roomData.photos)
-            newRecord.rooms.append(room)
-        }
-        
-        // Зберігаємо в Realm
-        realmManager.createRecord(newRecord)
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
-            self?.isLoading = false
-            self?.showSuccessView = true
-            completion(newRecord.detached())  // Повертаємо DEATACHED копію!!!!!!!!!!!!!!!!!, бо звичайна валить View
-        }
-    }
     
     // MARK: - Reset
     

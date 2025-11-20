@@ -34,7 +34,7 @@ class Record: Object, ObjectKeyIdentifiable {
     }
     
     var totalPhotos: Int {
-        return rooms.reduce(0) { $0 + $1.photoData.count }
+        return rooms.reduce(0) { $0 + $1.photoPaths.count }
     }
     
     convenience init(title: String, stage: RecordStage = .moveIn) {

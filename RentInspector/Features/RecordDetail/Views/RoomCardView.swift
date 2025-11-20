@@ -36,11 +36,11 @@ struct RoomCardView: View {
             Spacer()
             
             // Кількість фото
-            if !room.photoData.isEmpty {
+            if !room.photoPaths.isEmpty {
                 HStack(spacing: 4) {
                     Image(systemName: "photo.fill")
                         .font(.caption)
-                    Text("\(room.photoData.count)")
+                    Text("\(room.photoPaths.count)")
                         .font(AppTheme.caption)
                 }
                 .foregroundColor(AppTheme.primaryColor)

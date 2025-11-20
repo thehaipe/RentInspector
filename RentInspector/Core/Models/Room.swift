@@ -16,7 +16,8 @@ class Room: Object, ObjectKeyIdentifiable {
     @Persisted var type: String // RoomType.rawValue
     @Persisted var customName: String = ""
     @Persisted var comment: String = ""
-    @Persisted var photoData: List<Data> // Зберігаємо фото як Data
+    //@Persisted var photoData: List<Data> // Зберігаємо фото як Data
+    @Persisted var photoPaths: List<String>
     @Persisted var createdAt: Date = Date()
     
     var roomType: RoomType {
@@ -42,8 +43,8 @@ class Room: Object, ObjectKeyIdentifiable {
             detachedRoom.createdAt = self.createdAt
             
             // Копіюємо фото
-            for photo in self.photoData {
-                detachedRoom.photoData.append(photo)
+            for photo in self.photoPaths {
+                detachedRoom.photoPaths.append(photo)
             }
             
             return detachedRoom
