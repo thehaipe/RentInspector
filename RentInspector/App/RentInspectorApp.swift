@@ -8,7 +8,6 @@ struct RentInspectorApp: SwiftUI.App {
     @StateObject private var themeManager = ThemeManager.shared
     
     init() {
-        // Налаштування appearance для всього додатку
         configureAppearance()
     }
     
