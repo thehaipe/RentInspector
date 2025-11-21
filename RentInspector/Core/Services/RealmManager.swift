@@ -124,23 +124,31 @@ class RealmManager: ObservableObject {
             print("❌ Error updating record: \(error.localizedDescription)")
         }
     }
-    
+
     func deleteRecord(_ record: Record) {
         guard let realm = realm else { return }
-        
-        // Пошук об'єкт заново
         guard let recordToDelete = realm.object(ofType: Record.self, forPrimaryKey: record.id) else {
             print("⚠️ Record not found or already deleted")
-            loadRecordsSync() // Оновлюємо список
+            loadRecordsSync()
             return
         }
         
+        var photosToDelete: [String] = []
+        photosToDelete = recordToDelete.rooms.flatMap { Array($0.photoPaths) }
+        
         do {
             try realm.write {
-                // Видаляємо всі кімнати разом із записом
                 realm.delete(recordToDelete.rooms)
                 realm.delete(recordToDelete)
             }
+            //Видалення у фоні, щоб не блокувати UI
+            DispatchQueue.global(qos: .background).async {
+                for path in photosToDelete {
+                    ImageManager.shared.deleteImage(named: path)
+                }
+                print("🗑️ Deleted \(photosToDelete.count) orphan photos from disk")
+            }
+            
             loadRecordsSync()
             print("✅ Record deleted")
         } catch {
@@ -243,15 +251,16 @@ class RealmManager: ObservableObject {
             print("❌ Error removing photo: \(error.localizedDescription)")
         }
     }
-    
+
     func deleteRoom(_ room: Room, from record: Record) {
         guard let realm = realm else { return }
         
         guard let recordToUpdate = realm.object(ofType: Record.self, forPrimaryKey: record.id),
               let roomToDelete = realm.object(ofType: Room.self, forPrimaryKey: room.id) else {
-            print("⚠️ Record or Room not found")
+            print("Record or Room not found")
             return
         }
+        let photosToDelete = Array(roomToDelete.photoPaths)
         
         do {
             try realm.write {
@@ -261,6 +270,14 @@ class RealmManager: ObservableObject {
                 realm.delete(roomToDelete)
                 recordToUpdate.updatedAt = Date()
             }
+            
+            // Видаляємо файли у фоновому режимі
+            DispatchQueue.global(qos: .background).async {
+                for path in photosToDelete {
+                    ImageManager.shared.deleteImage(named: path)
+                }
+            }
+            
             loadRecordsSync()
             print("✅ Room deleted")
         } catch {
@@ -291,7 +308,6 @@ class RealmManager: ObservableObject {
     }
     
     func clearAllData() throws {
-        // Перевірка чи є що видаляти
         guard !records.isEmpty else {
             throw RealmError.noRecordsToDelete
         }
@@ -300,16 +316,31 @@ class RealmManager: ObservableObject {
             throw RealmError.operationFailed("Realm не ініціалізований")
         }
         
+        let allRecords = realm.objects(Record.self)
+        var allPhotosToDelete: [String] = []
+        
+        for record in allRecords {
+            for room in record.rooms {
+                allPhotosToDelete.append(contentsOf: room.photoPaths)
+            }
+        }
+        
         do {
-            // Спочатку очищуємо UI
             records.removeAll()
             
-            // Потім видаляємо з realm
             try realm.write {
                 realm.deleteAll()
             }
             
-            print("✅ All data cleared")
+            //Видаляємо всі файли з диску.
+            DispatchQueue.global(qos: .background).async {
+                for path in allPhotosToDelete {
+                    ImageManager.shared.deleteImage(named: path)
+                }
+                print("Wiped \(allPhotosToDelete.count) photos from disk")
+            }
+            
+            print("All data cleared")
         } catch {
             throw RealmError.operationFailed(error.localizedDescription)
         }
