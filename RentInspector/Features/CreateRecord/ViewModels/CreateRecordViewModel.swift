@@ -32,9 +32,12 @@ class CreateRecordViewModel: ObservableObject {
     // UI State
     @Published var isLoading: Bool = false
     @Published var showSuccessView: Bool = false
-    
+    // Додатково, додати до обʼєкту
+    @Published var selectedProperty: Property?
     private var realmManager = RealmManager.shared
-    
+    init(preselectedProperty: Property? = nil) {
+        self.selectedProperty = preselectedProperty
+    }
     enum OnboardingStep: Int, CaseIterable {
         case roomCount = 0
         case balconyLoggia = 1
@@ -258,7 +261,11 @@ class CreateRecordViewModel: ObservableObject {
             
             // Зберігаємо в Realm
             realmManager.createRecord(newRecord)
-            
+        
+            if let property = selectedProperty {
+                // Важливо: property може бути detached, тому передаємо його ID або шукаємо "живий"
+                realmManager.addRecordToProperty(record: newRecord, property: property)
+            }
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
                 self?.isLoading = false
                 self?.showSuccessView = true

@@ -9,6 +9,7 @@ struct RecordFormView: View {
     @Environment(\.dismiss) var dismiss
     @State private var showReminderPicker = false
     @State private var savedRecord: Record? = nil
+    @State private var showPropertyPicker = false
     var onRecordSaved: ((Record) -> Void)?
     
     var body: some View {
@@ -25,6 +26,9 @@ struct RecordFormView: View {
                 
                 // Нагадування
                 reminderSection
+                
+                //Привʼязка
+                addPropertyPicker
                 
                 // Кнопка збереження
                 saveButton
@@ -194,7 +198,7 @@ struct RecordFormView: View {
                 }
                 
                 Section("Інтервал нагадування") {
-                    ForEach([7, 14, 30, 60, 90], id: \.self) { days in
+                    ForEach([30, 60, 180, 360], id: \.self) { days in
                         Button(action: {
                             viewModel.reminderInterval = days
                             showReminderPicker = false
@@ -224,7 +228,52 @@ struct RecordFormView: View {
         }
         .presentationDetents([.medium])
     }
-    
+    // MARK: - Add Property Picker
+    private var addPropertyPicker: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Об'єкт нерухомості")
+                .font(AppTheme.headline)
+                .foregroundColor(AppTheme.textPrimary)
+            
+            if let property = viewModel.selectedProperty {
+                // Якщо об'єкт вже вибрано (або пре-вибрано)
+                HStack {
+                    Image(systemName: "building.2.fill")
+                        .foregroundColor(AppTheme.primaryColor)
+                    Text(property.displayName)
+                        .font(AppTheme.body)
+                        .foregroundColor(AppTheme.textPrimary)
+                    Spacer()
+                    // Кнопка "Змінити", якщо це не пре-вибір
+                    Button("Змінити") {
+                        showPropertyPicker = true
+                    }
+                    .font(AppTheme.caption)
+                }
+                .padding()
+                .background(AppTheme.secondaryBackgroundColor)
+                .cornerRadius(AppTheme.cornerRadiusMedium)
+            } else {
+                // Якщо нічого не вибрано
+                Button(action: {
+                    showPropertyPicker = true
+                }) {
+                    HStack {
+                        Image(systemName: "building.2")
+                        Text("Обрати об'єкт")
+                        Spacer()
+                        Image(systemName: "chevron.right")
+                    }
+                    .padding()
+                    .background(AppTheme.secondaryBackgroundColor)
+                    .cornerRadius(AppTheme.cornerRadiusMedium)
+                }
+            }
+        }
+        .sheet(isPresented: $showPropertyPicker) {
+            PropertySelectionView(selectedProperty: $viewModel.selectedProperty)
+        }
+    }
     // MARK: - Save Button
     
     private var saveButton: some View {

@@ -22,6 +22,10 @@ class Record: Object, ObjectKeyIdentifiable {
     @Persisted var nextReminderDate: Date?
     @Persisted var createdAt: Date = Date()
     @Persisted var updatedAt: Date = Date()
+    @Persisted(originProperty: "records") var assignee: LinkingObjects<Property>
+    var parentProperty: Property? {
+        return assignee.first
+    }
     
     // Computed properties
     var recordStage: RecordStage {
