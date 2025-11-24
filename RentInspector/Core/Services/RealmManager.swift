@@ -27,7 +27,7 @@ class RealmManager: ObservableObject {
     private func setupRealm() {
         do {
             let config = Realm.Configuration(
-                schemaVersion: 3,
+                schemaVersion: 4,
                 migrationBlock: { migration, oldSchemaVersion in
                     
                     // Міграція 1 -> 2 (Фото)
@@ -67,6 +67,11 @@ class RealmManager: ObservableObject {
                                     recordsList.append(newRecord)
                                 }
                             }
+                        }
+                    }
+                    if oldSchemaVersion < 4 {
+                        migration.enumerateObjects(ofType: Record.className()) { oldObj, newObj in
+                            newObj?["parentId"] = nil
                         }
                     }
                 }
@@ -289,25 +294,28 @@ class RealmManager: ObservableObject {
         }
     }
     func addRecordToProperty(record: Record, property: Property) {
-        guard let realm = realm else { return }
-        
-        // Знаходимо "живі" об'єкти в базі за їх ID
-        guard let liveProperty = realm.object(ofType: Property.self, forPrimaryKey: property.id),
-              let liveRecord = realm.object(ofType: Record.self, forPrimaryKey: record.id) else {
-            print("⚠️ Property or Record not found in Realm for linking")
-            return
-        }
-        
-        do {
-            try realm.write {
-                liveProperty.records.append(liveRecord)
+            guard let realm = realm else { return }
+            
+            guard let liveProperty = realm.object(ofType: Property.self, forPrimaryKey: property.id),
+                  let liveRecord = realm.object(ofType: Record.self, forPrimaryKey: record.id) else {
+                return
             }
-            loadProperties() // Оновлюємо UI списків
-            print("✅ Record linked to property: \(liveProperty.displayName)")
-        } catch {
-            print("❌ Error linking record: \(error.localizedDescription)")
+            
+            do {
+                try realm.write {
+                    // 1. Додаємо в список (для Realm зв'язків)
+                    liveProperty.records.append(liveRecord)
+                    // 2. Прописуємо явний ID (для Detached об'єктів і UI)
+                    liveRecord.parentId = liveProperty.id
+                }
+                loadProperties()
+                // Обов'язково оновлюємо і records, бо там змінилося поле parentId
+                loadRecordsSync()
+                print("✅ Record linked to property")
+            } catch {
+                print("❌ Error linking record: \(error.localizedDescription)")
+            }
         }
-    }
     
     func removePhotoFromRoom(_ room: Room, at index: Int) {
         guard let realm = realm else { return }

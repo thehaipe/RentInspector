@@ -9,8 +9,7 @@ struct PropertyDetailView: View {
     // Фільтруємо записи для конкретного об'єкту
     var propertyRecords: [Record] {
         realmManager.records.filter { record in
-            // Порівнюємо ID, бо об'єкти можуть бути detached
-            record.parentProperty?.id == property.id
+            record.parentId == property.id
         }
     }
     
