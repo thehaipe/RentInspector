@@ -1,5 +1,5 @@
 /*
- Клас для роботи з уже створеним звітом. Станом на зараз, він відповідає за зміну інформації запису. (Фото, назви, етап) проте у майбутньому створений звіт буде статичним, залишиться лише можливість експортувати його. 
+ Клас для роботи з уже створеним звітом. Станом на зараз, він відповідає за зміну інформації запису. (Фото, назви, етап) проте у майбутньому створений звіт буде статичним, залишиться лише можливість експортувати його.
  */
 import SwiftUI
 internal import Combine
@@ -17,6 +17,9 @@ class RecordDetailViewModel: ObservableObject {
     @Published var selectedProperty: Property?
     @Published var showPropertyPicker: Bool = false
     
+    @Published var showErrorToast: Bool = false
+    @Published var errorMessage: String = ""
+    
     private var realmManager = RealmManager.shared
     private var cancellables = Set<AnyCancellable>()
     
@@ -27,9 +30,9 @@ class RecordDetailViewModel: ObservableObject {
         self.editedReminderInterval = record.reminderInterval
         
         if let parentId = record.parentId {
-                    // Шукаємо об'єкт у завантаженому списку RealmManager
-                    self.selectedProperty = RealmManager.shared.properties.first(where: { $0.id == parentId })
-                }
+            // Шукаємо об'єкт у завантаженому списку RealmManager
+            self.selectedProperty = RealmManager.shared.properties.first(where: { $0.id == parentId })
+        }
     }
     
     // MARK: - Update Methods
@@ -63,10 +66,23 @@ class RecordDetailViewModel: ObservableObject {
         completion()
     }
     func updateProperty(_ property: Property?) {
-            selectedProperty = property
-            realmManager.updateRecordProperty(record: record, newProperty: property)
-            refreshRecord()
+        if let property = property {
+            let isRestrictedStage = record.recordStage == .moveIn || record.recordStage == .moveOut
+            
+            if isRestrictedStage && property.hasRecord(with: record.recordStage) {
+                errorMessage = "У об'єкті '\(property.displayName)' вже існує звіт етапу '\(record.recordStage.displayName)'. Видаліть старий звіт або змініть етап поточного."
+                showErrorToast = true
+                DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
+                    self.showErrorToast = false
+                }
+                return // Перериваємо операцію
+            }
         }
+        
+        selectedProperty = property
+        RealmManager.shared.updateRecordProperty(record: record, newProperty: property)
+        refreshRecord() // Це не обов'язково, бо RealmManager.updateRecordProperty оновить об'єкт
+    }
     
     // MARK: - Room Methods
     
@@ -98,22 +114,22 @@ class RecordDetailViewModel: ObservableObject {
         refreshRecord()
     }
     func canDeleteRoom(at index: Int) -> Bool {
-            guard index >= 0 && index < record.rooms.count else { return false }
-            
-            let room = record.rooms[index]
-            
-            switch room.roomType {
-            case .bedroom, .kitchen:
-                return false
-            case .bathroom:
-                if let firstBathroomIndex = record.rooms.firstIndex(where: { $0.roomType == .bathroom }) {
-                    return index != firstBathroomIndex
-                }
-                return true
-            default:
-                return true
+        guard index >= 0 && index < record.rooms.count else { return false }
+        
+        let room = record.rooms[index]
+        
+        switch room.roomType {
+        case .bedroom, .kitchen:
+            return false
+        case .bathroom:
+            if let firstBathroomIndex = record.rooms.firstIndex(where: { $0.roomType == .bathroom }) {
+                return index != firstBathroomIndex
             }
+            return true
+        default:
+            return true
         }
+    }
     func deleteRoom(at index: Int) {
         guard index < record.rooms.count else { return }
         let room = record.rooms[index]

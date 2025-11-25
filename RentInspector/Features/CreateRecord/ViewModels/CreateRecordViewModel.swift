@@ -56,7 +56,21 @@ class CreateRecordViewModel: ObservableObject {
             return customName.isEmpty ? type.displayName : customName
         }
     }
-    
+    var disabledStages: [RecordStage] {
+            guard let property = selectedProperty else { return [] }
+            var disabled: [RecordStage] = []
+            
+            // Якщо вже є Заселення - блокуємо
+            if property.hasRecord(with: .moveIn) {
+                disabled.append(.moveIn)
+            }
+            // Якщо вже є Виселення - блокуємо
+            if property.hasRecord(with: .moveOut) {
+                disabled.append(.moveOut)
+            }
+            
+            return disabled
+        }
     // MARK: - Navigation
     
     func nextStep() {

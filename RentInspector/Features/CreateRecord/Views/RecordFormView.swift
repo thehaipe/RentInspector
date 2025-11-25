@@ -88,29 +88,42 @@ struct RecordFormView: View {
     }
     
     private func stageButton(stage: RecordStage) -> some View {
-        Button(action: {
-            withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                viewModel.recordStage = stage
+            let isDisabled = viewModel.disabledStages.contains(stage)
+            
+            return Button(action: {
+                if !isDisabled {
+                    withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                        viewModel.recordStage = stage
+                    }
+                }
+            }) {
+                VStack(spacing: 8) {
+                    Image(systemName: stage.icon)
+                        .font(.title2)
+                    
+                    Text(stage.displayName)
+                        .font(AppTheme.caption)
+                }
+                .foregroundColor(
+                    viewModel.recordStage == stage ? .white :
+                    (isDisabled ? AppTheme.textSecondary.opacity(0.5) : AppTheme.textPrimary)
+                )
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 12)
+                .background(
+                    viewModel.recordStage == stage
+                        ? AppTheme.primaryColor
+                        : AppTheme.secondaryBackgroundColor
+                )
+                .cornerRadius(AppTheme.cornerRadiusMedium)
+                .opacity(isDisabled ? 0.5 : 1.0)
+                .overlay(
+                    isDisabled ? Image(systemName: "lock.fill").foregroundColor(.gray) : nil,
+                    alignment: .topTrailing
+                )
             }
-        }) {
-            VStack(spacing: 8) {
-                Image(systemName: stage.icon)
-                    .font(.title2)
-                
-                Text(stage.displayName)
-                    .font(AppTheme.caption)
-            }
-            .foregroundColor(viewModel.recordStage == stage ? .white : AppTheme.textPrimary)
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 12)
-            .background(
-                viewModel.recordStage == stage
-                    ? AppTheme.primaryColor
-                    : AppTheme.secondaryBackgroundColor
-            )
-            .cornerRadius(AppTheme.cornerRadiusMedium)
+            .disabled(isDisabled) 
         }
-    }
     
     // MARK: - Room Sections
     

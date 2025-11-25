@@ -22,6 +22,18 @@ struct PropertyDetailView: View {
                     LazyVStack(spacing: 12) {
                         ForEach(propertyRecords) { record in
                             RecordCardView(record: record)
+                                .contextMenu {
+                                    Button {
+                                        unlinkRecord(record)
+                                    } label: {
+                                        Label("Відв'язати від об'єкту", systemImage: "link.badge.minus")
+                                    }
+                                    Button(role: .destructive) {
+                                        realmManager.deleteRecord(record)
+                                    } label: {
+                                        Label("Видалити звіт", systemImage: "trash")
+                                    }
+                                }
                         }
                     }
                     .padding()
@@ -43,7 +55,10 @@ struct PropertyDetailView: View {
             CreateRecordCoordinator(preselectedProperty: property)
         }
     }
-    
+    private func unlinkRecord(_ record: Record) {
+            // Передаємо nil як newProperty, щоб відв'язати
+            realmManager.updateRecordProperty(record: record, newProperty: nil)
+        }
     private var emptyStateView: some View {
         VStack(spacing: 20) {
             Image(systemName: "doc.text.magnifyingglass")

@@ -10,29 +10,61 @@ struct RecordDetailView: View {
     @FocusState private var isTitleFocused: Bool
     
     @State private var pdfURL: URL?
+    
     init(record: Record) {
         _viewModel = StateObject(wrappedValue: RecordDetailViewModel(record: record))
     }
     
     var body: some View {
-        ScrollView {
-            VStack(spacing: 24) {
-                // Header Info
-                headerSection
-                
-                // Stage Section
-                stageSection
-                
-                // Reminder Section
-                reminderSection
-                
-                // Rooms Section
-                roomsSection
-                
-                // Delete Button
-                deleteButton
+        ZStack {
+            // Основний контент
+            ScrollView {
+                VStack(spacing: 24) {
+                    // Header Info (З вибором об'єкта)
+                    headerSection
+                    
+                    // Stage Section
+                    stageSection
+                    
+                    // Reminder Section
+                    reminderSection
+                    
+                    // Rooms Section
+                    roomsSection
+                    
+                    // Delete Button
+                    deleteButton
+                }
+                .padding()
             }
-            .padding()
+            
+            // Toast помилки (Валідація етапів)
+            if viewModel.showErrorToast {
+                VStack {
+                    Spacer()
+                    HStack(spacing: 12) {
+                        Image(systemName: "exclamationmark.triangle.fill")
+                            .foregroundColor(.white)
+                        Text(viewModel.errorMessage)
+                            .font(AppTheme.caption)
+                            .foregroundColor(.white)
+                            .multilineTextAlignment(.leading)
+                        Spacer()
+                    }
+                    .padding()
+                    .background(Color.black.opacity(0.8))
+                    .cornerRadius(AppTheme.cornerRadiusMedium)
+                    .padding(.horizontal, 24)
+                    .padding(.bottom, 24)
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+                    .onTapGesture {
+                        withAnimation {
+                            viewModel.showErrorToast = false
+                        }
+                    }
+                }
+                .zIndex(100) // Поверх усього
+            }
         }
         .navigationTitle(viewModel.record.displayTitle)
         .navigationBarTitleDisplayMode(.inline)
@@ -46,9 +78,7 @@ struct RecordDetailView: View {
                     }
                     
                     Button(action: {
-                        // TODO: Export PDF
                         exportPDF()
-                        print("Export PDF")
                     }) {
                         Label("Експорт PDF", systemImage: "arrow.down.doc")
                     }
@@ -63,9 +93,20 @@ struct RecordDetailView: View {
                 }
             }
         }
+        // Шторка експорту PDF
         .sheet(item: $pdfURL) { url in
             ShareSheet(items: [url, viewModel.record.displayTitle])
         }
+        // Шторка вибору об'єкту
+        .sheet(isPresented: $viewModel.showPropertyPicker) {
+            PropertySelectionView(selectedProperty: Binding(
+                get: { viewModel.selectedProperty },
+                set: { newProp in
+                    viewModel.updateProperty(newProp)
+                }
+            ))
+        }
+        // Алерт редагування назви
         .alert("Редагувати назву", isPresented: $viewModel.isEditingTitle) {
             TextField("Назва звіту", text: $viewModel.editedTitle)
             Button("Скасувати", role: .cancel) {
@@ -75,6 +116,7 @@ struct RecordDetailView: View {
                 viewModel.saveTitle()
             }
         }
+        // Алерт видалення
         .alert("Видалити звіт?", isPresented: $viewModel.showDeleteAlert) {
             Button("Скасувати", role: .cancel) { }
             Button("Видалити", role: .destructive) {
@@ -85,9 +127,11 @@ struct RecordDetailView: View {
         } message: {
             Text("Цей звіт буде видалено назавжди. Цю дію неможливо скасувати.")
         }
+        // Пікер нагадування
         .sheet(isPresented: $viewModel.showReminderPicker) {
             reminderPickerSheet
         }
+        // Деталі кімнати
         .sheet(item: $viewModel.selectedRoomIndex) { index in
             if index < viewModel.record.rooms.count {
                 RoomDetailView(
@@ -103,6 +147,8 @@ struct RecordDetailView: View {
     
     private var headerSection: some View {
         VStack(alignment: .leading, spacing: 12) {
+            
+            // --- Секція вибору об'єкта ---
             Button(action: {
                 viewModel.showPropertyPicker = true
             }) {
@@ -121,7 +167,9 @@ struct RecordDetailView: View {
                             .foregroundColor(AppTheme.textSecondary)
                             .italic()
                     }
+                    
                     Spacer()
+                    
                     Image(systemName: "chevron.right")
                         .font(.caption)
                         .foregroundColor(AppTheme.textSecondary)
@@ -152,14 +200,6 @@ struct RecordDetailView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(AppTheme.secondaryBackgroundColor)
         .cornerRadius(AppTheme.cornerRadiusMedium)
-        .sheet(isPresented: $viewModel.showPropertyPicker) {
-            PropertySelectionView(selectedProperty: Binding(
-                get: { viewModel.selectedProperty },
-                set: { newProp in
-                    viewModel.updateProperty(newProp)
-                }
-            ))
-        }
     }
     
     private func statItem(icon: String, value: String, label: String) -> some View {
@@ -218,12 +258,13 @@ struct RecordDetailView: View {
             .padding(.vertical, 12)
             .background(
                 viewModel.editedStage == stage
-                ? AppTheme.primaryColor
-                : AppTheme.tertiaryBackgroundColor
+                    ? AppTheme.primaryColor
+                    : AppTheme.tertiaryBackgroundColor
             )
             .cornerRadius(AppTheme.cornerRadiusMedium)
         }
     }
+    
     private func exportPDF() {
         if let url = PDFExportService.shared.generatePDF(for: viewModel.record) {
             pdfURL = url
@@ -369,7 +410,6 @@ struct RecordDetailView: View {
         .padding(.top, 16)
     }
 }
-
 
 // MARK: - Int Extension for Identifiable
 
