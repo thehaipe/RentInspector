@@ -6,9 +6,8 @@ import RealmSwift
 
 struct RecordCardView: View {
     let record: Record
-    
+    @ObservedObject private var realmManager = RealmManager.shared
     var body: some View {
-        // Перевіряємо чи об'єкт не видалений
         if !record.isInvalidated {
             NavigationLink(destination: RecordDetailView(record: record)) {
                 cardContent
@@ -18,43 +17,55 @@ struct RecordCardView: View {
     }
     
     private var cardContent: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            // Заголовок та дата
-            HStack {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(record.displayTitle)
-                        .font(AppTheme.headline)
-                        .foregroundColor(AppTheme.textPrimary)
-                        .lineLimit(1)
+            VStack(alignment: .leading, spacing: 12) {
+                if let parentId = record.parentId,
+                   let propertyName = realmManager.getPropertyName(for: parentId) {
+                    HStack(spacing: 4) {
+                        Image(systemName: "building.2.fill")
+                            .font(.caption)
+                        Text(propertyName)
+                            .font(.caption)
+                            .fontWeight(.medium)
+                    }
+                    .foregroundColor(AppTheme.primaryColor)
+                    .padding(.bottom, 2)
+                }
+                // Заголовок та дата
+                HStack {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(record.displayTitle)
+                            .font(AppTheme.headline)
+                            .foregroundColor(AppTheme.textPrimary)
+                            .lineLimit(1)
+                        
+                        Text(record.createdAt.formatted(date: .abbreviated, time: .shortened))
+                            .font(AppTheme.caption)
+                            .foregroundColor(AppTheme.textSecondary)
+                    }
                     
-                    Text(record.createdAt.formatted(date: .abbreviated, time: .shortened))
-                        .font(AppTheme.caption)
-                        .foregroundColor(AppTheme.textSecondary)
+                    Spacer()
+
+                    // Етап звіту
+                    stageBadge
                 }
                 
-                Spacer()
+                Divider()
                 
-                // Етап звіту
-                stageBadge
-            }
-            
-            Divider()
-            
-            // Статистика
-            HStack(spacing: 20) {
-                statItem(icon: "door.left.hand.open", value: "\(record.rooms.count)", label: "Кімнат")
-                statItem(icon: "photo", value: "\(record.totalPhotos)", label: "Фото")
-                
-                if record.reminderInterval > 0 {
-                    statItem(icon: "bell.fill", value: "\(record.reminderInterval)д", label: "Нагадування")
+                // Статистика
+                HStack(spacing: 20) {
+                    statItem(icon: "door.left.hand.open", value: "\(record.rooms.count)", label: "Кімнат")
+                    statItem(icon: "photo", value: "\(record.totalPhotos)", label: "Фото")
+                    
+                    if record.reminderInterval > 0 {
+                        statItem(icon: "bell.fill", value: "\(record.reminderInterval)д", label: "Нагадування")
+                    }
                 }
             }
+            .padding(16)
+            .background(AppTheme.secondaryBackgroundColor)
+            .cornerRadius(AppTheme.cornerRadiusMedium)
+            .shadow(color: AppTheme.shadowColor, radius: AppTheme.shadowRadius, y: 2)
         }
-        .padding(16)
-        .background(AppTheme.secondaryBackgroundColor)
-        .cornerRadius(AppTheme.cornerRadiusMedium)
-        .shadow(color: AppTheme.shadowColor, radius: AppTheme.shadowRadius, y: 2)
-    }
     
     private var stageBadge: some View {
         HStack(spacing: 4) {

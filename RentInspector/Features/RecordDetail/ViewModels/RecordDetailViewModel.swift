@@ -14,6 +14,8 @@ class RecordDetailViewModel: ObservableObject {
     @Published var showDeleteAlert: Bool = false
     @Published var showReminderPicker: Bool = false
     @Published var selectedRoomIndex: Int? = nil
+    @Published var selectedProperty: Property?
+    @Published var showPropertyPicker: Bool = false
     
     private var realmManager = RealmManager.shared
     private var cancellables = Set<AnyCancellable>()
@@ -23,6 +25,11 @@ class RecordDetailViewModel: ObservableObject {
         self.editedTitle = record.title
         self.editedStage = record.recordStage
         self.editedReminderInterval = record.reminderInterval
+        
+        if let parentId = record.parentId {
+                    // Шукаємо об'єкт у завантаженому списку RealmManager
+                    self.selectedProperty = RealmManager.shared.properties.first(where: { $0.id == parentId })
+                }
     }
     
     // MARK: - Update Methods
@@ -55,6 +62,11 @@ class RecordDetailViewModel: ObservableObject {
         realmManager.deleteRecord(record)
         completion()
     }
+    func updateProperty(_ property: Property?) {
+            selectedProperty = property
+            realmManager.updateRecordProperty(record: record, newProperty: property)
+            refreshRecord()
+        }
     
     // MARK: - Room Methods
     

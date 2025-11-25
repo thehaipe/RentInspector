@@ -1,5 +1,5 @@
 /*
- Екран перегляду готового звіту та елементи взаємодії з ним. 
+ Екран перегляду готового звіту та елементи взаємодії з ним.
  */
 import SwiftUI
 import RealmSwift
@@ -103,6 +103,35 @@ struct RecordDetailView: View {
     
     private var headerSection: some View {
         VStack(alignment: .leading, spacing: 12) {
+            Button(action: {
+                viewModel.showPropertyPicker = true
+            }) {
+                HStack {
+                    Image(systemName: "building.2.fill")
+                        .foregroundColor(AppTheme.primaryColor)
+                        .frame(width: 20)
+                    
+                    if let property = viewModel.selectedProperty {
+                        Text(property.displayName)
+                            .font(AppTheme.body)
+                            .foregroundColor(AppTheme.textPrimary)
+                    } else {
+                        Text("Прив'язати до об'єкту")
+                            .font(AppTheme.body)
+                            .foregroundColor(AppTheme.textSecondary)
+                            .italic()
+                    }
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .font(.caption)
+                        .foregroundColor(AppTheme.textSecondary)
+                }
+                .padding(.vertical, 4)
+            }
+            .buttonStyle(PlainButtonStyle())
+            
+            Divider()
+            
             // Дата створення
             HStack {
                 Image(systemName: "calendar")
@@ -123,6 +152,14 @@ struct RecordDetailView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(AppTheme.secondaryBackgroundColor)
         .cornerRadius(AppTheme.cornerRadiusMedium)
+        .sheet(isPresented: $viewModel.showPropertyPicker) {
+            PropertySelectionView(selectedProperty: Binding(
+                get: { viewModel.selectedProperty },
+                set: { newProp in
+                    viewModel.updateProperty(newProp)
+                }
+            ))
+        }
     }
     
     private func statItem(icon: String, value: String, label: String) -> some View {
@@ -181,17 +218,17 @@ struct RecordDetailView: View {
             .padding(.vertical, 12)
             .background(
                 viewModel.editedStage == stage
-                    ? AppTheme.primaryColor
-                    : AppTheme.tertiaryBackgroundColor
+                ? AppTheme.primaryColor
+                : AppTheme.tertiaryBackgroundColor
             )
             .cornerRadius(AppTheme.cornerRadiusMedium)
         }
     }
     private func exportPDF() {
         if let url = PDFExportService.shared.generatePDF(for: viewModel.record) {
-                pdfURL = url
-            }
+            pdfURL = url
         }
+    }
     
     // MARK: - Reminder Section
     

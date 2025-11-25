@@ -316,6 +316,36 @@ class RealmManager: ObservableObject {
                 print("❌ Error linking record: \(error.localizedDescription)")
             }
         }
+    func getPropertyName(for id: ObjectId?) -> String? {
+            guard let id = id else { return nil }
+            return properties.first(where: { $0.id == id })?.displayName
+        }
+    func updateRecordProperty(record: Record, newProperty: Property?) {
+            guard let realm = realm else { return }
+            
+            guard let liveRecord = realm.object(ofType: Record.self, forPrimaryKey: record.id) else { return }
+            
+            do {
+                try realm.write {
+                    if let newProperty = newProperty,
+                       let liveProperty = realm.object(ofType: Property.self, forPrimaryKey: newProperty.id) {
+                        if !liveProperty.records.contains(liveRecord) {
+                            liveProperty.records.append(liveRecord)
+                        }
+                        liveRecord.parentId = liveProperty.id
+                    } else {
+                        liveRecord.parentId = nil
+                    }
+                    
+                    liveRecord.updatedAt = Date()
+                }
+                loadRecordsSync()
+                loadProperties() // Оновлюємо списки об'єктів
+                print("✅ Record property updated")
+            } catch {
+                print("❌ Error updating record property: \(error.localizedDescription)")
+            }
+        }
     
     func removePhotoFromRoom(_ room: Room, at index: Int) {
         guard let realm = realm else { return }

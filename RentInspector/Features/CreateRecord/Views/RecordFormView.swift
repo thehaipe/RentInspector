@@ -18,6 +18,9 @@ struct RecordFormView: View {
                 // Заголовок звіту
                 recordTitleSection
                 
+                //Привʼязка
+                addPropertyPicker
+                
                 // Етап звіту
                 recordStageSection
                 
@@ -26,9 +29,6 @@ struct RecordFormView: View {
                 
                 // Нагадування
                 reminderSection
-                
-                //Привʼязка
-                addPropertyPicker
                 
                 // Кнопка збереження
                 saveButton

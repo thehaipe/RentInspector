@@ -28,7 +28,6 @@ class PropertyViewModel: ObservableObject {
             }
             .store(in: &cancellables)
     }
-    
     func createProperty() {
         // Проста валідація
         guard !newPropertyName.isEmpty || !newPropertyAddress.isEmpty else { return }
@@ -41,7 +40,6 @@ class PropertyViewModel: ObservableObject {
         newPropertyAddress = ""
         showAddPropertySheet = false
     }
-    
     func deleteProperty(at offsets: IndexSet) {
         offsets.forEach { index in
             let property = properties[index]
