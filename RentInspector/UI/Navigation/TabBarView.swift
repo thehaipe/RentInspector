@@ -5,26 +5,35 @@ import SwiftUI
 
 struct TabBarView: View {
     @EnvironmentObject var realmManager: RealmManager
-    @State private var selectedTab: Tab = .records
+    @State private var selectedTab: Tab = .recent
     
     enum Tab {
-        case records
+        case properties
+        case recent
         case profile
         case settings
     }
     
     var body: some View {
         TabView(selection: $selectedTab) {
-            // Records Tab
+            // 1. Вкладка "Об'єкти" (Properties)
+            // PropertiesListView вже має свій NavigationStack всередині
+            PropertiesListView()
+                .tabItem {
+                    Label("Properties", systemImage: "building.2.fill")
+                }
+                .tag(Tab.properties)
+            
+            // 2. Вкладка "Останні" (Recent) - Колишній RecordsView
             NavigationStack {
                 RecordsView()
             }
             .tabItem {
-                Label("Records", systemImage: "doc.text.fill")
+                Label("Recent", systemImage: "clock.fill")
             }
-            .tag(Tab.records)
+            .tag(Tab.recent)
             
-            // Profile Tab
+            // 3. Profile Tab
             NavigationStack {
                 ProfileView()
             }
@@ -33,7 +42,7 @@ struct TabBarView: View {
             }
             .tag(Tab.profile)
             
-            // Settings Tab
+            // 4. Settings Tab
             NavigationStack {
                 SettingsView()
             }
@@ -42,7 +51,7 @@ struct TabBarView: View {
             }
             .tag(Tab.settings)
         }
-        .tint(.blue) // Колір активної іконки
+        .tint(AppTheme.primaryColor) // Використовуємо колір з теми
     }
 }
 

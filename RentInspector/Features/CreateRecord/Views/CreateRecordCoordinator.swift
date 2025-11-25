@@ -4,10 +4,12 @@
 import SwiftUI
 
 struct CreateRecordCoordinator: View {
-    @StateObject private var viewModel = CreateRecordViewModel()
+    @StateObject private var viewModel: CreateRecordViewModel
     @Environment(\.dismiss) var dismiss
     @State private var createdRecord: Record? = nil
-    
+    init(preselectedProperty: Property? = nil) {
+            _viewModel = StateObject(wrappedValue: CreateRecordViewModel(preselectedProperty: preselectedProperty))
+        }
     var body: some View {
         NavigationStack {
             ZStack {

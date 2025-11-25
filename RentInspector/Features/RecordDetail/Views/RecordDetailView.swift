@@ -1,5 +1,5 @@
 /*
- Екран перегляду готового звіту та елементи взаємодії з ним. 
+ Екран перегляду готового звіту та елементи взаємодії з ним.
  */
 import SwiftUI
 import RealmSwift
@@ -10,29 +10,61 @@ struct RecordDetailView: View {
     @FocusState private var isTitleFocused: Bool
     
     @State private var pdfURL: URL?
+    
     init(record: Record) {
         _viewModel = StateObject(wrappedValue: RecordDetailViewModel(record: record))
     }
     
     var body: some View {
-        ScrollView {
-            VStack(spacing: 24) {
-                // Header Info
-                headerSection
-                
-                // Stage Section
-                stageSection
-                
-                // Reminder Section
-                reminderSection
-                
-                // Rooms Section
-                roomsSection
-                
-                // Delete Button
-                deleteButton
+        ZStack {
+            // Основний контент
+            ScrollView {
+                VStack(spacing: 24) {
+                    // Header Info (З вибором об'єкта)
+                    headerSection
+                    
+                    // Stage Section
+                    stageSection
+                    
+                    // Reminder Section
+                    reminderSection
+                    
+                    // Rooms Section
+                    roomsSection
+                    
+                    // Delete Button
+                    deleteButton
+                }
+                .padding()
             }
-            .padding()
+            
+            // Toast помилки (Валідація етапів)
+            if viewModel.showErrorToast {
+                VStack {
+                    Spacer()
+                    HStack(spacing: 12) {
+                        Image(systemName: "exclamationmark.triangle.fill")
+                            .foregroundColor(.white)
+                        Text(viewModel.errorMessage)
+                            .font(AppTheme.caption)
+                            .foregroundColor(.white)
+                            .multilineTextAlignment(.leading)
+                        Spacer()
+                    }
+                    .padding()
+                    .background(Color.black.opacity(0.8))
+                    .cornerRadius(AppTheme.cornerRadiusMedium)
+                    .padding(.horizontal, 24)
+                    .padding(.bottom, 24)
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+                    .onTapGesture {
+                        withAnimation {
+                            viewModel.showErrorToast = false
+                        }
+                    }
+                }
+                .zIndex(100) // Поверх усього
+            }
         }
         .navigationTitle(viewModel.record.displayTitle)
         .navigationBarTitleDisplayMode(.inline)
@@ -46,9 +78,7 @@ struct RecordDetailView: View {
                     }
                     
                     Button(action: {
-                        // TODO: Export PDF
                         exportPDF()
-                        print("Export PDF")
                     }) {
                         Label("Експорт PDF", systemImage: "arrow.down.doc")
                     }
@@ -63,9 +93,20 @@ struct RecordDetailView: View {
                 }
             }
         }
+        // Шторка експорту PDF
         .sheet(item: $pdfURL) { url in
             ShareSheet(items: [url, viewModel.record.displayTitle])
         }
+        // Шторка вибору об'єкту
+        .sheet(isPresented: $viewModel.showPropertyPicker) {
+            PropertySelectionView(selectedProperty: Binding(
+                get: { viewModel.selectedProperty },
+                set: { newProp in
+                    viewModel.updateProperty(newProp)
+                }
+            ))
+        }
+        // Алерт редагування назви
         .alert("Редагувати назву", isPresented: $viewModel.isEditingTitle) {
             TextField("Назва звіту", text: $viewModel.editedTitle)
             Button("Скасувати", role: .cancel) {
@@ -75,6 +116,7 @@ struct RecordDetailView: View {
                 viewModel.saveTitle()
             }
         }
+        // Алерт видалення
         .alert("Видалити звіт?", isPresented: $viewModel.showDeleteAlert) {
             Button("Скасувати", role: .cancel) { }
             Button("Видалити", role: .destructive) {
@@ -85,9 +127,11 @@ struct RecordDetailView: View {
         } message: {
             Text("Цей звіт буде видалено назавжди. Цю дію неможливо скасувати.")
         }
+        // Пікер нагадування
         .sheet(isPresented: $viewModel.showReminderPicker) {
             reminderPickerSheet
         }
+        // Деталі кімнати
         .sheet(item: $viewModel.selectedRoomIndex) { index in
             if index < viewModel.record.rooms.count {
                 RoomDetailView(
@@ -103,6 +147,39 @@ struct RecordDetailView: View {
     
     private var headerSection: some View {
         VStack(alignment: .leading, spacing: 12) {
+            
+            // --- Секція вибору об'єкта ---
+            Button(action: {
+                viewModel.showPropertyPicker = true
+            }) {
+                HStack {
+                    Image(systemName: "building.2.fill")
+                        .foregroundColor(AppTheme.primaryColor)
+                        .frame(width: 20)
+                    
+                    if let property = viewModel.selectedProperty {
+                        Text(property.displayName)
+                            .font(AppTheme.body)
+                            .foregroundColor(AppTheme.textPrimary)
+                    } else {
+                        Text("Прив'язати до об'єкту")
+                            .font(AppTheme.body)
+                            .foregroundColor(AppTheme.textSecondary)
+                            .italic()
+                    }
+                    
+                    Spacer()
+                    
+                    Image(systemName: "chevron.right")
+                        .font(.caption)
+                        .foregroundColor(AppTheme.textSecondary)
+                }
+                .padding(.vertical, 4)
+            }
+            .buttonStyle(PlainButtonStyle())
+            
+            Divider()
+            
             // Дата створення
             HStack {
                 Image(systemName: "calendar")
@@ -164,34 +241,48 @@ struct RecordDetailView: View {
     }
     
     private func stageButton(stage: RecordStage) -> some View {
-        Button(action: {
-            withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                viewModel.updateStage(stage)
+            // Перевіряємо, чи заблокований етап
+            let isDisabled = viewModel.disabledStages.contains(stage)
+            
+            return Button(action: {
+                // Дозволяємо дію тільки якщо не заблоковано
+                if !isDisabled {
+                    withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                        viewModel.updateStage(stage)
+                    }
+                }
+            }) {
+                VStack(spacing: 8) {
+                    Image(systemName: stage.icon)
+                        .font(.title2)
+                    
+                    Text(stage.displayName)
+                        .font(AppTheme.caption)
+                }
+                // Логіка кольорів тексту
+                .foregroundColor(
+                    viewModel.editedStage == stage ? .white :
+                    (isDisabled ? AppTheme.textSecondary.opacity(0.5) : AppTheme.textPrimary)
+                )
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 12)
+                .background(
+                    viewModel.editedStage == stage
+                        ? AppTheme.primaryColor
+                        : AppTheme.backgroundColor
+                )
+                .cornerRadius(AppTheme.cornerRadiusMedium)
+                .opacity(isDisabled ? 0.6 : 1.0)
+                .shadow(color: Color.black.opacity(0.05), radius: 2, x: 0, y: 1)
             }
-        }) {
-            VStack(spacing: 8) {
-                Image(systemName: stage.icon)
-                    .font(.title2)
-                
-                Text(stage.displayName)
-                    .font(AppTheme.caption)
-            }
-            .foregroundColor(viewModel.editedStage == stage ? .white : AppTheme.textPrimary)
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 12)
-            .background(
-                viewModel.editedStage == stage
-                    ? AppTheme.primaryColor
-                    : AppTheme.tertiaryBackgroundColor
-            )
-            .cornerRadius(AppTheme.cornerRadiusMedium)
+            .disabled(isDisabled)
         }
-    }
+    
     private func exportPDF() {
         if let url = PDFExportService.shared.generatePDF(for: viewModel.record) {
-                pdfURL = url
-            }
+            pdfURL = url
         }
+    }
     
     // MARK: - Reminder Section
     
@@ -332,7 +423,6 @@ struct RecordDetailView: View {
         .padding(.top, 16)
     }
 }
-
 
 // MARK: - Int Extension for Identifiable
 

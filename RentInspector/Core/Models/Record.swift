@@ -22,6 +22,11 @@ class Record: Object, ObjectKeyIdentifiable {
     @Persisted var nextReminderDate: Date?
     @Persisted var createdAt: Date = Date()
     @Persisted var updatedAt: Date = Date()
+    @Persisted var parentId: ObjectId?
+    @Persisted(originProperty: "records") var assignee: LinkingObjects<Property>
+    var parentProperty: Property? {
+        return assignee.first
+    }
     
     // Computed properties
     var recordStage: RecordStage {
@@ -54,7 +59,8 @@ class Record: Object, ObjectKeyIdentifiable {
             detachedRecord.createdAt = self.createdAt
             detachedRecord.updatedAt = self.updatedAt
             
-            // Копіюємо кімнати
+            detachedRecord.parentId = self.parentId
+            
             for room in self.rooms {
                 detachedRecord.rooms.append(room.detached())
             }

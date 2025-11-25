@@ -1,5 +1,5 @@
 /*
- Клас для роботи з уже створеним звітом. Станом на зараз, він відповідає за зміну інформації запису. (Фото, назви, етап) проте у майбутньому створений звіт буде статичним, залишиться лише можливість експортувати його. 
+ Клас для роботи з уже створеним звітом. Станом на зараз, він відповідає за зміну інформації запису. (Фото, назви, етап) проте у майбутньому створений звіт буде статичним, залишиться лише можливість експортувати його.
  */
 import SwiftUI
 internal import Combine
@@ -14,6 +14,11 @@ class RecordDetailViewModel: ObservableObject {
     @Published var showDeleteAlert: Bool = false
     @Published var showReminderPicker: Bool = false
     @Published var selectedRoomIndex: Int? = nil
+    @Published var selectedProperty: Property?
+    @Published var showPropertyPicker: Bool = false
+    
+    @Published var showErrorToast: Bool = false
+    @Published var errorMessage: String = ""
     
     private var realmManager = RealmManager.shared
     private var cancellables = Set<AnyCancellable>()
@@ -23,6 +28,11 @@ class RecordDetailViewModel: ObservableObject {
         self.editedTitle = record.title
         self.editedStage = record.recordStage
         self.editedReminderInterval = record.reminderInterval
+        
+        if let parentId = record.parentId {
+            // Шукаємо об'єкт у завантаженому списку RealmManager
+            self.selectedProperty = RealmManager.shared.properties.first(where: { $0.id == parentId })
+        }
     }
     
     // MARK: - Update Methods
@@ -39,12 +49,51 @@ class RecordDetailViewModel: ObservableObject {
         refreshRecord()
     }
     
-    func updateStage(_ stage: RecordStage) {
-        editedStage = stage
-        realmManager.updateRecord(record, stage: stage)
-        refreshRecord()
-    }
-    
+    func updateStage(_ newStage: RecordStage) {
+            let isRestrictedStage = newStage == .moveIn || newStage == .moveOut
+            if isRestrictedStage, let property = selectedProperty {
+                let hasConflict = property.records.contains { record in
+                    return record.id != self.record.id &&
+                           record.recordStage == newStage &&
+                           !record.isInvalidated
+                }
+                if hasConflict {
+                    errorMessage = "У об'єкті '\(property.displayName)' вже існує звіт етапу '\(newStage.displayName)'. Зміна неможлива."
+                    withAnimation {
+                        showErrorToast = true
+                    }
+                    
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                        withAnimation {
+                            self.showErrorToast = false
+                        }
+                    }
+                    objectWillChange.send()
+                    return
+                }
+            }
+            editedStage = newStage
+            realmManager.updateRecord(record, stage: newStage)
+            refreshRecord()
+        }
+    var disabledStages: [RecordStage] {
+            guard let property = selectedProperty else { return [] }
+            var disabled: [RecordStage] = []
+            
+            // Перевіряємо, чи є ІНШИЙ звіт із "Заселенням"
+            let hasMoveIn = property.records.contains { r in
+                r.id != self.record.id && r.recordStage == .moveIn && !r.isInvalidated
+            }
+            if hasMoveIn { disabled.append(.moveIn) }
+            
+            // Перевіряємо, чи є ІНШИЙ звіт із "Виселенням"
+            let hasMoveOut = property.records.contains { r in
+                r.id != self.record.id && r.recordStage == .moveOut && !r.isInvalidated
+            }
+            if hasMoveOut { disabled.append(.moveOut) }
+            
+            return disabled
+        }
     func updateReminderInterval(_ interval: Int) {
         editedReminderInterval = interval
         realmManager.updateRecord(record, reminderInterval: interval)
@@ -54,6 +103,24 @@ class RecordDetailViewModel: ObservableObject {
     func deleteRecord(completion: @escaping () -> Void) {
         realmManager.deleteRecord(record)
         completion()
+    }
+    func updateProperty(_ property: Property?) {
+        if let property = property {
+            let isRestrictedStage = record.recordStage == .moveIn || record.recordStage == .moveOut
+            
+            if isRestrictedStage && property.hasRecord(with: record.recordStage) {
+                errorMessage = "У об'єкті '\(property.displayName)' вже існує звіт етапу '\(record.recordStage.displayName)'. Видаліть старий звіт або змініть етап поточного."
+                showErrorToast = true
+                DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
+                    self.showErrorToast = false
+                }
+                return // Перериваємо операцію
+            }
+        }
+        
+        selectedProperty = property
+        RealmManager.shared.updateRecordProperty(record: record, newProperty: property)
+        refreshRecord() // Це не обов'язково, бо RealmManager.updateRecordProperty оновить об'єкт
     }
     
     // MARK: - Room Methods
@@ -86,22 +153,22 @@ class RecordDetailViewModel: ObservableObject {
         refreshRecord()
     }
     func canDeleteRoom(at index: Int) -> Bool {
-            guard index >= 0 && index < record.rooms.count else { return false }
-            
-            let room = record.rooms[index]
-            
-            switch room.roomType {
-            case .bedroom, .kitchen:
-                return false
-            case .bathroom:
-                if let firstBathroomIndex = record.rooms.firstIndex(where: { $0.roomType == .bathroom }) {
-                    return index != firstBathroomIndex
-                }
-                return true
-            default:
-                return true
+        guard index >= 0 && index < record.rooms.count else { return false }
+        
+        let room = record.rooms[index]
+        
+        switch room.roomType {
+        case .bedroom, .kitchen:
+            return false
+        case .bathroom:
+            if let firstBathroomIndex = record.rooms.firstIndex(where: { $0.roomType == .bathroom }) {
+                return index != firstBathroomIndex
             }
+            return true
+        default:
+            return true
         }
+    }
     func deleteRoom(at index: Int) {
         guard index < record.rooms.count else { return }
         let room = record.rooms[index]
