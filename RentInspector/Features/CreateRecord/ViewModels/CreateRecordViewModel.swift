@@ -33,10 +33,29 @@ class CreateRecordViewModel: ObservableObject {
     @Published var isLoading: Bool = false
     @Published var showSuccessView: Bool = false
     // Додатково, додати до обʼєкту
-    @Published var selectedProperty: Property?
+    @Published var selectedProperty: Property? {
+        didSet {
+            autoSelectValidStage()
+        }
+    }
+    
+    private func autoSelectValidStage() {
+        // Якщо об'єкт не вибрано, нічого не робимо
+        guard let property = selectedProperty else { return }
+        
+        // Перевіряємо, чи поточний обраний етап є забороненим
+        if disabledStages.contains(recordStage) {
+            // Логіка пріоритетів:
+            // 1. Якщо Заселення зайняте -> пропонуємо Проживання (найчастіший кейс)
+            // 2. Якщо Виселення зайняте (а ми були на ньому) -> пропонуємо Проживання
+            // 3. Якщо і Заселення і Виселення зайняті -> лишається тільки Проживання
+            recordStage = .living
+        }
+    }
     private var realmManager = RealmManager.shared
     init(preselectedProperty: Property? = nil) {
         self.selectedProperty = preselectedProperty
+        autoSelectValidStage()
     }
     enum OnboardingStep: Int, CaseIterable {
         case roomCount = 0
@@ -57,20 +76,20 @@ class CreateRecordViewModel: ObservableObject {
         }
     }
     var disabledStages: [RecordStage] {
-            guard let property = selectedProperty else { return [] }
-            var disabled: [RecordStage] = []
-            
-            // Якщо вже є Заселення - блокуємо
-            if property.hasRecord(with: .moveIn) {
-                disabled.append(.moveIn)
-            }
-            // Якщо вже є Виселення - блокуємо
-            if property.hasRecord(with: .moveOut) {
-                disabled.append(.moveOut)
-            }
-            
-            return disabled
+        guard let property = selectedProperty else { return [] }
+        var disabled: [RecordStage] = []
+        
+        // Якщо вже є Заселення - блокуємо
+        if property.hasRecord(with: .moveIn) {
+            disabled.append(.moveIn)
         }
+        // Якщо вже є Виселення - блокуємо
+        if property.hasRecord(with: .moveOut) {
+            disabled.append(.moveOut)
+        }
+        
+        return disabled
+    }
     // MARK: - Navigation
     
     func nextStep() {
@@ -229,63 +248,63 @@ class CreateRecordViewModel: ObservableObject {
     }
     
     func canDeleteRoom(at index: Int) -> Bool {
-            guard index < rooms.count else { return false }
-            let room = rooms[index]
-            
-            switch room.type {
-            case .bedroom, .kitchen:
-                return false
-            case .bathroom:
-                let firstBathroomIndex = rooms.firstIndex(where: { $0.type == .bathroom })
-                return index != firstBathroomIndex
-            default:
-                return true
-            }
+        guard index < rooms.count else { return false }
+        let room = rooms[index]
+        
+        switch room.type {
+        case .bedroom, .kitchen:
+            return false
+        case .bathroom:
+            let firstBathroomIndex = rooms.firstIndex(where: { $0.type == .bathroom })
+            return index != firstBathroomIndex
+        default:
+            return true
         }
+    }
     
     func deleteRoom(at index: Int) {
-            guard index < rooms.count else { return }
-            rooms.remove(at: index)
-        }
+        guard index < rooms.count else { return }
+        rooms.remove(at: index)
+    }
     // MARK: - Save Record
     
     func saveRecord(completion: @escaping (Record?) -> Void) {
-            isLoading = true
-            let newRecord = Record(
-                title: recordTitle.isEmpty ? "Record \(Date().formatted(date: .abbreviated, time: .omitted))" : recordTitle,
-                stage: recordStage
-            )
-            newRecord.reminderInterval = reminderInterval
-            
-            if reminderInterval > 0 {
-                newRecord.nextReminderDate = Calendar.current.date(byAdding: .day, value: reminderInterval, to: Date())
-            }
-            
-            // Створюємо Room об'єкти
-            for roomData in rooms {
-                let room = Room(type: roomData.type, customName: roomData.customName)
-                room.comment = roomData.comment
-                for photoData in roomData.photos {
-                    if let fileName = ImageManager.shared.saveImage(photoData) {
-                        room.photoPaths.append(fileName)
-                    }
-                }
-                newRecord.rooms.append(room)
-            }
-            
-            // Зберігаємо в Realm
-            realmManager.createRecord(newRecord)
+        isLoading = true
+        let newRecord = Record(
+            title: recordTitle.isEmpty ? "Record \(Date().formatted(date: .abbreviated, time: .omitted))" : recordTitle,
+            stage: recordStage
+        )
+        newRecord.reminderInterval = reminderInterval
         
-            if let property = selectedProperty {
-                // Важливо: property може бути detached, тому передаємо його ID або шукаємо "живий"
-                realmManager.addRecordToProperty(record: newRecord, property: property)
-            }
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
-                self?.isLoading = false
-                self?.showSuccessView = true
-                completion(newRecord.detached())  // Повертаємо DEATACHED копію, бо звичайна ламає View
-            }
+        if reminderInterval > 0 {
+            newRecord.nextReminderDate = Calendar.current.date(byAdding: .day, value: reminderInterval, to: Date())
         }
+        
+        // Створюємо Room об'єкти
+        for roomData in rooms {
+            let room = Room(type: roomData.type, customName: roomData.customName)
+            room.comment = roomData.comment
+            for photoData in roomData.photos {
+                if let fileName = ImageManager.shared.saveImage(photoData) {
+                    room.photoPaths.append(fileName)
+                }
+            }
+            newRecord.rooms.append(room)
+        }
+        
+        // Зберігаємо в Realm
+        realmManager.createRecord(newRecord)
+        
+        if let property = selectedProperty {
+            // Важливо: property може бути detached, тому передаємо його ID або шукаємо "живий"
+            realmManager.addRecordToProperty(record: newRecord, property: property)
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+            self?.isLoading = false
+            self?.showSuccessView = true
+            completion(newRecord.detached())  // Повертаємо DEATACHED копію, бо звичайна ламає View
+        }
+    }
     
     // MARK: - Reset
     

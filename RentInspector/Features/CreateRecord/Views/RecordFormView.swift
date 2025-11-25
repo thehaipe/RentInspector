@@ -117,10 +117,7 @@ struct RecordFormView: View {
                 )
                 .cornerRadius(AppTheme.cornerRadiusMedium)
                 .opacity(isDisabled ? 0.5 : 1.0)
-                .overlay(
-                    isDisabled ? Image(systemName: "lock.fill").foregroundColor(.gray) : nil,
-                    alignment: .topTrailing
-                )
+                .shadow(color: Color.black.opacity(0.05), radius: 2, x: 0, y: 1)
             }
             .disabled(isDisabled) 
         }

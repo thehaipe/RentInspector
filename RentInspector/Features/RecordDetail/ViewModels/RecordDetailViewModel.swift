@@ -49,12 +49,51 @@ class RecordDetailViewModel: ObservableObject {
         refreshRecord()
     }
     
-    func updateStage(_ stage: RecordStage) {
-        editedStage = stage
-        realmManager.updateRecord(record, stage: stage)
-        refreshRecord()
-    }
-    
+    func updateStage(_ newStage: RecordStage) {
+            let isRestrictedStage = newStage == .moveIn || newStage == .moveOut
+            if isRestrictedStage, let property = selectedProperty {
+                let hasConflict = property.records.contains { record in
+                    return record.id != self.record.id &&
+                           record.recordStage == newStage &&
+                           !record.isInvalidated
+                }
+                if hasConflict {
+                    errorMessage = "У об'єкті '\(property.displayName)' вже існує звіт етапу '\(newStage.displayName)'. Зміна неможлива."
+                    withAnimation {
+                        showErrorToast = true
+                    }
+                    
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                        withAnimation {
+                            self.showErrorToast = false
+                        }
+                    }
+                    objectWillChange.send()
+                    return
+                }
+            }
+            editedStage = newStage
+            realmManager.updateRecord(record, stage: newStage)
+            refreshRecord()
+        }
+    var disabledStages: [RecordStage] {
+            guard let property = selectedProperty else { return [] }
+            var disabled: [RecordStage] = []
+            
+            // Перевіряємо, чи є ІНШИЙ звіт із "Заселенням"
+            let hasMoveIn = property.records.contains { r in
+                r.id != self.record.id && r.recordStage == .moveIn && !r.isInvalidated
+            }
+            if hasMoveIn { disabled.append(.moveIn) }
+            
+            // Перевіряємо, чи є ІНШИЙ звіт із "Виселенням"
+            let hasMoveOut = property.records.contains { r in
+                r.id != self.record.id && r.recordStage == .moveOut && !r.isInvalidated
+            }
+            if hasMoveOut { disabled.append(.moveOut) }
+            
+            return disabled
+        }
     func updateReminderInterval(_ interval: Int) {
         editedReminderInterval = interval
         realmManager.updateRecord(record, reminderInterval: interval)
