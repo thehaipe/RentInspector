@@ -32,7 +32,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		A34733162ED67608001F3353 /* Exceptions for "RentInspector" folder in "RentInspector" target */ = {
+		A34733312ED70D45001F3353 /* Exceptions for "RentInspector" folder in "RentInspector" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -41,22 +41,11 @@
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
-/* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
-		A34733172ED67608001F3353 /* Exceptions for "RentInspector" folder in "Compile Sources" phase from "RentInspector" target */ = {
-			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
-			buildPhase = A3ABBDE12EB790470079B59C /* Sources */;
-			membershipExceptions = (
-				Info.plist,
-			);
-		};
-/* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		A3ABBDE72EB790470079B59C /* RentInspector */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				A34733162ED67608001F3353 /* Exceptions for "RentInspector" folder in "RentInspector" target */,
-				A34733172ED67608001F3353 /* Exceptions for "RentInspector" folder in "Compile Sources" phase from "RentInspector" target */,
+				A34733312ED70D45001F3353 /* Exceptions for "RentInspector" folder in "RentInspector" target */,
 			);
 			path = RentInspector;
 			sourceTree = "<group>";
@@ -230,6 +219,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				"INFOPLIST_FILE[sdk=*]" = RentInspector/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
@@ -287,6 +277,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				"INFOPLIST_FILE[sdk=*]" = RentInspector/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
