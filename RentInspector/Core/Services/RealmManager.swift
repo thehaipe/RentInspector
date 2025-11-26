@@ -1,6 +1,5 @@
 /*
- Клас для роботи з локальною базою данних Realm. Всі критичні моменти проходять через транзакцію realm.wrire, яка валить додаток при невдачі.
- На майбутнє: Написати міграцію. Видалити поле "updatedAt", додати квадратуру квартири.
+ Клас для роботи з локальною базою данних Realm.
  */
 import Foundation
 import RealmSwift
@@ -22,13 +21,13 @@ class RealmManager: ObservableObject {
     
     // MARK: - Setup
     
-    
     private func setupRealm() {
         do {
             let config = Realm.Configuration(
-                schemaVersion: 4,
+                schemaVersion: 5,
                 migrationBlock: { migration, oldSchemaVersion in
                     
+                    // Міграція 1 -> 2 (Фото)
                     if oldSchemaVersion < 2 {
                         migration.enumerateObjects(ofType: Room.className()) { oldObject, newObject in
                             guard let oldObject = oldObject, let newObject = newObject else { return }
@@ -44,74 +43,65 @@ class RealmManager: ObservableObject {
                         }
                     }
                     
+                    // Міграція 2 -> 3 (Властивості)
                     if oldSchemaVersion < 3 {
-                        // 1. Створюємо дефолтний об'єкт нерухомості
-                        let defaultProperty = migration.create(Property.className(), value: [
-                            "id": ObjectId.generate(),
-                            "name": "Мій об'єкт (Default)",
-                            "address": "Створено автоматично",
-                            "createdAt": Date()
-                        ])
-                        
-                        // 2. Отримуємо доступ до списку 'records' нового об'єкту
-                        // У міграції списки потрібно кастити до List<MigrationObject>
-                        if let recordsList = defaultProperty["records"] as? List<MigrationObject> {
-                            
-                            // 3. Проходимось по всіх існуючих звітах (Record)
-                            migration.enumerateObjects(ofType: Record.className()) { _, newRecord in
-                                // newRecord - це об'єкт звіту в новій схемі
-                                if let newRecord = newRecord {
-                                    // Додаємо існуючий звіт до списку записів дефолтного об'єкту
-                                    recordsList.append(newRecord)
-                                }
-                            }
-                        }
+                        // Видалено: Створення дефолтного об'єкту
                     }
+                    
+                    // Міграція 3 -> 4 (ParentId)
                     if oldSchemaVersion < 4 {
                         migration.enumerateObjects(ofType: Record.className()) { oldObj, newObj in
                             newObj?["parentId"] = nil
                         }
+                    }
+                    
+                    // Міграція 4 -> 5
+                    if oldSchemaVersion < 5 {
+                        // Realm автоматично видалить колонку updatedAt
                     }
                 }
             )
             
             Realm.Configuration.defaultConfiguration = config
             realm = try Realm()
-            // ...
+            
+            print("✅ Realm initialized at: \(realm?.configuration.fileURL?.path ?? "unknown")")
         } catch {
             print("❌ Error initializing Realm: \(error.localizedDescription)")
         }
     }
-    // MARK: - Property managment
+    
+    // MARK: - Property Management
+    
     func loadProperties() {
-        guard let realm = realm else { return }
-        // Завантажуємо та сортуємо за датою створення
-        let results = realm.objects(Property.self).sorted(byKeyPath: "createdAt", ascending: false)
-        self.properties = Array(results).map { $0.detached() } // Використовуємо detached для UI списків
-    }
+            guard let realm = realm else { return }
+            let results = realm.objects(Property.self).sorted(byKeyPath: "createdAt", ascending: false)
+            let detachedProperties = Array(results).map { $0.detached() }
+            
+            DispatchQueue.main.async {
+                self.properties = detachedProperties
+            }
+        }
+    
     func createProperty(_ property: Property) {
         guard let realm = realm else { return }
         do {
             try realm.write {
                 realm.add(property)
             }
-            loadProperties() // Оновлюємо список
+            loadProperties()
             print("✅ Property created: \(property.displayName)")
         } catch {
             print("❌ Error creating property: \(error.localizedDescription)")
         }
     }
+    
     func deleteProperty(_ property: Property) {
         guard let realm = realm else { return }
-        
-        // Знаходимо живий об'єкт
         guard let propToDelete = realm.object(ofType: Property.self, forPrimaryKey: property.id) else { return }
         
         do {
             try realm.write {
-                // ВАЖЛИВО: Тут треба вирішити, що робити зі звітами.
-                // Поки що видаляємо папку, а звіти стають "сиротами" (без папки), але не зникають.
-                // Якщо треба видаляти і звіти - треба пройтись по propToDelete.records і видалити їх.
                 realm.delete(propToDelete)
             }
             loadProperties()
@@ -120,6 +110,7 @@ class RealmManager: ObservableObject {
             print("❌ Error deleting property: \(error.localizedDescription)")
         }
     }
+    
     // MARK: - CRUD Operations for Record
     
     func createRecord(_ record: Record) {
@@ -140,8 +131,6 @@ class RealmManager: ObservableObject {
         guard let realm = realm else { return }
         
         let results = realm.objects(Record.self).sorted(byKeyPath: "createdAt", ascending: false)
-        
-        // Конвертуємо Results<Record> в [Record], потім в detached. Deatached потрібен, бо при видаленні обʼекту з Realm, View все одно тримає звʼязки на нього, і якщо не зробити "легку" копію, впаде додаток. Перевірено. Тричі.
         let managedRecords = Array(results)
         self.records = managedRecords.map { $0.detached() }
         
@@ -155,7 +144,6 @@ class RealmManager: ObservableObject {
     func updateRecord(_ record: Record, title: String? = nil, stage: RecordStage? = nil, reminderInterval: Int? = nil) {
         guard let realm = realm else { return }
         
-        // Знаходимо об'єкт заново через primary key
         guard let recordToUpdate = realm.object(ofType: Record.self, forPrimaryKey: record.id) else {
             print("⚠️ Record not found")
             return
@@ -177,7 +165,6 @@ class RealmManager: ObservableObject {
                         recordToUpdate.nextReminderDate = nil
                     }
                 }
-                recordToUpdate.updatedAt = Date()
             }
             loadRecordsSync()
             print("✅ Record updated: \(recordToUpdate.displayTitle)")
@@ -202,7 +189,7 @@ class RealmManager: ObservableObject {
                 realm.delete(recordToDelete.rooms)
                 realm.delete(recordToDelete)
             }
-            //Видалення у фоні, щоб не блокувати UI
+            
             DispatchQueue.global(qos: .background).async {
                 for path in photosToDelete {
                     ImageManager.shared.deleteImage(named: path)
@@ -230,7 +217,6 @@ class RealmManager: ObservableObject {
         do {
             try realm.write {
                 recordToUpdate.rooms.append(room)
-                recordToUpdate.updatedAt = Date()
             }
             loadRecordsSync()
             print("✅ Room added to record")
@@ -271,7 +257,6 @@ class RealmManager: ObservableObject {
             return
         }
         
-        //Спочатку зберігаємо фото на диск і отримуємо ім'я файлу
         guard let fileName = ImageManager.shared.saveImage(photoData) else {
             print("❌ Failed to save image to disk")
             return
@@ -279,71 +264,65 @@ class RealmManager: ObservableObject {
         
         do {
             try realm.write {
-                //Тепер додаємо в базу лише ім'я файлу
                 roomToUpdate.photoPaths.append(fileName)
             }
             loadRecordsSync()
             print("✅ Photo added to room: \(fileName)")
         } catch {
             print("❌ Error adding photo to DB: \(error.localizedDescription)")
-            
-            //Якщо запис в БД не вдався, видалити файл, щоб не займати місце
             ImageManager.shared.deleteImage(named: fileName)
         }
     }
+    
     func addRecordToProperty(record: Record, property: Property) {
-            guard let realm = realm else { return }
-            
-            guard let liveProperty = realm.object(ofType: Property.self, forPrimaryKey: property.id),
-                  let liveRecord = realm.object(ofType: Record.self, forPrimaryKey: record.id) else {
-                return
-            }
-            
-            do {
-                try realm.write {
-                    // 1. Додаємо в список (для Realm зв'язків)
-                    liveProperty.records.append(liveRecord)
-                    // 2. Прописуємо явний ID (для Detached об'єктів і UI)
-                    liveRecord.parentId = liveProperty.id
-                }
-                loadProperties()
-                // Обов'язково оновлюємо і records, бо там змінилося поле parentId
-                loadRecordsSync()
-                print("✅ Record linked to property")
-            } catch {
-                print("❌ Error linking record: \(error.localizedDescription)")
-            }
+        guard let realm = realm else { return }
+        
+        guard let liveProperty = realm.object(ofType: Property.self, forPrimaryKey: property.id),
+              let liveRecord = realm.object(ofType: Record.self, forPrimaryKey: record.id) else {
+            return
         }
+        
+        do {
+            try realm.write {
+                liveProperty.records.append(liveRecord)
+                liveRecord.parentId = liveProperty.id
+            }
+            loadProperties()
+            loadRecordsSync()
+            print("✅ Record linked to property")
+        } catch {
+            print("❌ Error linking record: \(error.localizedDescription)")
+        }
+    }
+    
     func getPropertyName(for id: ObjectId?) -> String? {
-            guard let id = id else { return nil }
-            return properties.first(where: { $0.id == id })?.displayName
-        }
+        guard let id = id else { return nil }
+        return properties.first(where: { $0.id == id })?.displayName
+    }
+    
     func updateRecordProperty(record: Record, newProperty: Property?) {
-            guard let realm = realm else { return }
-            
-            guard let liveRecord = realm.object(ofType: Record.self, forPrimaryKey: record.id) else { return }
-            
-            do {
-                try realm.write {
-                    if let newProperty = newProperty,
-                       let liveProperty = realm.object(ofType: Property.self, forPrimaryKey: newProperty.id) {
-                        if !liveProperty.records.contains(liveRecord) {
-                            liveProperty.records.append(liveRecord)
-                        }
-                        liveRecord.parentId = liveProperty.id
-                    } else {
-                        liveRecord.parentId = nil
+        guard let realm = realm else { return }
+        guard let liveRecord = realm.object(ofType: Record.self, forPrimaryKey: record.id) else { return }
+        
+        do {
+            try realm.write {
+                if let newProperty = newProperty,
+                   let liveProperty = realm.object(ofType: Property.self, forPrimaryKey: newProperty.id) {
+                    if !liveProperty.records.contains(liveRecord) {
+                        liveProperty.records.append(liveRecord)
                     }
-                    
-                    liveRecord.updatedAt = Date()
+                    liveRecord.parentId = liveProperty.id
+                } else {
+                    liveRecord.parentId = nil
                 }
-                loadRecordsSync()
-                loadProperties() // Оновлюємо списки об'єктів
-                print("✅ Record property updated")
-            } catch {
-                print("❌ Error updating record property: \(error.localizedDescription)")
             }
+            loadRecordsSync()
+            loadProperties()
+            print("✅ Record property updated")
+        } catch {
+            print("❌ Error updating record property: \(error.localizedDescription)")
         }
+    }
     
     func removePhotoFromRoom(_ room: Room, at index: Int) {
         guard let realm = realm else { return }
@@ -382,10 +361,8 @@ class RealmManager: ObservableObject {
                     recordToUpdate.rooms.remove(at: index)
                 }
                 realm.delete(roomToDelete)
-                recordToUpdate.updatedAt = Date()
             }
             
-            // Видаляємо файли у фоновому режимі
             DispatchQueue.global(qos: .background).async {
                 for path in photosToDelete {
                     ImageManager.shared.deleteImage(named: path)
@@ -403,7 +380,6 @@ class RealmManager: ObservableObject {
     
     func searchRecords(query: String) -> [Record] {
         guard !query.isEmpty else { return records }
-        
         return records.filter { record in
             record.displayTitle.localizedCaseInsensitiveContains(query)
         }
@@ -415,8 +391,6 @@ class RealmManager: ObservableObject {
         }
     }
     
-    // MARK: - Utility
-    
     func getRecordCount() -> Int {
         return records.count
     }
@@ -425,7 +399,6 @@ class RealmManager: ObservableObject {
         guard !records.isEmpty else {
             throw RealmError.noRecordsToDelete
         }
-        
         guard let realm = realm else {
             throw RealmError.operationFailed("Realm не ініціалізований")
         }
@@ -441,19 +414,16 @@ class RealmManager: ObservableObject {
         
         do {
             records.removeAll()
-            
             try realm.write {
                 realm.deleteAll()
             }
             
-            //Видаляємо всі файли з диску.
             DispatchQueue.global(qos: .background).async {
                 for path in allPhotosToDelete {
                     ImageManager.shared.deleteImage(named: path)
                 }
                 print("Wiped \(allPhotosToDelete.count) photos from disk")
             }
-            
             print("All data cleared")
         } catch {
             throw RealmError.operationFailed(error.localizedDescription)

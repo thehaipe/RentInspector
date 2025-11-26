@@ -76,7 +76,7 @@ struct RecordCardView: View {
                     statItem(
                         icon: "bell.fill",
                         value: "\(record.reminderInterval)д",
-                        label: "Нагадування"
+                        label: ""
                     )
                 }
                 
