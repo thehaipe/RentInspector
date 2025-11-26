@@ -10,6 +10,7 @@ struct RecordFormView: View {
     @State private var showReminderPicker = false
     @State private var savedRecord: Record? = nil
     @State private var showPropertyPicker = false
+    @FocusState private var isTitleFocused: Bool
     var onRecordSaved: ((Record) -> Void)?
     
     var body: some View {
@@ -50,26 +51,52 @@ struct RecordFormView: View {
     }
     
     // MARK: - Record Title Section
-    
-    private var recordTitleSection: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("Назва звіту")
-                .font(AppTheme.headline)
-                .foregroundColor(AppTheme.textPrimary)
-            
-            TextField("Record \(Date().formatted(date: .abbreviated, time: .omitted))", text: $viewModel.recordTitle)
-                .textFieldStyle(CustomTextFieldStyle())
-                .onChange(of: viewModel.recordTitle) { oldValue, newValue in
-                    if newValue.count > Constants.Limits.maxRecordTitleLength {
-                        viewModel.recordTitle = String(newValue.prefix(Constants.Limits.maxRecordTitleLength))
+        
+        private var recordTitleSection: some View {
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Назва звіту")
+                    .font(AppTheme.headline)
+                    .foregroundColor(AppTheme.textPrimary)
+                
+                TextField("Record \(Date().formatted(date: .abbreviated, time: .omitted))", text: $viewModel.recordTitle)
+                    .textFieldStyle(CustomTextFieldStyle())
+                    .focused($isTitleFocused)
+                    .submitLabel(.done)
+                    .onChange(of: viewModel.recordTitle) { oldValue, newValue in
+                        if newValue.count > Constants.Limits.maxRecordTitleLength {
+                            viewModel.recordTitle = String(newValue.prefix(Constants.Limits.maxRecordTitleLength))
+                        }
+                    }
+                HStack {
+                    Text("\(viewModel.recordTitle.count)/\(Constants.Limits.maxRecordTitleLength)")
+                        .font(AppTheme.caption)
+                        .foregroundColor(AppTheme.textSecondary)
+                    
+                    Spacer()
+                    
+                    if isTitleFocused {
+                        Button(action: {
+                            isTitleFocused = false
+                        }) {
+                            HStack(spacing: 4) {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .font(.caption)
+                                Text("Готово")
+                                    .font(AppTheme.caption)
+                                    .fontWeight(.semibold)
+                            }
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 6)
+                            .background(AppTheme.primaryColor)
+                            .cornerRadius(12)
+                        }
+                        .transition(.opacity.combined(with: .scale(scale: 0.8)))
                     }
                 }
-            
-            Text("\(viewModel.recordTitle.count)/\(Constants.Limits.maxRecordTitleLength)")
-                .font(AppTheme.caption)
-                .foregroundColor(AppTheme.textSecondary)
+                .animation(.spring(response: 0.3, dampingFraction: 0.7), value: isTitleFocused)
+            }
         }
-    }
     
     // MARK: - Record Stage Section
     
