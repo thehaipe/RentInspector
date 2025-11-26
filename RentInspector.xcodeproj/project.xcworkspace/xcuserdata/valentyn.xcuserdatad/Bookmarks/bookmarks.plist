@@ -12,13 +12,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>134</string>
+					<string>184</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>133</string>
+					<string>183</string>
 					<key>Timestamp</key>
-					<string>785245369.001879</string>
+					<string>785852977.374684</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -34,16 +34,16 @@
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string>    private var commentField: some View {
+				<string>        }
 </string>
 				<key>leading</key>
-				<string>    // MARK: - Comment Field
-    
+				<string>                .animation(.spring(response: 0.3, dampingFraction: 0.7), value: isCommentFocused)
+            }
 </string>
 				<key>trailing</key>
-				<string>        VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                Text("Коментар")
+				<string>    
+    // MARK: - Photos Section
+    
 </string>
 			</dict>
 			<key>title</key>

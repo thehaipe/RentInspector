@@ -21,7 +21,7 @@ class Record: Object, ObjectKeyIdentifiable {
     @Persisted var reminderInterval: Int = 0 // Днів до нагадування (0 = вимкнено)
     @Persisted var nextReminderDate: Date?
     @Persisted var createdAt: Date = Date()
-    @Persisted var updatedAt: Date = Date()
+    
     @Persisted var parentId: ObjectId?
     @Persisted(originProperty: "records") var assignee: LinkingObjects<Property>
     var parentProperty: Property? {
@@ -47,7 +47,6 @@ class Record: Object, ObjectKeyIdentifiable {
         self.title = title
         self.stage = stage.rawValue
         self.createdAt = Date()
-        self.updatedAt = Date()
     }
     func detached() -> Record {
             let detachedRecord = Record()
@@ -57,7 +56,6 @@ class Record: Object, ObjectKeyIdentifiable {
             detachedRecord.reminderInterval = self.reminderInterval
             detachedRecord.nextReminderDate = self.nextReminderDate
             detachedRecord.createdAt = self.createdAt
-            detachedRecord.updatedAt = self.updatedAt
             
             detachedRecord.parentId = self.parentId
             

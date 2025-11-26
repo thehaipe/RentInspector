@@ -130,58 +130,58 @@ struct RoomSectionView: View {
     }
     
     // MARK: - Comment Field
-    
-    private var commentField: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack {
+        
+        private var commentField: some View {
+            VStack(alignment: .leading, spacing: 8) {
                 Text("Коментар")
                     .font(AppTheme.callout)
                     .foregroundColor(AppTheme.textSecondary)
-                
-                Spacer()
-                
-                // Виразна кнопка завершення редагування
-                if isCommentFocused {
-                    Button(action: {
-                        isCommentFocused = false
-                    }) {
-                        HStack(spacing: 4) {
-                            Image(systemName: "checkmark.circle.fill")
-                                .font(.caption)
-                            Text("Готово")
-                                .font(AppTheme.caption)
-                                .fontWeight(.semibold)
-                        }
-                        .foregroundColor(.white)
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 6)
-                        .background(AppTheme.primaryColor)
-                        .cornerRadius(12)
+                TextEditor(text: Binding(
+                    get: { roomData.comment },
+                    set: { viewModel.updateRoomComment(at: roomIndex, comment: $0) }
+                ))
+                .frame(minHeight: 80)
+                .padding(8)
+                .background(AppTheme.tertiaryBackgroundColor)
+                .cornerRadius(AppTheme.cornerRadiusSmall)
+                .focused($isCommentFocused)
+                .scrollContentBackground(.hidden)
+                .onChange(of: roomData.comment) { oldValue, newValue in
+                    if newValue.count > Constants.Limits.maxCommentLength {
+                        viewModel.updateRoomComment(at: roomIndex, comment: String(newValue.prefix(Constants.Limits.maxCommentLength)))
                     }
                 }
-            }
-            
-            TextEditor(text: Binding(
-                get: { roomData.comment },
-                set: { viewModel.updateRoomComment(at: roomIndex, comment: $0) }
-            ))
-            .frame(minHeight: 80)
-            .padding(8)
-            .background(AppTheme.tertiaryBackgroundColor)
-            .cornerRadius(AppTheme.cornerRadiusSmall)
-            .focused($isCommentFocused)
-            .scrollContentBackground(.hidden) // Прибирає дефолтний background TextEditor
-            .onChange(of: roomData.comment) { oldValue, newValue in
-                if newValue.count > Constants.Limits.maxCommentLength {
-                    viewModel.updateRoomComment(at: roomIndex, comment: String(newValue.prefix(Constants.Limits.maxCommentLength)))
+                
+                HStack {
+                    Text("\(roomData.comment.count)/\(Constants.Limits.maxCommentLength)")
+                        .font(AppTheme.caption)
+                        .foregroundColor(AppTheme.textSecondary)
+                    
+                    Spacer()
+                    
+                    if isCommentFocused {
+                        Button(action: {
+                            isCommentFocused = false
+                        }) {
+                            HStack(spacing: 4) {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .font(.caption)
+                                Text("Готово")
+                                    .font(AppTheme.caption)
+                                    .fontWeight(.semibold)
+                            }
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 6)
+                            .background(AppTheme.primaryColor)
+                            .cornerRadius(12)
+                        }
+                        .transition(.opacity.combined(with: .scale(scale: 0.8)))
+                    }
                 }
+                .animation(.spring(response: 0.3, dampingFraction: 0.7), value: isCommentFocused)
             }
-            
-            Text("\(roomData.comment.count)/\(Constants.Limits.maxCommentLength)")
-                .font(AppTheme.caption)
-                .foregroundColor(AppTheme.textSecondary)
         }
-    }
     
     // MARK: - Photos Section
     

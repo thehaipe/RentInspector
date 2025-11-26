@@ -241,16 +241,11 @@ struct RecordDetailView: View {
     }
     
     private func stageButton(stage: RecordStage) -> some View {
-            // Перевіряємо, чи заблокований етап
-            let isDisabled = viewModel.disabledStages.contains(stage)
+            // Кнопка тепер завжди disabled, вона працює як індикатор
+            let isSelected = viewModel.editedStage == stage
             
             return Button(action: {
-                // Дозволяємо дію тільки якщо не заблоковано
-                if !isDisabled {
-                    withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                        viewModel.updateStage(stage)
-                    }
-                }
+                // Ніякої дії. Етап змінювати не можна.
             }) {
                 VStack(spacing: 8) {
                     Image(systemName: stage.icon)
@@ -259,23 +254,18 @@ struct RecordDetailView: View {
                     Text(stage.displayName)
                         .font(AppTheme.caption)
                 }
-                // Логіка кольорів тексту
-                .foregroundColor(
-                    viewModel.editedStage == stage ? .white :
-                    (isDisabled ? AppTheme.textSecondary.opacity(0.5) : AppTheme.textPrimary)
-                )
+                .foregroundColor(isSelected ? .white : AppTheme.textSecondary.opacity(0.5)) // Неактивні - бліді
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 12)
                 .background(
-                    viewModel.editedStage == stage
+                    isSelected
                         ? AppTheme.primaryColor
                         : AppTheme.backgroundColor
                 )
                 .cornerRadius(AppTheme.cornerRadiusMedium)
-                .opacity(isDisabled ? 0.6 : 1.0)
                 .shadow(color: Color.black.opacity(0.05), radius: 2, x: 0, y: 1)
             }
-            .disabled(isDisabled)
+            .disabled(true) // Головна зміна: кнопка вимкнена назавжди
         }
     
     private func exportPDF() {
