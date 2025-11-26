@@ -22,7 +22,6 @@ class RealmManager: ObservableObject {
     
     // MARK: - Setup
     
-    // RentInspector/Core/Services/RealmManager.swift
     
     private func setupRealm() {
         do {
@@ -30,7 +29,6 @@ class RealmManager: ObservableObject {
                 schemaVersion: 4,
                 migrationBlock: { migration, oldSchemaVersion in
                     
-                    // Міграція 1 -> 2 (Фото)
                     if oldSchemaVersion < 2 {
                         migration.enumerateObjects(ofType: Room.className()) { oldObject, newObject in
                             guard let oldObject = oldObject, let newObject = newObject else { return }
