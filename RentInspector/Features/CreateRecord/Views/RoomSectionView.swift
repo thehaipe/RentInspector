@@ -104,30 +104,56 @@ struct RoomSectionView: View {
     }
     
     // MARK: - Name Field
-    
-    private var nameField: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("Назва")
-                .font(AppTheme.callout)
-                .foregroundColor(AppTheme.textSecondary)
-            
-            TextField(roomData.type.displayName, text: Binding(
-                get: { roomData.customName },
-                set: { viewModel.updateRoomName(at: roomIndex, name: $0) }
-            ))
-            .textFieldStyle(CustomTextFieldStyle())
-            .focused($isNameFocused)
-            .onChange(of: roomData.customName) { oldValue, newValue in
-                if newValue.count > Constants.Limits.maxRoomNameLength {
-                    viewModel.updateRoomName(at: roomIndex, name: String(newValue.prefix(Constants.Limits.maxRoomNameLength)))
+        
+        private var nameField: some View {
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Назва")
+                    .font(AppTheme.callout)
+                    .foregroundColor(AppTheme.textSecondary)
+                
+                TextField(roomData.type.displayName, text: Binding(
+                    get: { roomData.customName },
+                    set: { viewModel.updateRoomName(at: roomIndex, name: $0) }
+                ))
+                .textFieldStyle(CustomTextFieldStyle())
+                .focused($isNameFocused)
+                .submitLabel(.done)
+                .onChange(of: roomData.customName) { oldValue, newValue in
+                    if newValue.count > Constants.Limits.maxRoomNameLength {
+                        viewModel.updateRoomName(at: roomIndex, name: String(newValue.prefix(Constants.Limits.maxRoomNameLength)))
+                    }
                 }
+                
+                HStack {
+                    Text("\(roomData.customName.count)/\(Constants.Limits.maxRoomNameLength)")
+                        .font(AppTheme.caption)
+                        .foregroundColor(AppTheme.textSecondary)
+                    
+                    Spacer()
+                    
+                    if isNameFocused {
+                        Button(action: {
+                            isNameFocused = false
+                        }) {
+                            HStack(spacing: 4) {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .font(.caption)
+                                Text("Готово")
+                                    .font(AppTheme.caption)
+                                    .fontWeight(.semibold)
+                            }
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 6)
+                            .background(AppTheme.primaryColor)
+                            .cornerRadius(12)
+                        }
+                        .transition(.opacity.combined(with: .scale(scale: 0.8)))
+                    }
+                }
+                .animation(.spring(response: 0.3, dampingFraction: 0.7), value: isNameFocused)
             }
-            
-            Text("\(roomData.customName.count)/\(Constants.Limits.maxRoomNameLength)")
-                .font(AppTheme.caption)
-                .foregroundColor(AppTheme.textSecondary)
         }
-    }
     
     // MARK: - Comment Field
         
