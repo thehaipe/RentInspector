@@ -2,6 +2,7 @@ import SwiftUI
 
 struct PropertiesListView: View {
     @StateObject private var viewModel = PropertyViewModel()
+    @State private var showFilterSheet = false
     
     var body: some View {
         NavigationStack {
@@ -9,61 +10,135 @@ struct PropertiesListView: View {
                 if viewModel.properties.isEmpty {
                     emptyStateView
                 } else {
-                    List {
-                        ForEach(viewModel.properties) { property in
-                            NavigationLink(destination: PropertyDetailView(property: property)){
-                                HStack(spacing: 16) {
-                                    Image(systemName: "building.2.fill")
-                                        .foregroundColor(AppTheme.primaryColor)
-                                        .font(.title2)
-                                        .frame(width: 40, height: 40)
-                                        .background(AppTheme.primaryColor.opacity(0.1))
-                                        .clipShape(Circle())
-                                    
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        if !property.name.isEmpty {
-                                            Text(property.name)
-                                                .font(AppTheme.headline)
-                                                .foregroundColor(AppTheme.textPrimary)
-                                        }
-                                        
-                                        Text(property.address.isEmpty ? "Без адреси" : property.address)
-                                            .font(property.name.isEmpty ? AppTheme.headline : AppTheme.caption)
-                                            .foregroundColor(property.name.isEmpty ? AppTheme.textPrimary : AppTheme.textSecondary)
-                                    }
-                                    
-                                    Spacer()
-                                    
-                                    // Лічильник звітів (поки 0, бо зв'язок ще не заповнюється)
-                                    Text("\(property.records.count)")
-                                        .font(AppTheme.caption)
-                                        .padding(.horizontal, 8)
-                                        .padding(.vertical, 4)
-                                        .background(AppTheme.secondaryBackgroundColor)
-                                        .cornerRadius(8)
-                                }
-                                .padding(.vertical, 4)
-                            }
-                        }
-                        .onDelete(perform: viewModel.deleteProperty)
-                    }
+                    propertiesContent
+                }
+                if viewModel.showErrorToast {
+                    errorToast
                 }
             }
-            .navigationTitle("Об'єкти")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .primaryAction) {
-                    Button(action: {
-                        viewModel.showAddPropertySheet = true
-                    }) {
-                        Image(systemName: "plus")
+                ToolbarItem(placement: .principal) {
+                    HStack {
+                        Text("Properies")
+                            .font(AppTheme.title2)
+                            .fontWeight(.bold)
+                        Spacer()
+                    }
+                }
+                // Тулбар
+                ToolbarItem(placement: .topBarTrailing) {
+                    if !viewModel.properties.isEmpty {
+                        HStack(spacing: 16) {
+                            // 1. Пошук
+                            Button(action: {
+                                viewModel.toggleSearch()
+                            }) {
+                                Image(systemName: "magnifyingglass")
+                                    .font(.title3)
+                            }
+                            
+                            // 2. Сортування
+                            Menu {
+                                ForEach(RecordsViewModel.SortOrder.allCases, id: \.self) { order in
+                                    Button(action: {
+                                        viewModel.setSortOrder(order)
+                                    }) {
+                                        Label(
+                                            order.rawValue,
+                                            systemImage: viewModel.sortOrder == order ? "arrow.down.circle" : order.icon
+                                        )
+                                    }
+                                }
+                            } label: {
+                                Image(systemName: "arrow.up.arrow.down.circle")
+                                    .font(.title3)
+                            }
+                            
+                            // 3. Фільтр
+                            Button(action: {
+                                showFilterSheet = true
+                            }) {
+                                Image(systemName: "line.3.horizontal.decrease.circle")
+                                    .font(.title3)
+                            }
+                            
+                            // 4. Додати
+                            Button(action: {
+                                viewModel.showAddPropertySheet = true
+                            }) {
+                                Image(systemName: "plus.circle.fill")
+                                    .font(.title2)
+                            }
+                        }
+                    } else {
+                        // Якщо пусто - тільки плюс
+                        Button(action: {
+                            viewModel.showAddPropertySheet = true
+                        }) {
+                            Image(systemName: "plus")
+                        }
                     }
                 }
             }
             .sheet(isPresented: $viewModel.showAddPropertySheet) {
                 addPropertySheet
             }
+            .sheet(isPresented: $showFilterSheet) {
+                filterSheet
+            }
         }
+    }
+    
+    private var propertiesContent: some View {
+        VStack(spacing: 0) {
+            // Рядок пошуку
+            if viewModel.isSearching {
+                SearchBar(text: $viewModel.searchText)
+                    .padding(.horizontal)
+                    .padding(.top, 8)
+                    .transition(.move(edge: .top).combined(with: .opacity))
+            }
+            
+            List {
+                ForEach(viewModel.filteredProperties) { property in
+                    NavigationLink(destination: PropertyDetailView(property: property)) {
+                        HStack(spacing: 16) {
+                            Image(systemName: "building.2.fill")
+                                .foregroundColor(AppTheme.primaryColor)
+                                .font(.title2)
+                                .frame(width: 40, height: 40)
+                                .background(AppTheme.primaryColor.opacity(0.1))
+                                .clipShape(Circle())
+                            
+                            VStack(alignment: .leading, spacing: 4) {
+                                if !property.name.isEmpty {
+                                    Text(property.name)
+                                        .font(AppTheme.headline)
+                                        .foregroundColor(AppTheme.textPrimary)
+                                }
+                                
+                                Text(property.address.isEmpty ? "Без адреси" : property.address)
+                                    .font(property.name.isEmpty ? AppTheme.headline : AppTheme.caption)
+                                    .foregroundColor(property.name.isEmpty ? AppTheme.textPrimary : AppTheme.textSecondary)
+                            }
+                            
+                            Spacer()
+                            
+                            Text("\(property.records.count)")
+                                .font(AppTheme.caption)
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 4)
+                                .background(AppTheme.secondaryBackgroundColor)
+                                .cornerRadius(8)
+                        }
+                        .padding(.vertical, 4)
+                    }
+                }
+                .onDelete(perform: viewModel.deleteProperty)
+            }
+        }
+        .animation(.easeInOut, value: viewModel.isSearching)
     }
     
     private var emptyStateView: some View {
@@ -97,6 +172,42 @@ struct PropertiesListView: View {
         }
     }
     
+    // Reuse filter sheet logic
+    private var filterSheet: some View {
+        NavigationStack {
+            List {
+                Section("Фільтр за датою") {
+                    ForEach(RecordsViewModel.DateFilter.allCases, id: \.self) { filter in
+                        Button(action: {
+                            viewModel.selectedDateFilter = filter
+                            showFilterSheet = false
+                        }) {
+                            HStack {
+                                Text(filter.rawValue)
+                                    .foregroundColor(AppTheme.textPrimary)
+                                Spacer()
+                                if viewModel.selectedDateFilter == filter {
+                                    Image(systemName: "checkmark")
+                                        .foregroundColor(AppTheme.primaryColor)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            .navigationTitle("Фільтрація")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Готово") {
+                        showFilterSheet = false
+                    }
+                }
+            }
+        }
+        .presentationDetents([.medium])
+    }
+    
     private var addPropertySheet: some View {
         NavigationStack {
             Form {
@@ -123,5 +234,30 @@ struct PropertiesListView: View {
             }
         }
         .presentationDetents([.medium])
+    }
+    
+    private var errorToast: some View {
+        VStack {
+            HStack(spacing: 12) {
+                Image(systemName: "magnifyingglass")
+                    .foregroundColor(AppTheme.warningColor)
+                
+                Text(viewModel.errorMessage)
+                    .font(AppTheme.callout)
+                    .foregroundColor(AppTheme.textPrimary)
+                    .lineLimit(2)
+                
+                Spacer()
+            }
+            .padding()
+            .background(AppTheme.secondaryBackgroundColor)
+            .cornerRadius(AppTheme.cornerRadiusMedium)
+            .shadow(color: AppTheme.shadowColor, radius: 10, y: 5)
+            .padding(.horizontal)
+            
+            Spacer()
+        }
+        .padding(.top, 16)
+        .transition(.move(edge: .top).combined(with: .opacity))
     }
 }
