@@ -31,7 +31,7 @@ struct Constants {
     struct Defaults {
         static let defaultUserName = "User"
         static let defaultRecordTitle = "Record"
-        static let minReminderInterval = 1 // днів
+        static let minReminderInterval = 30 // днів
         static let maxReminderInterval = 365 // днів
     }
 }

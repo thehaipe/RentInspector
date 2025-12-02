@@ -12,60 +12,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>210</string>
+					<string>36</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>209</string>
-					<key>Timestamp</key>
-					<string>786060548.6010621</string>
-				</dict>
-				<key>rebasable-url</key>
-				<dict>
-					<key>base</key>
-					<string>workspace</string>
-					<key>payload</key>
-					<dict>
-						<key>relative-path</key>
-						<string>RentInspector/Features/CreateRecord/Views/RoomSectionView.swift</string>
-					</dict>
-				</dict>
-			</dict>
-			<key>text-context</key>
-			<dict>
-				<key>focused</key>
-				<string>        }
-</string>
-				<key>leading</key>
-				<string>                .animation(.spring(response: 0.3, dampingFraction: 0.7), value: isCommentFocused)
-            }
-</string>
-				<key>trailing</key>
-				<string>    
-    // MARK: - Photos Section
-    
-</string>
-			</dict>
-			<key>title</key>
-			<string>Fieature: Added "done" button above the textfiled</string>
-			<key>type</key>
-			<string>bookmark</string>
-		</dict>
-		<dict>
-			<key>destination</key>
-			<dict>
-				<key>location-parameters</key>
-				<dict>
-					<key>EndingColumnNumber</key>
-					<string>10</string>
-					<key>EndingLineNumber</key>
-					<string>35</string>
-					<key>StartingColumnNumber</key>
-					<string>8</string>
-					<key>StartingLineNumber</key>
 					<string>35</string>
 					<key>Timestamp</key>
-					<string>785407498.104061</string>
+					<string>786318961.3130111</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -81,17 +34,20 @@
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string>//</string>
+				<string>        // Валідація імені
+</string>
 				<key>leading</key>
 				<string>        }
         
-        </string>
+</string>
 				<key>trailing</key>
-				<string> Валідація імені
-        do {
+				<string>        do {
             try validateName(trimmedName)
+            
 </string>
 			</dict>
+			<key>title</key>
+			<string>Збереження валідного імені користувача</string>
 			<key>type</key>
 			<string>bookmark</string>
 		</dict>
@@ -103,13 +59,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>15</string>
+					<string>57</string>
 					<key>StartingColumnNumber</key>
-					<string>4</string>
+					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>14</string>
+					<string>56</string>
 					<key>Timestamp</key>
-					<string>785407531.8888381</string>
+					<string>786318992.302543</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -118,25 +74,73 @@
 					<key>payload</key>
 					<dict>
 						<key>relative-path</key>
-						<string>RentInspector/Features/Settings/ViewModels/SettingsViewModel.swift</string>
+						<string>RentInspector/Features/Profile/ViewModels/ProfileViewModel.swift</string>
 					</dict>
 				</dict>
 			</dict>
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string>
+				<string>    private func validateName(_ name: String) throws {
 </string>
 				<key>leading</key>
-				<string>    
-    private var realmManager = RealmManager.shared
-    </string>
+				<string>    /// - Дозволено: латиниця, кирилиця, пробіли, апострофи, дефіси
+    /// - Заборонено: цифри, спецсимволи (окрім апострофа та дефіса)
+</string>
 				<key>trailing</key>
-				<string>    func clearAllData() {
-        do {
-            try realmManager.clearAllData()
+				<string>        // Перевірка довжини
+        guard name.count &gt;= 2 else {
+            throw ValidationError.nameTooShort
 </string>
 			</dict>
+			<key>title</key>
+			<string>Валідація імені</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>21</string>
+					<key>EndingLineNumber</key>
+					<string>397</string>
+					<key>StartingColumnNumber</key>
+					<string>9</string>
+					<key>StartingLineNumber</key>
+					<string>397</string>
+					<key>Timestamp</key>
+					<string>786319086.105742</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>RentInspector/Core/Services/RealmManager.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>clearAllData</string>
+				<key>leading</key>
+				<string>    }
+    
+    func </string>
+				<key>trailing</key>
+				<string>() throws {
+        guard !records.isEmpty else {
+            throw RealmError.noRecordsToDelete
+</string>
+			</dict>
+			<key>title</key>
+			<string>Валідація видалення всіх записів</string>
 			<key>type</key>
 			<string>bookmark</string>
 		</dict>
@@ -148,13 +152,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>80</string>
+					<string>20</string>
 					<key>StartingColumnNumber</key>
-					<string>4</string>
+					<string>36</string>
 					<key>StartingLineNumber</key>
-					<string>79</string>
+					<string>19</string>
 					<key>Timestamp</key>
-					<string>785407613.306767</string>
+					<string>786320039.7818069</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -163,7 +167,7 @@
 					<key>payload</key>
 					<dict>
 						<key>relative-path</key>
-						<string>RentInspector/Features/Records/ViewModels/RecordsViewModel.swift</string>
+						<string>RentInspector/Core/Models/Record.swift</string>
 					</dict>
 				</dict>
 			</dict>
@@ -173,15 +177,158 @@
 				<string>
 </string>
 				<key>leading</key>
-				<string>        return result
+				<string>    @Persisted var title: String = ""
+    @Persisted var stage: String = RecordStage.moveIn.rawValue
+    @Persisted var rooms: List&lt;Room&gt;</string>
+				<key>trailing</key>
+				<string>    @Persisted var reminderInterval: Int = 0 // Днів до нагадування (0 = вимкнено)
+    @Persisted var nextReminderDate: Date?
+    @Persisted var createdAt: Date = Date()
+</string>
+			</dict>
+			<key>title</key>
+			<string>Композиція, кімната - частина звіту</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>189</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>188</string>
+					<key>Timestamp</key>
+					<string>786320108.954348</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>RentInspector/Core/Services/RealmManager.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>                realm.delete(recordToDelete.rooms)
+</string>
+				<key>leading</key>
+				<string>        do {
+            try realm.write {
+</string>
+				<key>trailing</key>
+				<string>                realm.delete(recordToDelete)
+            }
+            
+</string>
+			</dict>
+			<key>title</key>
+			<string>Використання композиції. Спочатку видалення кімнати, потім запису</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>55</string>
+					<key>StartingColumnNumber</key>
+					<string>50</string>
+					<key>StartingLineNumber</key>
+					<string>54</string>
+					<key>Timestamp</key>
+					<string>786320206.256407</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>RentInspector/Features/CreateRecord/ViewModels/CreateRecordViewModel.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>
+</string>
+				<key>leading</key>
+				<string>        }
     }
-    </string>
+    private var realmManager = RealmManager.shared</string>
 				<key>trailing</key>
-				<string>    private func checkSearchResults() {
-        // Ховаємо попередній toast
-        showErrorToast = false
+				<string>    init(preselectedProperty: Property? = nil) {
+        self.selectedProperty = preselectedProperty
+        autoSelectValidStage()
 </string>
 			</dict>
+			<key>title</key>
+			<string>Використання агрегації. Посилання на обʼєкт, а не фізичне володіння. Схожий принцип у всіх VM</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>10</string>
+					<key>StartingColumnNumber</key>
+					<string>40</string>
+					<key>StartingLineNumber</key>
+					<string>9</string>
+					<key>Timestamp</key>
+					<string>786321021.587778</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>RentInspector/Core/Models/Property.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>
+</string>
+				<key>leading</key>
+				<string>    @Persisted var createdAt: Date = Date()
+    
+    @Persisted var records: List&lt;Record&gt;</string>
+				<key>trailing</key>
+				<string>    
+    // Computed property для відображення в UI
+    var displayName: String {
+</string>
+			</dict>
+			<key>title</key>
+			<string>Використання композиції</string>
 			<key>type</key>
 			<string>bookmark</string>
 		</dict>

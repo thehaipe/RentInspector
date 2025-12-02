@@ -26,7 +26,7 @@ struct PropertiesListView: View {
                         Spacer()
                     }
                 }
-                // Тулбар
+                // Тулбар 
                 ToolbarItem(placement: .topBarTrailing) {
                     if !viewModel.properties.isEmpty {
                         HStack(spacing: 16) {

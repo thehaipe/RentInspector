@@ -16,7 +16,7 @@ class Room: Object, ObjectKeyIdentifiable {
     @Persisted var type: String // RoomType.rawValue
     @Persisted var customName: String = ""
     @Persisted var comment: String = ""
-    //@Persisted var photoData: List<Data> // Зберігаємо фото як Data
+    //@Persisted var photoData: List<Data> // Зберігаю фото як Data
     @Persisted var photoPaths: List<String>
     @Persisted var createdAt: Date = Date()
     
