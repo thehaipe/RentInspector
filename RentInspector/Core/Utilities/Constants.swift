@@ -34,4 +34,18 @@ struct Constants {
         static let minReminderInterval = 30 // днів
         static let maxReminderInterval = 365 // днів
     }
+    
+    enum AppLanguage: String, CaseIterable, Identifiable {
+        case ukrainian = "uk"
+        case english = "en"
+        
+        var id: String { self.rawValue }
+        
+        var displayName: String {
+            switch self {
+            case .ukrainian: return "Українська"
+            case .english: return "English"
+            }
+        }
+    }
 }

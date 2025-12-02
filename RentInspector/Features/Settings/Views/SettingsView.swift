@@ -7,13 +7,14 @@ struct SettingsView: View {
     @StateObject private var viewModel = SettingsViewModel()
     @EnvironmentObject var themeManager: ThemeManager
     @State private var showThemeSheet = false
-    
+    @AppStorage("selectedLanguage") private var languageCode = "uk"
     var body: some View {
             ZStack {
                 List {
                     // Секція Appearance
                     Section {
                         themeButton
+                        languagePicker
                     } header: {
                         Text("Зовнішній вигляд")
                     }
@@ -95,7 +96,26 @@ struct SettingsView: View {
             }
         }
     }
-    
+    // MARK: - Language Picker
+        
+        private var languagePicker: some View {
+            Picker(selection: $languageCode) {
+                ForEach(Constants.AppLanguage.allCases) { language in
+                    Text(language.displayName)
+                        .tag(language.rawValue)
+                }
+            } label: {
+                HStack {
+                    Image(systemName: "globe")
+                        .foregroundColor(AppTheme.primaryColor)
+                        .frame(width: 30)
+                    
+                    Text("Languages")
+                        .foregroundColor(AppTheme.textPrimary)
+                }
+            }
+            .pickerStyle(.menu) 
+        }
     // MARK: - Storage Info
     
     private var storageInfo: some View {
