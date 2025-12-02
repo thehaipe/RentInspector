@@ -39,3 +39,6 @@ enum RoomType: String, Codable, CaseIterable {
         }
     }
 }
+extension RoomType: LocalizableEnum {
+    var localizedKeyPrefix: String { "room_type" }
+}

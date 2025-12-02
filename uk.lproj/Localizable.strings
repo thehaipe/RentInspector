@@ -5,3 +5,98 @@
   Created by Valentyn on 03.12.2025.
   
 */
+/* General Actions */
+"general_save" = "Зберегти";
+"general_cancel" = "Скасувати";
+"general_delete" = "Видалити";
+"general_edit" = "Редагувати";
+"general_done" = "Готово";
+"general_back" = "Назад";
+"general_next" = "Далі";
+"general_close" = "Закрити";
+"general_add" = "Додати";
+"general_create" = "Створити";
+"general_error" = "Помилка";
+"general_success" = "Успіх";
+
+/* Tab Bar */
+"tab_records" = "Звіти";
+"tab_profile" = "Профіль";
+"tab_settings" = "Налаштування";
+"tab_properties" = "Об'єкти";
+
+/* Records List */
+"records_title" = "Звіти";
+"records_empty_title" = "Немає звітів";
+"records_empty_desc" = "Створіть свій перший звіт про стан нерухомості";
+"records_create_button" = "Створити звіт";
+"records_search_placeholder" = "Пошук за назвою...";
+"records_sort" = "Сортування";
+"records_filter" = "Фільтрація";
+
+/* Create Record Flow */
+"create_step_rooms" = "Кількість кімнат";
+"create_step_balcony" = "Балкон та лоджія";
+"create_step_additional" = "Додаткові приміщення";
+"create_step_form" = "Заповнення звіту";
+"create_room_count_title" = "Скільки кімнат?";
+"create_room_count_subtitle" = "Оберіть кількість житлових кімнат";
+"create_balcony_title" = "Чи є у вас балкон, лоджа?";
+"create_balcony_subtitle" = "Оберіть наявні опції";
+"create_additional_title" = "Додаткові кімнати";
+"create_additional_subtitle" = "Вкажіть кількість додаткових приміщень";
+
+/* Record Form */
+"form_title_label" = "Назва звіту";
+"form_title_placeholder" = "Наприклад: Квартира на Шевченка";
+"form_stage_label" = "Етап";
+"form_reminder_label" = "Нагадування про візит";
+"form_reminder_none" = "Не встановлено";
+"form_reminder_days" = "Кожні %d днів";
+"form_add_bathroom" = "Додати санвузол";
+"form_add_photo" = "Додати фото";
+
+/* Room Types (Keys match Enum logic) */
+"room_type_Bedroom" = "Кімната";
+"room_type_Kitchen" = "Кухня";
+"room_type_Bathroom" = "Санвузол";
+"room_type_Balcony" = "Балкон";
+"room_type_Loggia" = "Лоджія";
+"room_type_Wardrobe" = "Гардероб";
+"room_type_Storage" = "Кладова";
+"room_type_Other" = "Інше";
+
+/* Record Stages (Keys match Enum logic) */
+"stage_Move In" = "Заселення";
+"stage_Living" = "Проживання";
+"stage_Move Out" = "Виселення";
+
+/* Settings */
+"settings_appearance" = "Зовнішній вигляд";
+"settings_theme" = "Тема";
+"settings_language" = "Мова";
+"settings_data" = "Дані";
+"settings_storage_info" = "Звітів збережено";
+"settings_clear_data" = "Очистити всі дані";
+"settings_about" = "Про додаток";
+"settings_version" = "Версія";
+"settings_build" = "Збірка";
+"settings_developer" = "Розробник";
+"settings_clear_alert_title" = "Очистити всі дані?";
+"settings_clear_alert_message" = "Всі звіти будуть видалені назавжди. Цю дію неможливо скасувати.";
+
+/* Profile */
+"profile_name_label" = "Ім'я";
+"profile_name_placeholder" = "Введіть ваше ім'я";
+"profile_stats" = "Статистика";
+"profile_total_records" = "Всього звітів";
+"profile_app_usage" = "Використовуєте додаток з";
+"profile_welcome" = "Вітаємо!";
+
+/* Errors & Validation */
+"error_name_short" = "Ім'я занадто коротке";
+"error_name_long" = "Ім'я занадто довге";
+"error_name_invalid" = "Недопустимі символи в імені";
+"error_save_failed" = "Не вдалося зберегти дані";
+"error_delete_room_title" = "Видалити кімнату?";
+"error_delete_room_message" = "Ця кімната та всі її фото будуть видалені.";
