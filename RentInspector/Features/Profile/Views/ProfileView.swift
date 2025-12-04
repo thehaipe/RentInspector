@@ -93,7 +93,7 @@ struct ProfileView: View {
             }
             .shadow(color: AppTheme.primaryColor.opacity(0.3), radius: 20, y: 10)
             
-            Text("Welcome!")
+            Text("profile_welcome")
                 .font(AppTheme.title3)
                 .foregroundColor(AppTheme.textPrimary)
         }
@@ -103,11 +103,11 @@ struct ProfileView: View {
     
     private var nameSection: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("Ім'я")
+            Text("profile_name_label")
                 .font(AppTheme.headline)
                 .foregroundColor(AppTheme.textPrimary)
             
-            TextField("Введіть ваше ім'я", text: $viewModel.userName)
+            TextField("profile_name_placeholder", text: $viewModel.userName)
                 .textFieldStyle(CustomTextFieldStyle())
                 .focused($isNameFocused)
                 .submitLabel(.done)
@@ -122,7 +122,7 @@ struct ProfileView: View {
                 viewModel.saveUserName()
                 isNameFocused = false
             }) {
-                Text("Зберегти")
+                Text("general_save")
                     .font(AppTheme.headline)
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
@@ -141,26 +141,26 @@ struct ProfileView: View {
     
     private var statisticsSection: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("Статистика")
+            Text("profile_stats")
                 .font(AppTheme.headline)
                 .foregroundColor(AppTheme.textPrimary)
             
             VStack(spacing: 12) {
                 statisticRow(
                     icon: "doc.text.fill",
-                    title: "Всього звітів",
+                    title: "profile_total_records",
                     value: "\(RealmManager.shared.getRecordCount())"
                 )
                 
                 statisticRow(
                     icon: "clock.fill",
-                    title: "Використовуєте додаток з",
+                    title: "profile_app_usage",
                     value: installDate
                 )
                 
                 statisticRow(
                     icon: "info.circle.fill",
-                    title: "Версія",
+                    title: "settings_version",
                     value: "\(Constants.AppInfo.version) (\(Constants.AppInfo.build))"
                 )
             }
@@ -208,7 +208,7 @@ struct ProfileView: View {
                 Image(systemName: "checkmark.circle.fill")
                     .foregroundColor(AppTheme.successColor)
                 
-                Text("Ім'я збережено")
+                Text("success_name_saved")
                     .font(AppTheme.callout)
                     .foregroundColor(AppTheme.textPrimary)
                 

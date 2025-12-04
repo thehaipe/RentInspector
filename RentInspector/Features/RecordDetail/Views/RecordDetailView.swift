@@ -74,19 +74,19 @@ struct RecordDetailView: View {
                     Button(action: {
                         viewModel.isEditingTitle = true
                     }) {
-                        Label("Редагувати назву", systemImage: "pencil")
+                        Label("edit_record_title", systemImage: "pencil")
                     }
                     
                     Button(action: {
                         exportPDF()
                     }) {
-                        Label("Експорт PDF", systemImage: "arrow.down.doc")
+                        Label("export_pdf_from_selected_record", systemImage: "arrow.down.doc")
                     }
                     
                     Button(role: .destructive, action: {
                         viewModel.showDeleteAlert = true
                     }) {
-                        Label("Видалити звіт", systemImage: "trash")
+                        Label("delete_record", systemImage: "trash")
                     }
                 } label: {
                     Image(systemName: "ellipsis.circle")
@@ -107,25 +107,25 @@ struct RecordDetailView: View {
             ))
         }
         // Алерт редагування назви
-        .alert("Редагувати назву", isPresented: $viewModel.isEditingTitle) {
+        .alert("edit_record_title", isPresented: $viewModel.isEditingTitle) {
             TextField("Назва звіту", text: $viewModel.editedTitle)
-            Button("Скасувати", role: .cancel) {
+            Button("general_cancel", role: .cancel) {
                 viewModel.editedTitle = viewModel.record.title
             }
-            Button("Зберегти") {
+            Button("general_save") {
                 viewModel.saveTitle()
             }
         }
         // Алерт видалення
-        .alert("Видалити звіт?", isPresented: $viewModel.showDeleteAlert) {
-            Button("Скасувати", role: .cancel) { }
-            Button("Видалити", role: .destructive) {
+        .alert("delete_record", isPresented: $viewModel.showDeleteAlert) {
+            Button("general_cancel", role: .cancel) { }
+            Button("general_delete", role: .destructive) {
                 viewModel.deleteRecord {
                     dismiss()
                 }
             }
         } message: {
-            Text("Цей звіт буде видалено назавжди. Цю дію неможливо скасувати.")
+            Text("error_delete_record_confirmation")
         }
         // Пікер нагадування
         .sheet(isPresented: $viewModel.showReminderPicker) {
@@ -162,7 +162,7 @@ struct RecordDetailView: View {
                             .font(AppTheme.body)
                             .foregroundColor(AppTheme.textPrimary)
                     } else {
-                        Text("Прив'язати до об'єкту")
+                        Text("attach_to_property")
                             .font(AppTheme.body)
                             .foregroundColor(AppTheme.textSecondary)
                             .italic()
@@ -192,8 +192,8 @@ struct RecordDetailView: View {
             
             // Статистика
             HStack(spacing: 24) {
-                statItem(icon: "door.left.hand.open", value: "\(viewModel.record.rooms.count)", label: "Кімнат")
-                statItem(icon: "photo", value: "\(viewModel.record.totalPhotos)", label: "Фото")
+                statItem(icon: "door.left.hand.open", value: "\(viewModel.record.rooms.count)", label: "record_room")
+                statItem(icon: "photo", value: "\(viewModel.record.totalPhotos)", label: "record_photo")
             }
         }
         .padding(16)
@@ -225,7 +225,7 @@ struct RecordDetailView: View {
     
     private var stageSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Етап")
+            Text("record_stage")
                 .font(AppTheme.headline)
                 .foregroundColor(AppTheme.textPrimary)
             
@@ -329,7 +329,7 @@ struct RecordDetailView: View {
                         viewModel.showReminderPicker = false
                     }) {
                         HStack {
-                            Text("Вимкнено")
+                            Text("turned_off")
                                 .foregroundColor(AppTheme.textPrimary)
                             Spacer()
                             if viewModel.record.reminderInterval == 0 {
@@ -340,7 +340,7 @@ struct RecordDetailView: View {
                     }
                 }
                 
-                Section("Інтервал нагадування") {
+                Section("form_remiender_range") {
                     ForEach([7, 14, 30, 60, 90], id: \.self) { days in
                         Button(action: {
                             viewModel.updateReminderInterval(days)
@@ -359,11 +359,11 @@ struct RecordDetailView: View {
                     }
                 }
             }
-            .navigationTitle("Нагадування")
+            .navigationTitle("remiender")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Готово") {
+                    Button("general_done") {
                         viewModel.showReminderPicker = false
                     }
                 }
@@ -376,7 +376,7 @@ struct RecordDetailView: View {
     
     private var roomsSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Кімнати")
+            Text("record_rooms")
                 .font(AppTheme.headline)
                 .foregroundColor(AppTheme.textPrimary)
                 .padding(.horizontal, 16)
@@ -401,7 +401,7 @@ struct RecordDetailView: View {
             HStack(spacing: 12) {
                 Image(systemName: "trash.fill")
                     .font(.title3)
-                Text("Видалити звіт")
+                Text("delete_record")
                     .font(AppTheme.headline)
             }
             .foregroundColor(.white)

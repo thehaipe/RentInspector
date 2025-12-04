@@ -59,7 +59,7 @@ struct ThemeSelectionView: View {
                 }
             }
         }
-        .navigationTitle("Вибір теми")
+        .navigationTitle("settings_choose_theme")
         .navigationBarTitleDisplayMode(.inline)
     }
     

@@ -61,14 +61,14 @@ struct RecordCardView: View {
                 statItem(
                     icon: "door.left.hand.open",
                     value: "\(record.rooms.count)",
-                    label: "Кімнат"
+                    label: "record_room"
                 )
                 
                 // Фото
                 statItem(
                     icon: "photo",
                     value: "\(record.totalPhotos)",
-                    label: "Фото"
+                    label: "record_photo"
                 )
                 
                 // Нагадування

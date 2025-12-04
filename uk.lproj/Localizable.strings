@@ -1,10 +1,9 @@
-/* 
-  Localizable.strings
+/* Localizable.strings
   RentInspector
 
-  Created by Valentyn on 03.12.2025.
-  
+  Ukrainian Localization
 */
+
 /* General Actions */
 "general_save" = "Зберегти";
 "general_cancel" = "Скасувати";
@@ -18,6 +17,8 @@
 "general_create" = "Створити";
 "general_error" = "Помилка";
 "general_success" = "Успіх";
+"general_change" = "Змінити";
+"general_pdf_export" = "Експортувати PDF";
 
 /* Tab Bar */
 "tab_records" = "Звіти";
@@ -29,10 +30,28 @@
 "records_title" = "Звіти";
 "records_empty_title" = "Немає звітів";
 "records_empty_desc" = "Створіть свій перший звіт про стан нерухомості";
+"records_first_record" = "Створити перший звіт";
 "records_create_button" = "Створити звіт";
 "records_search_placeholder" = "Пошук за назвою...";
 "records_sort" = "Сортування";
 "records_filter" = "Фільтрація";
+"records_filter_by_date" = "Фільтр за датою";
+"records_new_record" = "Новий звіт";
+"records_photos" = "Фотографії";
+"records_no_photos" = "Фото відсутні";
+"records_comment" = "Коментар";
+"records_new_property" = "Новий обʼєкт";
+"records_delete_record" = "Видалити звіт";
+
+/* Record Detail & Actions */
+"export_pdf_from_selected_record" = "Експорт PDF";
+"delete_record" = "Видалити звіт?"; // Зверніть увагу: це значення перекрило попереднє "Видалити звіт" у вашому оригіналі, якщо вони були в одному файлі. Тут згруповано.
+"edit_record_title" = "Редагувати назву";
+"record_rooms" = "Кімнати";
+"record_room" = "Кімнат";
+"record_photo" = "Фото";
+"record_stage" = "Етап";
+"record_created" = "Звіт створено!";
 
 /* Create Record Flow */
 "create_step_rooms" = "Кількість кімнат";
@@ -45,9 +64,11 @@
 "create_balcony_subtitle" = "Оберіть наявні опції";
 "create_additional_title" = "Додаткові кімнати";
 "create_additional_subtitle" = "Вкажіть кількість додаткових приміщень";
+"create_save_record" = "Зберегти звіт";
 
 /* Record Form */
 "form_title_label" = "Назва звіту";
+"form_blank_address" = "Без адреси";
 "form_title_placeholder" = "Наприклад: Квартира на Шевченка";
 "form_stage_label" = "Етап";
 "form_reminder_label" = "Нагадування про візит";
@@ -55,8 +76,24 @@
 "form_reminder_days" = "Кожні %d днів";
 "form_add_bathroom" = "Додати санвузол";
 "form_add_photo" = "Додати фото";
+"form_remiender_range" = "Інтервал нагадування";
+"form_record_title_label" = "Назва";
 
-/* Room Types (Keys match Enum logic) */
+/* Properties Management */
+"property" = "Обʼєкт нерухомості";
+"choose_property" = "Обрати обʼєкт";
+"no_properties" = "Немає обʼєктів";
+"create_first_property" = "Створіть свій перший обʼєкт нерухомості, щоб групувати звіти.";
+"add_property" = "Додати обʼєкт";
+"property_placeholder_name_label" = "Назва (напр. Студія на окружній)";
+"property_placeholder_address_label" = "Адреса (напр. вул. Наукова 1)";
+"deatach_record_from_property" = "Відвʼязати від обʼєкту";
+"property_no_records_yet" = "У цьому обʼєкті ще намає звітів";
+"not_attach_to_property" = "Не привʼязувати";
+"attach_to_property" = "Привʼязати до обʼєкту";
+"choose_property_title" = "Оберіть обʼєкт";
+
+/* Room Types */
 "room_type_Bedroom" = "Кімната";
 "room_type_Kitchen" = "Кухня";
 "room_type_Bathroom" = "Санвузол";
@@ -66,12 +103,13 @@
 "room_type_Storage" = "Кладова";
 "room_type_Other" = "Інше";
 
-/* Record Stages (Keys match Enum logic) */
+/* Record Stages */
 "stage_Move In" = "Заселення";
 "stage_Living" = "Проживання";
 "stage_Move Out" = "Виселення";
 
 /* Settings */
+"settings" = "Налаштування";
 "settings_appearance" = "Зовнішній вигляд";
 "settings_theme" = "Тема";
 "settings_language" = "Мова";
@@ -84,14 +122,20 @@
 "settings_developer" = "Розробник";
 "settings_clear_alert_title" = "Очистити всі дані?";
 "settings_clear_alert_message" = "Всі звіти будуть видалені назавжди. Цю дію неможливо скасувати.";
+"settings_choose_theme" = "Вибір теми";
 
 /* Profile */
+"profile" = "Профіль";
 "profile_name_label" = "Ім'я";
 "profile_name_placeholder" = "Введіть ваше ім'я";
 "profile_stats" = "Статистика";
 "profile_total_records" = "Всього звітів";
 "profile_app_usage" = "Використовуєте додаток з";
 "profile_welcome" = "Вітаємо!";
+
+/* Success Messages */
+"success_name_saved" = "Імʼя збережено!";
+"success_all_records_deleted" = "Дані успішно видалено";
 
 /* Errors & Validation */
 "error_name_short" = "Ім'я занадто коротке";
@@ -100,3 +144,12 @@
 "error_save_failed" = "Не вдалося зберегти дані";
 "error_delete_room_title" = "Видалити кімнату?";
 "error_delete_room_message" = "Ця кімната та всі її фото будуть видалені.";
+"error_delete_comfirmation" = "Ви впевнені, що хочете видалити цю кімнату та всі введені дані?";
+"error_delete_record_confirmation" = "Цей звіт буде видалено назавжди. Цю дію неможливо скасувати.";
+"error_delete_all_records_alert_title" = "Всі звіти будуть видалені назавжди. Цю дію неможливо скасувати.";
+
+/* Miscellaneous / Common Phrases */
+"add_bathroom" = "Додати санвузол";
+"turned_off" = "Вимкнено";
+"days" = "днів";
+"remiender" = "Нагадування";

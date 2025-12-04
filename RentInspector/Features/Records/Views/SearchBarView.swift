@@ -11,7 +11,7 @@ struct SearchBar: View {
             Image(systemName: "magnifyingglass")
                 .foregroundColor(AppTheme.textSecondary)
             
-            TextField("Пошук за назвою...", text: $text)
+            TextField("records_search_placeholder", text: $text)
                 .textFieldStyle(PlainTextFieldStyle())
             
             if !text.isEmpty {

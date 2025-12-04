@@ -36,11 +36,11 @@ struct RecordFormView: View {
             }
             .padding()
         }
-        .navigationTitle(viewModel.recordTitle.isEmpty ? "Новий звіт" : viewModel.recordTitle)
+        .navigationTitle(viewModel.recordTitle.isEmpty ? "records_new_record" : viewModel.recordTitle)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
-                Button("Скасувати") {
+                Button("general_cancel") {
                     dismiss()
                 }
             }
@@ -54,7 +54,7 @@ struct RecordFormView: View {
         
         private var recordTitleSection: some View {
             VStack(alignment: .leading, spacing: 8) {
-                Text("Назва звіту")
+                Text("form_title_label")
                     .font(AppTheme.headline)
                     .foregroundColor(AppTheme.textPrimary)
                 
@@ -81,7 +81,7 @@ struct RecordFormView: View {
                             HStack(spacing: 4) {
                                 Image(systemName: "checkmark.circle.fill")
                                     .font(.caption)
-                                Text("Готово")
+                                Text("general_done")
                                     .font(AppTheme.caption)
                                     .fontWeight(.semibold)
                             }
@@ -102,7 +102,7 @@ struct RecordFormView: View {
     
     private var recordStageSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Етап")
+            Text("form_stage_label")
                 .font(AppTheme.headline)
                 .foregroundColor(AppTheme.textPrimary)
             
@@ -167,7 +167,7 @@ struct RecordFormView: View {
                     }) {
                         HStack {
                             Image(systemName: "plus.circle.fill")
-                            Text("Додати санвузол")
+                            Text("add_bathroom")
                                 .font(AppTheme.callout)
                         }
                         .foregroundColor(AppTheme.primaryColor)
@@ -182,7 +182,7 @@ struct RecordFormView: View {
     
     private var reminderSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Нагадування про візит")
+            Text("form_reminder_label")
                 .font(AppTheme.headline)
                 .foregroundColor(AppTheme.textPrimary)
             
@@ -194,10 +194,10 @@ struct RecordFormView: View {
                         .foregroundColor(AppTheme.primaryColor)
                     
                     if viewModel.reminderInterval > 0 {
-                        Text("Кожні \(viewModel.reminderInterval) днів")
+                        Text("form_reminder_days \(viewModel.reminderInterval)")
                             .foregroundColor(AppTheme.textPrimary)
                     } else {
-                        Text("Не встановлено")
+                        Text("form_reminder_none")
                             .foregroundColor(AppTheme.textSecondary)
                     }
                     
@@ -223,7 +223,7 @@ struct RecordFormView: View {
                         showReminderPicker = false
                     }) {
                         HStack {
-                            Text("Вимкнено")
+                            Text("turned_off")
                                 .foregroundColor(AppTheme.textPrimary)
                             Spacer()
                             if viewModel.reminderInterval == 0 {
@@ -234,14 +234,14 @@ struct RecordFormView: View {
                     }
                 }
                 
-                Section("Інтервал нагадування") {
+                Section("form_remiender_range") {
                     ForEach([30, 60, 180, 360], id: \.self) { days in
                         Button(action: {
                             viewModel.reminderInterval = days
                             showReminderPicker = false
                         }) {
                             HStack {
-                                Text("\(days) днів")
+                                Text("\(days) days")
                                     .foregroundColor(AppTheme.textPrimary)
                                 Spacer()
                                 if viewModel.reminderInterval == days {
@@ -253,11 +253,11 @@ struct RecordFormView: View {
                     }
                 }
             }
-            .navigationTitle("Нагадування")
+            .navigationTitle("remiender")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Готово") {
+                    Button("general_done") {
                         showReminderPicker = false
                     }
                 }
@@ -268,7 +268,7 @@ struct RecordFormView: View {
     // MARK: - Add Property Picker
     private var addPropertyPicker: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Об'єкт нерухомості")
+            Text("property")
                 .font(AppTheme.headline)
                 .foregroundColor(AppTheme.textPrimary)
             
@@ -282,7 +282,7 @@ struct RecordFormView: View {
                         .foregroundColor(AppTheme.textPrimary)
                     Spacer()
                     // Кнопка "Змінити", якщо це не пре-вибір
-                    Button("Змінити") {
+                    Button("general_change") {
                         showPropertyPicker = true
                     }
                     .font(AppTheme.caption)
@@ -297,7 +297,7 @@ struct RecordFormView: View {
                 }) {
                     HStack {
                         Image(systemName: "building.2")
-                        Text("Обрати об'єкт")
+                        Text("choose_property")
                         Spacer()
                         Image(systemName: "chevron.right")
                     }
@@ -328,7 +328,7 @@ struct RecordFormView: View {
                 } else {
                     Image(systemName: "checkmark.circle.fill")
                         .font(.title3)
-                    Text("Зберегти звіт")
+                    Text("create_save_record")
                         .font(AppTheme.headline)
                 }
             }

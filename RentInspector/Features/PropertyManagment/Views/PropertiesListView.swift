@@ -20,7 +20,7 @@ struct PropertiesListView: View {
             .toolbar {
                 ToolbarItem(placement: .principal) {
                     HStack {
-                        Text("Properies")
+                        Text("tab_properties")
                             .font(AppTheme.title2)
                             .fontWeight(.bold)
                         Spacer()
@@ -118,7 +118,7 @@ struct PropertiesListView: View {
                                         .foregroundColor(AppTheme.textPrimary)
                                 }
                                 
-                                Text(property.address.isEmpty ? "Без адреси" : property.address)
+                                Text(property.address.isEmpty ? "form_blank_address" : property.address)
                                     .font(property.name.isEmpty ? AppTheme.headline : AppTheme.caption)
                                     .foregroundColor(property.name.isEmpty ? AppTheme.textPrimary : AppTheme.textSecondary)
                             }
@@ -147,11 +147,11 @@ struct PropertiesListView: View {
                 .font(.system(size: 80))
                 .foregroundColor(AppTheme.textSecondary.opacity(0.5))
             
-            Text("Немає об'єктів")
+            Text("no_properties")
                 .font(AppTheme.title2)
                 .foregroundColor(AppTheme.textPrimary)
             
-            Text("Створіть свій перший об'єкт нерухомості, щоб групувати звіти.")
+            Text("create_first_property")
                 .font(AppTheme.body)
                 .foregroundColor(AppTheme.textSecondary)
                 .multilineTextAlignment(.center)
@@ -160,7 +160,7 @@ struct PropertiesListView: View {
             Button(action: {
                 viewModel.showAddPropertySheet = true
             }) {
-                Text("Додати об'єкт")
+                Text("add_property")
                     .font(AppTheme.headline)
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
@@ -176,7 +176,7 @@ struct PropertiesListView: View {
     private var filterSheet: some View {
         NavigationStack {
             List {
-                Section("Фільтр за датою") {
+                Section("records_filter_by_date") {
                     ForEach(RecordsViewModel.DateFilter.allCases, id: \.self) { filter in
                         Button(action: {
                             viewModel.selectedDateFilter = filter
@@ -195,11 +195,11 @@ struct PropertiesListView: View {
                     }
                 }
             }
-            .navigationTitle("Фільтрація")
+            .navigationTitle("records_filter")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Готово") {
+                    Button("general_done") {
                         showFilterSheet = false
                     }
                 }
@@ -212,21 +212,21 @@ struct PropertiesListView: View {
         NavigationStack {
             Form {
                 Section(header: Text("Інформація про об'єкт")) {
-                    TextField("Назва (напр. Офіс)", text: $viewModel.newPropertyName)
-                    TextField("Адреса (напр. вул. Хрещатик 1)", text: $viewModel.newPropertyAddress)
+                    TextField("property_placeholder_name_label", text: $viewModel.newPropertyName)
+                    TextField("property_placeholder_address_label", text: $viewModel.newPropertyAddress)
                 }
             }
-            .navigationTitle("Новий об'єкт")
+            .navigationTitle("records_new_property")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Скасувати") {
+                    Button("general_cancel") {
                         viewModel.showAddPropertySheet = false
                     }
                 }
                 
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Зберегти") {
+                    Button("general_save") {
                         viewModel.createProperty()
                     }
                     .disabled(viewModel.newPropertyName.isEmpty && viewModel.newPropertyAddress.isEmpty)

@@ -19,11 +19,11 @@ struct RoomDetailView: View {
                     roomTypeSection
                     
                     // Назва (Read Only)
-                    infoSection(title: "Назва", text: room.displayName)
+                    infoSection(title: "form_record_title_label", text: room.displayName)
                     
                     // Коментар (Read Only)
                     if !room.comment.isEmpty {
-                        infoSection(title: "Коментар", text: room.comment)
+                        infoSection(title: "records_comment", text: room.comment)
                     }
                     
                     // Фотографії (Тільки перегляд)
@@ -35,7 +35,7 @@ struct RoomDetailView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Закрити") {
+                    Button("general_close") {
                         dismiss()
                     }
                 }
@@ -85,12 +85,12 @@ struct RoomDetailView: View {
     
     private var photosSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Фотографії")
+            Text("records_photos")
                 .font(AppTheme.headline)
                 .foregroundColor(AppTheme.textPrimary)
             
             if room.photoPaths.isEmpty {
-                Text("Фото відсутні")
+                Text("records_no_photos")
                     .font(AppTheme.body)
                     .foregroundColor(AppTheme.textSecondary)
                     .italic()

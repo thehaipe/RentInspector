@@ -16,7 +16,7 @@ struct SettingsView: View {
                         themeButton
                         languagePicker
                     } header: {
-                        Text("Зовнішній вигляд")
+                        Text("settings_appearance")
                     }
                     
                     // Секція Data
@@ -26,23 +26,23 @@ struct SettingsView: View {
                         }
                         clearDataButton
                     } header: {
-                        Text("Дані")
+                        Text("settings_data")
                     }
                     
                     // Секція About
                     Section {
-                        aboutRow(icon: "info.circle.fill", title: "Версія", value: Constants.AppInfo.version)
-                        aboutRow(icon: "number.circle.fill", title: "Збірка", value: Constants.AppInfo.build)
-                        aboutRow(icon: "hammer.fill", title: "Розробник", value: "")
+                        aboutRow(icon: "info.circle.fill", title: "settings_version", value: Constants.AppInfo.version)
+                        aboutRow(icon: "number.circle.fill", title: "settings_build", value: Constants.AppInfo.build)
+                        aboutRow(icon: "hammer.fill", title: "settings_developer", value: "")
                     } header: {
-                        Text("Про додаток")
+                        Text("settings_about")
                     }
                 }
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     //розташування або principal, або largeTitle, чекаю оновлення аби подивитись Canvas
                     ToolbarItem(placement: .principal) {
-                        Text("Налаштування")
+                        Text("settings")
                             .font(AppTheme.title2)
                             .fontWeight(.bold)
                     }
@@ -50,13 +50,13 @@ struct SettingsView: View {
                 .sheet(isPresented: $showThemeSheet) {
                     themeSelectionSheet
                 }
-                .alert("Очистити всі дані?", isPresented: $viewModel.showClearDataAlert) {
-                    Button("Скасувати", role: .cancel) { }
-                    Button("Видалити", role: .destructive) {
+                .alert("settings_clear_alert_title", isPresented: $viewModel.showClearDataAlert) {
+                    Button("general_cancel", role: .cancel) { }
+                    Button("general_delete", role: .destructive) {
                         viewModel.clearAllData()
                     }
                 } message: {
-                    Text("Всі звіти будуть видалені назавжди. Цю дію неможливо скасувати.")
+                    Text("error_delete_all_records_alert_title")
                 }
                 
                 // Success Toast
@@ -82,7 +82,7 @@ struct SettingsView: View {
                     .foregroundColor(AppTheme.primaryColor)
                     .frame(width: 30)
                 
-                Text("Тема")
+                Text("settings_theme")
                     .foregroundColor(AppTheme.textPrimary)
                 
                 Spacer()
@@ -110,11 +110,11 @@ struct SettingsView: View {
                         .foregroundColor(AppTheme.primaryColor)
                         .frame(width: 30)
                     
-                    Text("Languages")
+                    Text("settings_language")
                         .foregroundColor(AppTheme.textPrimary)
                 }
             }
-            .pickerStyle(.menu) 
+            .pickerStyle(.automatic)
         }
     // MARK: - Storage Info
     
@@ -124,7 +124,7 @@ struct SettingsView: View {
                 .foregroundColor(AppTheme.primaryColor)
                 .frame(width: 30)
             
-            Text("Звітів збережено")
+            Text("settings_storage_info")
                 .foregroundColor(AppTheme.textPrimary)
             
             Spacer()
@@ -145,7 +145,7 @@ struct SettingsView: View {
                     .foregroundColor(AppTheme.errorColor)
                     .frame(width: 30)
                 
-                Text("Очистити всі дані")
+                Text("settings_clear_data")
                     .foregroundColor(AppTheme.errorColor)
             }
         }
@@ -199,11 +199,11 @@ struct SettingsView: View {
                     }
                 }
             }
-            .navigationTitle("Вибір теми")
+            .navigationTitle("settings_choose_theme")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Готово") {
+                    Button("general_done") {
                         showThemeSheet = false
                     }
                 }
@@ -220,7 +220,7 @@ struct SettingsView: View {
                     Image(systemName: "checkmark.circle.fill")
                         .foregroundColor(AppTheme.successColor)
                     
-                    Text("Дані успішно видалено")
+                    Text("success_all_records_deleted")
                         .font(AppTheme.callout)
                         .foregroundColor(AppTheme.textPrimary)
                     

@@ -27,7 +27,7 @@ struct RecordsView: View {
             // Title (по центру, але зліва від кнопок)
             ToolbarItem(placement: .principal) {
                 HStack {
-                    Text("Records")
+                    Text("records_title")
                         .font(AppTheme.title2)
                         .fontWeight(.bold)
                     Spacer()
@@ -108,7 +108,7 @@ struct RecordsView: View {
                                 Button(role: .destructive) {
                                     viewModel.deleteRecord(record)
                                 } label: {
-                                    Label("Видалити", systemImage: "trash")
+                                    Label("general_delete", systemImage: "trash")
                                 }
                             }
                     }
@@ -146,7 +146,7 @@ struct RecordsView: View {
     private var filterSheet: some View {
         NavigationStack {
             List {
-                Section("Фільтр за датою") {
+                Section("records_filter_by_date") {
                     ForEach(RecordsViewModel.DateFilter.allCases, id: \.self) { filter in
                         Button(action: {
                             viewModel.selectedDateFilter = filter
@@ -165,11 +165,11 @@ struct RecordsView: View {
                     }
                 }
             }
-            .navigationTitle("Фільтрація")
+            .navigationTitle("records_filter")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Готово") {
+                    Button("general_done") {
                         showFilterSheet = false
                     }
                 }

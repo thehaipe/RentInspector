@@ -26,12 +26,12 @@ struct PropertyDetailView: View {
                                     Button {
                                         unlinkRecord(record)
                                     } label: {
-                                        Label("Відв'язати від об'єкту", systemImage: "link.badge.minus")
+                                        Label("deatach_record_from_property", systemImage: "link.badge.minus")
                                     }
                                     Button(role: .destructive) {
                                         realmManager.deleteRecord(record)
                                     } label: {
-                                        Label("Видалити звіт", systemImage: "trash")
+                                        Label("records_delete_record", systemImage: "trash")
                                     }
                                 }
                         }
@@ -65,14 +65,14 @@ struct PropertyDetailView: View {
                 .font(.system(size: 60))
                 .foregroundColor(AppTheme.textSecondary.opacity(0.5))
             
-            Text("У цьому об'єкті ще немає звітів")
+            Text("property_no_records_yet")
                 .font(AppTheme.body)
                 .foregroundColor(AppTheme.textSecondary)
             
             Button(action: {
                 showCreateRecord = true
             }) {
-                Text("Створити перший звіт")
+                Text("records_first_record")
                     .font(AppTheme.headline)
                     .foregroundColor(.white)
                     .padding()

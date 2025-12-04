@@ -13,7 +13,7 @@ struct PropertySelectionView: View {
                     selectedProperty = nil
                     dismiss()
                 }) {
-                    Text("Не прив'язувати")
+                    Text("not_attach_to_property")
                         .foregroundColor(.secondary)
                 }
                 
@@ -35,11 +35,11 @@ struct PropertySelectionView: View {
                     }
                 }
             }
-            .navigationTitle("Оберіть об'єкт")
+            .navigationTitle("Оchoose_property_title")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Скасувати") { dismiss() }
+                    Button("general_cancel") { dismiss() }
                 }
             }
         }

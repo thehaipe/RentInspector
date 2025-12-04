@@ -27,7 +27,7 @@ struct RecordSuccessView: View {
             
             // Текст
             VStack(spacing: 12) {
-                Text("Звіт створено!")
+                Text("record_created")
                     .font(AppTheme.title)
                     .foregroundColor(AppTheme.textPrimary)
                 
@@ -47,7 +47,7 @@ struct RecordSuccessView: View {
                     HStack(spacing: 12) {
                         Image(systemName: "arrow.down.doc.fill")
                             .font(.title3)
-                        Text("Експортувати PDF")
+                        Text("general_pdf_export")
                             .font(AppTheme.headline)
                     }
                     .foregroundColor(.white)
@@ -59,7 +59,7 @@ struct RecordSuccessView: View {
                 }
                 
                 Button(action: onDismiss) {
-                    Text("Готово")
+                    Text("general_done")
                         .font(AppTheme.headline)
                         .foregroundColor(AppTheme.primaryColor)
                         .frame(maxWidth: .infinity)
@@ -98,7 +98,7 @@ struct ShareSheet: UIViewControllerRepresentable {
 }
 
 #Preview {
-    let record = Record(title: "Квартира на Шевченка", stage: .moveIn)
+    let record = Record(title: "form_title_placeholder", stage: .moveIn)
     
     return RecordSuccessView(
         record: record,

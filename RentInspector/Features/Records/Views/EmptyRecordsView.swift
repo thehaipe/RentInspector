@@ -24,11 +24,11 @@ struct EmptyRecordsView: View {
             
             // Текст
             VStack(spacing: 8) {
-                Text("Немає звітів")
+                Text("records_empty_title")
                     .font(AppTheme.title2)
                     .foregroundColor(AppTheme.textPrimary)
                 
-                Text("Створіть свій перший звіт про стан нерухомості")
+                Text("records_empty_desc")
                     .font(AppTheme.body)
                     .foregroundColor(AppTheme.textSecondary)
                     .multilineTextAlignment(.center)
@@ -40,7 +40,7 @@ struct EmptyRecordsView: View {
                 HStack(spacing: 12) {
                     Image(systemName: "plus.circle.fill")
                         .font(.title3)
-                    Text("Створити звіт")
+                    Text("records_create_button")
                         .font(AppTheme.headline)
                 }
                 .foregroundColor(.white)
