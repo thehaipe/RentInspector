@@ -45,7 +45,7 @@
 
 /* Record Detail & Actions */
 "export_pdf_from_selected_record" = "Експорт PDF";
-"delete_record" = "Видалити звіт?"; // Зверніть увагу: це значення перекрило попереднє "Видалити звіт" у вашому оригіналі, якщо вони були в одному файлі. Тут згруповано.
+"delete_record" = "Видалити звіт?"; 
 "edit_record_title" = "Редагувати назву";
 "record_rooms" = "Кімнати";
 "record_room" = "Кімнат";

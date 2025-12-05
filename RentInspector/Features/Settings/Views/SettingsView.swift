@@ -37,6 +37,13 @@ struct SettingsView: View {
                     } header: {
                         Text("settings_about")
                     }
+                    Section{
+                        aboutRow(icon: "doc.text.fill", title: "profile_total_records", value: "\(RealmManager.shared.getRecordCount())")
+                        aboutRow(icon: "clock.fill", title: "profile_app_usage", value: installDate)
+                        aboutRow(icon: "info.circle.fill", title: "settings_version", value: "\(Constants.AppInfo.version) (\(Constants.AppInfo.build))")
+                    } header: {
+                        Text("profile_stats")
+                    }
                 }
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
@@ -153,7 +160,7 @@ struct SettingsView: View {
     
     // MARK: - About Row
     
-    private func aboutRow(icon: String, title: String, value: String) -> some View {
+    private func aboutRow(icon: String, title: LocalizedStringKey, value: String) -> some View {
         HStack {
             Image(systemName: icon)
                 .foregroundColor(AppTheme.primaryColor)
@@ -260,6 +267,16 @@ struct SettingsView: View {
             }
             .padding(.top, 16)
             .transition(.move(edge: .top).combined(with: .opacity))
+        }
+        private var installDate: String {
+            if let installDate = UserDefaults.standard.object(forKey: "installDate") as? Date {
+                return installDate.formatted(date: .abbreviated, time: .omitted)
+            } else {
+                // Якщо дати немає (перший запуск), зберігаємо поточну
+                let now = Date()
+                UserDefaults.standard.set(now, forKey: "installDate")
+                return now.formatted(date: .abbreviated, time: .omitted)
+            }
         }
 }
 

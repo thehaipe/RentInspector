@@ -118,7 +118,7 @@ struct PropertiesListView: View {
                                         .foregroundColor(AppTheme.textPrimary)
                                 }
                                 
-                                Text(property.address.isEmpty ? "form_blank_address" : property.address)
+                                Text(property.address.isEmpty ? "form_blank_address".localized : property.address)
                                     .font(property.name.isEmpty ? AppTheme.headline : AppTheme.caption)
                                     .foregroundColor(property.name.isEmpty ? AppTheme.textPrimary : AppTheme.textSecondary)
                             }

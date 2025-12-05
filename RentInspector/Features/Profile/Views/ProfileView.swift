@@ -29,7 +29,7 @@ struct ProfileView: View {
             .toolbar {
                 //розташування або principal, або largeTitle, чекаю оновлення аби подивитись Canvas
                 ToolbarItem(placement: .principal) {
-                    Text("Профіль")
+                    Text("profile")
                         .font(AppTheme.title2)
                         .fontWeight(.bold)
                 }
@@ -170,7 +170,7 @@ struct ProfileView: View {
         .cornerRadius(AppTheme.cornerRadiusMedium)
     }
     
-    private func statisticRow(icon: String, title: String, value: String) -> some View {
+    private func statisticRow(icon: String, title: LocalizedStringKey, value: String) -> some View {
         HStack {
             Image(systemName: icon)
                 .foregroundColor(AppTheme.primaryColor)

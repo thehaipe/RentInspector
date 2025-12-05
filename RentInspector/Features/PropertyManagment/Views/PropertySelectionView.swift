@@ -35,7 +35,7 @@ struct PropertySelectionView: View {
                     }
                 }
             }
-            .navigationTitle("Оchoose_property_title")
+            .navigationTitle("choose_property_title")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {

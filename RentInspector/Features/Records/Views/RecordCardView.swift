@@ -90,7 +90,7 @@ struct RecordCardView: View {
     }
     
     // Повернули старий дизайн: Іконка (Колір) + Число (Жирне) + Текст (Сірий)
-    private func statItem(icon: String, value: String, label: String) -> some View {
+    private func statItem(icon: String, value: String, label: LocalizedStringKey) -> some View {
         HStack(spacing: 6) {
             Image(systemName: icon)
                 .font(.body) // Трохи більша іконка
