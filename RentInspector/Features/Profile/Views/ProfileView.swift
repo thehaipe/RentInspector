@@ -18,7 +18,7 @@ struct ProfileView: View {
                     nameSection
                     
                     // Статистика
-                    statisticsSection
+                    //statisticsSection
                     
                     Spacer()
                 }
@@ -139,56 +139,56 @@ struct ProfileView: View {
     
     // MARK: - Statistics Section
     
-    private var statisticsSection: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Text("profile_stats")
-                .font(AppTheme.headline)
-                .foregroundColor(AppTheme.textPrimary)
-            
-            VStack(spacing: 12) {
-                statisticRow(
-                    icon: "doc.text.fill",
-                    title: "profile_total_records",
-                    value: "\(RealmManager.shared.getRecordCount())"
-                )
-                
-                statisticRow(
-                    icon: "clock.fill",
-                    title: "profile_app_usage",
-                    value: installDate
-                )
-                
-                statisticRow(
-                    icon: "info.circle.fill",
-                    title: "settings_version",
-                    value: "\(Constants.AppInfo.version) (\(Constants.AppInfo.build))"
-                )
-            }
-        }
-        .padding(20)
-        .background(AppTheme.secondaryBackgroundColor)
-        .cornerRadius(AppTheme.cornerRadiusMedium)
-    }
-    
-    private func statisticRow(icon: String, title: LocalizedStringKey, value: String) -> some View {
-        HStack {
-            Image(systemName: icon)
-                .foregroundColor(AppTheme.primaryColor)
-                .frame(width: 30)
-            
-            Text(title)
-                .font(AppTheme.callout)
-                .foregroundColor(AppTheme.textSecondary)
-            
-            Spacer()
-            
-            Text(value)
-                .font(AppTheme.callout)
-                .fontWeight(.semibold)
-                .foregroundColor(AppTheme.textPrimary)
-        }
-        //Зміено, спроба зробити перехід до RecordsView(), результат потрібно провалідувати після оновлення симулятора
-    }
+//    private var statisticsSection: some View {
+//        VStack(alignment: .leading, spacing: 16) {
+//            Text("profile_stats")
+//                .font(AppTheme.headline)
+//                .foregroundColor(AppTheme.textPrimary)
+//            
+//            VStack(spacing: 12) {
+//                statisticRow(
+//                    icon: "doc.text.fill",
+//                    title: "profile_total_records",
+//                    value: "\(RealmManager.shared.getRecordCount())"
+//                )
+//                
+//                statisticRow(
+//                    icon: "clock.fill",
+//                    title: "profile_app_usage",
+//                    value: installDate
+//                )
+//                
+//                statisticRow(
+//                    icon: "info.circle.fill",
+//                    title: "settings_version",
+//                    value: "\(Constants.AppInfo.version) (\(Constants.AppInfo.build))"
+//                )
+//            }
+//        }
+//        .padding(20)
+//        .background(AppTheme.secondaryBackgroundColor)
+//        .cornerRadius(AppTheme.cornerRadiusMedium)
+//    }
+//    
+//    private func statisticRow(icon: String, title: LocalizedStringKey, value: String) -> some View {
+//        HStack {
+//            Image(systemName: icon)
+//                .foregroundColor(AppTheme.primaryColor)
+//                .frame(width: 30)
+//            
+//            Text(title)
+//                .font(AppTheme.callout)
+//                .foregroundColor(AppTheme.textSecondary)
+//            
+//            Spacer()
+//            
+//            Text(value)
+//                .font(AppTheme.callout)
+//                .fontWeight(.semibold)
+//                .foregroundColor(AppTheme.textPrimary)
+//        }
+//        //Зміено, спроба зробити перехід до RecordsView(), результат потрібно провалідувати після оновлення симулятора
+//    }
     
     private var installDate: String {
         if let installDate = UserDefaults.standard.object(forKey: "installDate") as? Date {

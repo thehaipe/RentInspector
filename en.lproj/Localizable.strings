@@ -113,7 +113,7 @@
 "settings_appearance" = "Appearance";
 "settings_theme" = "Theme";
 "settings_language" = "Language";
-"settings_data" = "Data";
+"settings_data" = "Stats & Data";
 "settings_storage_info" = "Saved Records";
 "settings_clear_data" = "Clear All Data";
 "settings_about" = "About";
@@ -128,7 +128,7 @@
 "profile" = "Profile";
 "profile_name_label" = "Name";
 "profile_name_placeholder" = "Enter your name";
-"profile_stats" = "Statistics";
+"profile_stats" = "Stats";
 "profile_total_records" = "Total Records";
 "profile_app_usage" = "Member Since";
 "profile_welcome" = "Welcome!";

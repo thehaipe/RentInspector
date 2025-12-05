@@ -18,9 +18,9 @@ struct SettingsView: View {
                     } header: {
                         Text("settings_appearance")
                     }
-                    
-                    // Секція Data
+                    // Секція Stats & Data
                     Section {
+                        aboutRow(icon: "clock.fill", title: "profile_app_usage", value: installDate)
                         NavigationLink(destination: RecordsView()) {
                             storageInfo
                         }
@@ -36,13 +36,6 @@ struct SettingsView: View {
                         aboutRow(icon: "hammer.fill", title: "settings_developer", value: "")
                     } header: {
                         Text("settings_about")
-                    }
-                    Section{
-                        aboutRow(icon: "doc.text.fill", title: "profile_total_records", value: "\(RealmManager.shared.getRecordCount())")
-                        aboutRow(icon: "clock.fill", title: "profile_app_usage", value: installDate)
-                        aboutRow(icon: "info.circle.fill", title: "settings_version", value: "\(Constants.AppInfo.version) (\(Constants.AppInfo.build))")
-                    } header: {
-                        Text("profile_stats")
                     }
                 }
                 .navigationBarTitleDisplayMode(.inline)
