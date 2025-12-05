@@ -9,11 +9,7 @@ enum RecordStage: String, Codable, CaseIterable {
     case moveOut = "Move Out"
     
     var displayName: String {
-        switch self {
-        case .moveIn: return "Заселення"
-        case .living: return "Проживання"
-        case .moveOut: return "Виселення"
-        }
+        return localizedName
     }
     
     var icon: String {

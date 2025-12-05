@@ -108,7 +108,7 @@ struct RecordDetailView: View {
         }
         // Алерт редагування назви
         .alert("edit_record_title", isPresented: $viewModel.isEditingTitle) {
-            TextField("Назва звіту", text: $viewModel.editedTitle)
+            TextField("form_title_label", text: $viewModel.editedTitle)
             Button("general_cancel", role: .cancel) {
                 viewModel.editedTitle = viewModel.record.title
             }
@@ -202,7 +202,7 @@ struct RecordDetailView: View {
         .cornerRadius(AppTheme.cornerRadiusMedium)
     }
     
-    private func statItem(icon: String, value: String, label: String) -> some View {
+    private func statItem(icon: String, value: String, label: LocalizedStringKey) -> some View {
         HStack(spacing: 8) {
             Image(systemName: icon)
                 .font(.title3)
@@ -278,7 +278,7 @@ struct RecordDetailView: View {
     
     private var reminderSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Нагадування")
+            Text("remiender")
                 .font(AppTheme.headline)
                 .foregroundColor(AppTheme.textPrimary)
             

@@ -92,14 +92,14 @@ struct CreateRecordCoordinator: View {
         return CGFloat(viewModel.currentStep.rawValue + 1) / totalSteps
     }
     
-    private var stepTitle: String {
+    private var stepTitle: LocalizedStringKey {
         switch viewModel.currentStep {
         case .roomCount:
-            return "Крок 1: Кількість кімнат"
+            return "create_room_count_title"
         case .balconyLoggia:
-            return "Крок 2: Балкон та лоджія"
+            return "create_balcony_title"
         case .additionalRooms:
-            return "Крок 3: Додаткові приміщення"
+            return "create_additional_title"
         case .recordForm:
             return "Крок 4: Заповнення звіту"
         }

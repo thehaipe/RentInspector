@@ -58,11 +58,11 @@
 "create_step_balcony" = "Balcony & Loggia";
 "create_step_additional" = "Additional Rooms";
 "create_step_form" = "Fill Report";
-"create_room_count_title" = "How many rooms?";
+"create_room_count_title" = "Step 1: How many rooms?";
 "create_room_count_subtitle" = "Select the number of living rooms";
-"create_balcony_title" = "Do you have a balcony?";
+"create_balcony_title" = "Step 2: Do you have a balcony?";
 "create_balcony_subtitle" = "Select available options";
-"create_additional_title" = "Additional Rooms";
+"create_additional_title" = "Step 3: Additional Rooms";
 "create_additional_subtitle" = "Specify number of extra rooms";
 "create_save_record" = "Save Report";
 
@@ -153,3 +153,4 @@
 "turned_off" = "Off";
 "days" = "days";
 "remiender" = "Reminder";
+/*  */
