@@ -96,7 +96,7 @@ class RecordsViewModel: ObservableObject {
             if !currentSearchText.isEmpty
                 && !self.records.isEmpty
                 && self.filteredRecords.isEmpty {
-                self.showError("Звіт за назвою '\(currentSearchText)' не знайдено")
+                self.showError("search_result_not_found".localized(currentSearchText))
             }
         }
     }

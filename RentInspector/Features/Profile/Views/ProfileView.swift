@@ -93,7 +93,7 @@ struct ProfileView: View {
             }
             .shadow(color: AppTheme.primaryColor.opacity(0.3), radius: 20, y: 10)
             
-            Text("profile_welcome")
+            Text("profile_welcome_user_format".localized(viewModel.userName))
                 .font(AppTheme.title3)
                 .foregroundColor(AppTheme.textPrimary)
         }

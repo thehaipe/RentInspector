@@ -254,7 +254,7 @@ struct RecordDetailView: View {
                     Text(stage.displayName)
                         .font(AppTheme.caption)
                 }
-                .foregroundColor(isSelected ? .white : AppTheme.textSecondary.opacity(0.5)) // Неактивні - бліді
+                .foregroundColor(isSelected ? .white : AppTheme.textSecondary.opacity(0.5))
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 12)
                 .background(
@@ -401,7 +401,7 @@ struct RecordDetailView: View {
             HStack(spacing: 12) {
                 Image(systemName: "trash.fill")
                     .font(.title3)
-                Text("delete_record")
+                Text("general_delete")
                     .font(AppTheme.headline)
             }
             .foregroundColor(.white)

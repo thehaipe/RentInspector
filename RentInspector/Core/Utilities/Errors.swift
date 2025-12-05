@@ -10,15 +10,15 @@ enum RealmError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .noRecordsToDelete:
-            return "Немає записів до видалення"
+            return NSLocalizedString("realm_no_records", comment: "")
         case .recordNotFound:
-            return "Запис не знайдено"
+            return NSLocalizedString("realm_record_not_found", comment: "")
         case .roomNotFound:
-            return "Кімнату не знайдено"
+            return NSLocalizedString("realm_room_not_found", comment: "")
         case .operationFailed(let message):
-            return "Помилка операції: \(message)"
+            return String(format: NSLocalizedString("realm_operation_failed", comment: ""), message)
         case .invalidData:
-            return "Невалідні дані"
+            return NSLocalizedString("realm_invalid_data", comment: "")
         }
     }
     
@@ -48,17 +48,17 @@ enum ValidationError: LocalizedError {
     case containsSpecialCharacters
     
     var errorDescription: String? {
-        switch self {
-        case .nameTooShort:
-            return "Ім'я має містити мінімум 2 символи"
-        case .nameTooLong:
-            return "Ім'я має містити максимум 50 символів"
-        case .invalidCharacters:
-            return "Дозволено тільки літери (латиниця/кирилиця)"
-        case .containsDigits:
-            return "Ім'я не може містити цифри"
-        case .containsSpecialCharacters:
-            return "Ім'я не може містити спецсимволи"
+            switch self {
+            case .nameTooShort:
+                return NSLocalizedString("error_name_short", comment: "")
+            case .nameTooLong:
+                return NSLocalizedString("error_name_long", comment: "")
+            case .invalidCharacters:
+                return NSLocalizedString("error_name_letters_only", comment: "")
+            case .containsDigits:
+                return NSLocalizedString("error_name_digits", comment: "")
+            case .containsSpecialCharacters:
+                return NSLocalizedString("error_name_special_chars", comment: "")
+            }
         }
-    }
 }

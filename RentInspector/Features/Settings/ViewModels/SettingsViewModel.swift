@@ -29,7 +29,7 @@ class SettingsViewModel: ObservableObject {
             }
         } catch let error as RealmError {
             // Показуємо error toast
-            errorMessage = error.errorDescription ?? "Невідома помилка"
+            errorMessage = error.errorDescription ?? "error_unknown".localized
             
             withAnimation {
                 showErrorToast = true

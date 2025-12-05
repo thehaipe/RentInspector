@@ -118,7 +118,7 @@ struct RoomDetailView: View {
                         .clipped()
                 }
                 
-                Text("Фото \(index + 1)")
+                Text("photo_number_format".localized(index + 1))
                     .font(AppTheme.callout)
                     .fontWeight(.semibold)
                     .foregroundColor(AppTheme.textPrimary)
