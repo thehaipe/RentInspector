@@ -291,15 +291,15 @@ struct RecordDetailView: View {
                     
                     VStack(alignment: .leading, spacing: 4) {
                         if viewModel.record.reminderInterval > 0 {
-                            Text("Кожні \(viewModel.record.reminderInterval) днів")
+                            Text("form_reminder_days".localized(viewModel.record.reminderInterval))
                                 .foregroundColor(AppTheme.textPrimary)
                                 .font(AppTheme.body)
                             
-                            Text("Наступний візит: \(viewModel.nextReminderText)")
+                            Text("record_next_visit".localized(viewModel.nextReminderText))
                                 .foregroundColor(AppTheme.textSecondary)
                                 .font(AppTheme.caption)
                         } else {
-                            Text("Не встановлено")
+                            Text("form_reminder_none")
                                 .foregroundColor(AppTheme.textSecondary)
                         }
                     }
@@ -347,7 +347,7 @@ struct RecordDetailView: View {
                             viewModel.showReminderPicker = false
                         }) {
                             HStack {
-                                Text("\(days) днів")
+                                Text("\(days) \("days".localized)")
                                     .foregroundColor(AppTheme.textPrimary)
                                 Spacer()
                                 if viewModel.record.reminderInterval == days {

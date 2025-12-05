@@ -23,24 +23,24 @@ class RecordsViewModel: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     
     enum DateFilter: String, CaseIterable {
-        case all = "Всі"
-        case today = "Сьогодні"
-        case week = "Тиждень"
-        case month = "Місяць"
-        case year = "Рік"
-    }
+            case all = "all"
+            case today = "today"
+            case week = "week"
+            case month = "month"
+            case year = "year"
+        }
     
     enum SortOrder: String, CaseIterable {
-        case ascending = "За зростанням"
-        case descending = "За спаданням"
-        
-        var icon: String {
-            switch self {
-            case .ascending: return "arrow.up.circle"
-            case .descending: return "arrow.down.circle"
+            case ascending = "ascending"
+            case descending = "descending"
+            
+            var icon: String {
+                switch self {
+                case .ascending: return "arrow.up.circle"
+                case .descending: return "arrow.down.circle"
+                }
             }
         }
-    }
     
     init() {
         self.records = realmManager.records

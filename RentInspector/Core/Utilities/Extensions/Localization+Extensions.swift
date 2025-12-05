@@ -28,3 +28,24 @@ extension LocalizableEnum where Self: RawRepresentable, Self.RawValue == String 
         return NSLocalizedString(key, comment: "")
     }
 }
+extension RecordsViewModel.DateFilter: LocalizableEnum {
+    var localizedKeyPrefix: String { "filter" }
+}
+
+extension RecordsViewModel.SortOrder: LocalizableEnum {
+    var localizedKeyPrefix: String { "sort" }
+}
+extension RoomType: LocalizableEnum {
+    var localizedKeyPrefix: String { "room_type" }
+}
+extension RecordStage: LocalizableEnum {
+    var localizedKeyPrefix: String { "stage" }
+}
+extension ThemeManager.Theme: LocalizableEnum {
+    
+    var localizedName: String {
+        let key = "theme_\(self.rawValue.lowercased())" // "theme_light"
+        return NSLocalizedString(key, comment: "")
+    }
+    var localizedKeyPrefix: String { "theme" }
+}

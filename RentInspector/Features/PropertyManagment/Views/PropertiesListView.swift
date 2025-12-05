@@ -211,7 +211,7 @@ struct PropertiesListView: View {
     private var addPropertySheet: some View {
         NavigationStack {
             Form {
-                Section(header: Text("Інформація про об'єкт")) {
+                Section(header: Text("property_information")) {
                     TextField("property_placeholder_name_label", text: $viewModel.newPropertyName)
                     TextField("property_placeholder_address_label", text: $viewModel.newPropertyAddress)
                 }

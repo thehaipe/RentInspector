@@ -52,8 +52,10 @@
 "record_photo" = "Фото";
 "record_stage" = "Етап";
 "record_created" = "Звіт створено!";
+"record_next_visit" = "Наступний візит: %@";
 
 /* Create Record Flow */
+"onboarding_step_format" = "Крок %d: %@"; 
 "create_step_rooms" = "Кількість кімнат";
 "create_step_balcony" = "Балкон та лоджія";
 "create_step_additional" = "Додаткові приміщення";
@@ -64,6 +66,8 @@
 "create_balcony_subtitle" = "Оберіть наявні опції";
 "create_additional_title" = "Додаткові кімнати";
 "create_additional_subtitle" = "Вкажіть кількість додаткових приміщень";
+"create_room_option_format" = "%d-кімнатна";
+"create_action_to_record" = "До запису";
 "create_save_record" = "Зберегти звіт";
 
 /* Record Form */
@@ -92,6 +96,8 @@
 "not_attach_to_property" = "Не привʼязувати";
 "attach_to_property" = "Привʼязати до обʼєкту";
 "choose_property_title" = "Оберіть обʼєкт";
+"property_search_not_found" = "Об'єкт за запитом '%@' не знайдено";
+"property_information" = "Інформація про обʼєкт";
 
 /* Room Types */
 "room_type_Bedroom" = "Кімната";
@@ -153,3 +159,37 @@
 "turned_off" = "Вимкнено";
 "days" = "днів";
 "remiender" = "Нагадування";
+
+/* --- (Enums & Dynamic Phrases) --- */
+/* Date Filter (RecordsViewModel) */
+"filter_all" = "Всі";
+"filter_today" = "Сьогодні";
+"filter_week" = "Тиждень";
+"filter_month" = "Місяць";
+"filter_year" = "Рік";
+
+/* Sort Order (RecordsViewModel) */
+"sort_ascending" = "За зростанням";
+"sort_descending" = "За спаданням";
+
+/* App Theme (ThemeManager) */
+"theme_light" = "Світла";
+"theme_dark" = "Темна";
+"theme_auto" = "Авто";
+"theme_desc_light" = "Завжди світла тема";
+"theme_desc_dark" = "Завжди темна тема";
+"theme_desc_auto" = "Відповідно до системи";
+
+/* Default Generated Names (CreateRecordViewModel) */
+/* %d will be replaced by number (e.g. "Кімната 1") */
+"default_room_bedroom" = "Кімната %d";
+"default_room_bathroom" = "Санвузол %d";
+"default_room_wardrobe" = "Гардероб %d";
+"default_room_storage" = "Кладова %d";
+"default_room_other" = "Інше %d";
+"default_room_balcony" = "Балкон %d";
+"default_room_loggia" = "Лоджія %d";
+"default_record_title_format" = "Звіт %@"; /* e.g. Record 20 Nov */
+
+/* Search & Errors */
+"search_result_not_found" = "Звіт за назвою '%@' не знайдено";

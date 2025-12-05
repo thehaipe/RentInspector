@@ -20,6 +20,4 @@ enum RecordStage: String, Codable, CaseIterable {
         }
     }
 }
-extension RecordStage: LocalizableEnum {
-    var localizedKeyPrefix: String { "stage" }
-}
+

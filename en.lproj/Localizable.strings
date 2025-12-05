@@ -52,19 +52,24 @@
 "record_photo" = "Photos";
 "record_stage" = "Stage";
 "record_created" = "Report Created!";
+"record_next_visit" = "Next visit: %@";
 
 /* Create Record Flow */
+"onboarding_step_format" = "Step %d: %@"; /* Format: "Step 1: Room Count" */
 "create_step_rooms" = "Room Count";
 "create_step_balcony" = "Balcony & Loggia";
 "create_step_additional" = "Additional Rooms";
 "create_step_form" = "Fill Report";
-"create_room_count_title" = "Step 1: How many rooms?";
+"create_step_rooms" = "Room Count";
+"create_room_count_title" = "How many rooms?";
 "create_room_count_subtitle" = "Select the number of living rooms";
-"create_balcony_title" = "Step 2: Do you have a balcony?";
+"create_balcony_title" = "Do you have a balcony?";
 "create_balcony_subtitle" = "Select available options";
-"create_additional_title" = "Step 3: Additional Rooms";
+"create_additional_title" = "Additional Rooms";
 "create_additional_subtitle" = "Specify number of extra rooms";
-"create_save_record" = "Save Report";
+"create_room_option_format" = "%d-room";
+"create_action_to_record" = "Go to Record";
+"create_save_record" = "Save Record";
 
 /* Record Form */
 "form_title_label" = "Report Title";
@@ -86,12 +91,14 @@
 "create_first_property" = "Create your first property to group reports.";
 "add_property" = "Add Property";
 "property_placeholder_name_label" = "Name (e.g. Studio on 5th Ave)";
-"property_placeholder_address_label" = "Address (e.g. 1 Main St)";
+"property_placeholder_address_label" = "Address (e.g. Naukova St. 1)";
 "deatach_record_from_property" = "Detach from Property";
 "property_no_records_yet" = "No reports for this property yet";
 "not_attach_to_property" = "Do Not Attach";
 "attach_to_property" = "Attach to Property";
 "choose_property_title" = "Select Property";
+"property_search_not_found" = "No property found matching '%@'";
+"property_information" = "Property Information";
 
 /* Room Types */
 "room_type_Bedroom" = "Bedroom";
@@ -153,4 +160,36 @@
 "turned_off" = "Off";
 "days" = "days";
 "remiender" = "Reminder";
-/*  */
+
+/* --- (Enums & Dynamic Phrases) --- */
+/* Date Filter (RecordsViewModel) */
+"filter_all" = "All";
+"filter_today" = "Today";
+"filter_week" = "Week";
+"filter_month" = "Month";
+"filter_year" = "Year";
+
+/* Sort Order (RecordsViewModel) */
+"sort_ascending" = "Ascending";
+"sort_descending" = "Descending";
+
+/* App Theme (ThemeManager) */
+"theme_light" = "Light";
+"theme_dark" = "Dark";
+"theme_auto" = "Auto";
+"theme_desc_light" = "Always light theme";
+"theme_desc_dark" = "Always dark theme";
+"theme_desc_auto" = "Follow system settings";
+
+/* Default Generated Names (CreateRecordViewModel) */
+"default_room_bedroom" = "Room %d";
+"default_room_bathroom" = "Bathroom %d";
+"default_room_wardrobe" = "Wardrobe %d";
+"default_room_storage" = "Storage %d";
+"default_room_other" = "Other %d";
+"default_room_balcony" = "Balcony %d";
+"default_room_loggia" = "Loggia %d";
+"default_record_title_format" = "Record %@";
+
+/* Search & Errors */
+"search_result_not_found" = "Report with title '%@' not found";

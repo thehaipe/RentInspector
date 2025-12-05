@@ -92,18 +92,22 @@ struct CreateRecordCoordinator: View {
         return CGFloat(viewModel.currentStep.rawValue + 1) / totalSteps
     }
     
-    private var stepTitle: LocalizedStringKey {
-        switch viewModel.currentStep {
-        case .roomCount:
-            return "create_room_count_title"
-        case .balconyLoggia:
-            return "create_balcony_title"
-        case .additionalRooms:
-            return "create_additional_title"
-        case .recordForm:
-            return "Крок 4: Заповнення звіту"
+    private var stepTitle: String {
+            let stepNumber = viewModel.currentStep.rawValue + 1
+            let stepNameKey: String
+            
+            switch viewModel.currentStep {
+            case .roomCount:
+                stepNameKey = "create_step_rooms"
+            case .balconyLoggia:
+                stepNameKey = "create_step_balcony"
+            case .additionalRooms:
+                stepNameKey = "create_step_additional"
+            case .recordForm:
+                stepNameKey = "create_step_form"       
+            }
+            return "onboarding_step_format".localized(stepNumber, stepNameKey.localized)
         }
-    }
     
     // MARK: - Current Step View
     

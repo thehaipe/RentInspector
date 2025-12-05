@@ -14,11 +14,11 @@ struct AdditionalRoomsSelectionView: View {
                     .font(.system(size: 60))
                     .foregroundColor(AppTheme.primaryColor)
                 
-                Text("Додаткові кімнати")
+                Text("create_additional_title")
                     .font(AppTheme.title)
                     .foregroundColor(AppTheme.textPrimary)
                 
-                Text("Вкажіть кількість додаткових приміщень")
+                Text("create_additional_subtitle")
                     .font(AppTheme.body)
                     .foregroundColor(AppTheme.textSecondary)
                     .multilineTextAlignment(.center)
@@ -31,19 +31,19 @@ struct AdditionalRoomsSelectionView: View {
             VStack(spacing: 20) {
                 counterOption(
                     icon: "cabinet.fill",
-                    title: "Гардероб",
+                    title: "room_type_Wardrobe",
                     count: $viewModel.wardrobeCount
                 )
                 
                 counterOption(
                     icon: "archivebox.fill",
-                    title: "Кладова",
+                    title: "room_type_Storage",
                     count: $viewModel.storageCount
                 )
                 
                 counterOption(
                     icon: "questionmark.circle.fill",
-                    title: "Інше",
+                    title: "room_type_Other",
                     count: $viewModel.otherCount
                 )
             }
@@ -56,7 +56,7 @@ struct AdditionalRoomsSelectionView: View {
                 Button(action: {
                     viewModel.previousStep()
                 }) {
-                    Text("Назад")
+                    Text("general_back")
                         .font(AppTheme.headline)
                         .foregroundColor(AppTheme.primaryColor)
                         .frame(maxWidth: .infinity)
@@ -68,7 +68,7 @@ struct AdditionalRoomsSelectionView: View {
                 Button(action: {
                     viewModel.nextStep()
                 }) {
-                    Text("До запису")
+                    Text("create_action_to_record")
                         .font(AppTheme.headline)
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
@@ -84,7 +84,7 @@ struct AdditionalRoomsSelectionView: View {
         .background(AppTheme.backgroundColor)
     }
     
-    private func counterOption(icon: String, title: String, count: Binding<Int>) -> some View {
+    private func counterOption(icon: String, title: LocalizedStringKey, count: Binding<Int>) -> some View {
         HStack {
             Image(systemName: icon)
                 .font(.title2)

@@ -20,7 +20,7 @@ struct SettingsView: View {
                     }
                     // Секція Stats & Data
                     Section {
-                        aboutRow(icon: "clock.fill", title: "profile_app_usage", value: installDate)
+                        infoRow(icon: "clock.fill", title: "profile_app_usage", value: installDate)
                         NavigationLink(destination: RecordsView()) {
                             storageInfo
                         }
@@ -31,9 +31,9 @@ struct SettingsView: View {
                     
                     // Секція About
                     Section {
-                        aboutRow(icon: "info.circle.fill", title: "settings_version", value: Constants.AppInfo.version)
-                        aboutRow(icon: "number.circle.fill", title: "settings_build", value: Constants.AppInfo.build)
-                        aboutRow(icon: "hammer.fill", title: "settings_developer", value: "")
+                        infoRow(icon: "info.circle.fill", title: "settings_version", value: Constants.AppInfo.version)
+                        infoRow(icon: "number.circle.fill", title: "settings_build", value: Constants.AppInfo.build)
+                        infoRow(icon: "hammer.fill", title: "settings_developer", value: "")
                     } header: {
                         Text("settings_about")
                     }
@@ -153,7 +153,7 @@ struct SettingsView: View {
     
     // MARK: - About Row
     
-    private func aboutRow(icon: String, title: LocalizedStringKey, value: String) -> some View {
+    private func infoRow(icon: String, title: LocalizedStringKey, value: String) -> some View {
         HStack {
             Image(systemName: icon)
                 .foregroundColor(AppTheme.primaryColor)

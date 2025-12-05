@@ -14,11 +14,11 @@ struct BalconySelectionView: View {
                     .font(.system(size: 60))
                     .foregroundColor(AppTheme.primaryColor)
                 
-                Text("Чи є у вас балкон, лоджа?")
+                Text("create_balcony_title")
                     .font(AppTheme.title)
                     .foregroundColor(AppTheme.textPrimary)
                 
-                Text("Оберіть наявні опції")
+                Text("create_balcony_subtitle")
                     .font(AppTheme.body)
                     .foregroundColor(AppTheme.textSecondary)
             }
@@ -30,13 +30,13 @@ struct BalconySelectionView: View {
             VStack(spacing: 20) {
                 toggleOption(
                     icon: "sun.max.fill",
-                    title: "Балкон",
+                    title: "room_type_Balcony",
                     isOn: $viewModel.hasBalcony
                 )
                 
                 toggleOption(
                     icon: "rectangle.stack.fill",
-                    title: "Лоджа",
+                    title: "room_type_Loggia",
                     isOn: $viewModel.hasLoggia
                 )
             }
@@ -49,7 +49,7 @@ struct BalconySelectionView: View {
                 Button(action: {
                     viewModel.previousStep()
                 }) {
-                    Text("Назад")
+                    Text("general_back")
                         .font(AppTheme.headline)
                         .foregroundColor(AppTheme.primaryColor)
                         .frame(maxWidth: .infinity)
@@ -61,7 +61,7 @@ struct BalconySelectionView: View {
                 Button(action: {
                     viewModel.nextStep()
                 }) {
-                    Text("Далі")
+                    Text("general_next")
                         .font(AppTheme.headline)
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
@@ -77,7 +77,7 @@ struct BalconySelectionView: View {
         .background(AppTheme.backgroundColor)
     }
     
-    private func toggleOption(icon: String, title: String, isOn: Binding<Bool>) -> some View {
+    private func toggleOption(icon: String, title: LocalizedStringKey, isOn: Binding<Bool>) -> some View {
         HStack {
             Image(systemName: icon)
                 .font(.title2)

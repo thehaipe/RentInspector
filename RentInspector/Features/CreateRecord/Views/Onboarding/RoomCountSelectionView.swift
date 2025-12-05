@@ -16,11 +16,11 @@ struct RoomCountSelectionView: View {
                     .font(.system(size: 60))
                     .foregroundColor(AppTheme.primaryColor)
                 
-                Text("Скільки кімнат?")
+                Text("create_step_rooms")
                     .font(AppTheme.title)
                     .foregroundColor(AppTheme.textPrimary)
                 
-                Text("Оберіть кількість житлових кімнат")
+                Text("create_room_count_subtitle")
                     .font(AppTheme.body)
                     .foregroundColor(AppTheme.textSecondary)
             }
@@ -36,7 +36,7 @@ struct RoomCountSelectionView: View {
             }
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button("Скасувати") {
+                    Button("general_cancel") {
                         dismiss()
                     }
                 }
@@ -49,7 +49,7 @@ struct RoomCountSelectionView: View {
             Button(action: {
                 viewModel.nextStep()
             }) {
-                Text("Далі")
+                Text("general_next")
                     .font(AppTheme.headline)
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
@@ -74,7 +74,7 @@ struct RoomCountSelectionView: View {
             }
         }) {
             HStack {
-                Text("\(count)-кімнатна")
+                Text("create_room_option_format".localized(count))
                     .font(AppTheme.headline)
                     .foregroundColor(viewModel.selectedRoomCount == count ? .white : AppTheme.textPrimary)
                 
