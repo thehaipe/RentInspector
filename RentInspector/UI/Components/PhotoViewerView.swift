@@ -1,7 +1,7 @@
 /*
  UI-елемент: Перегляд фото
  */
-import SwiftUI
+internal import SwiftUI
 
 struct PhotoViewerView: View {
     let image: UIImage

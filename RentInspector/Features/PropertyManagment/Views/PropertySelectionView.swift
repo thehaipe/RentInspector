@@ -1,4 +1,4 @@
-import SwiftUI
+internal import SwiftUI
 
 struct PropertySelectionView: View {
     @Binding var selectedProperty: Property?

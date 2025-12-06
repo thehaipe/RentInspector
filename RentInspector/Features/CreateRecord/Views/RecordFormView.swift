@@ -1,7 +1,7 @@
 /*
  Екран форми звіту. На цьому екрані заповнюється вся інформація про квартиру, додаються фото, коментарі, встановлюються нагадування.
  */
-import SwiftUI
+internal import SwiftUI
 import PhotosUI
 
 struct RecordFormView: View {
@@ -194,7 +194,7 @@ struct RecordFormView: View {
                         .foregroundColor(AppTheme.primaryColor)
                     
                     if viewModel.reminderInterval > 0 {
-                        Text("form_reminder_days \(viewModel.reminderInterval)")
+                        Text("form_reminder_days".localized(viewModel.reminderInterval))
                             .foregroundColor(AppTheme.textPrimary)
                     } else {
                         Text("form_reminder_none")

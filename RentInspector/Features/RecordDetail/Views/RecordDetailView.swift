@@ -1,7 +1,7 @@
 /*
  Екран перегляду готового звіту та елементи взаємодії з ним.
  */
-import SwiftUI
+internal import SwiftUI
 import RealmSwift
 
 struct RecordDetailView: View {

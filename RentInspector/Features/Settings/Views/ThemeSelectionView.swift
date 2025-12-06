@@ -1,7 +1,7 @@
 /*
  UI-компонент: Зміна теми додатку
  */
-import SwiftUI
+internal import SwiftUI
 
 struct ThemeSelectionView: View {
     @EnvironmentObject var themeManager: ThemeManager

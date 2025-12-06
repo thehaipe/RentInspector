@@ -1,7 +1,7 @@
 /*
  Екран додавання балкону, лоджі
  */
-import SwiftUI
+internal import SwiftUI
 
 struct BalconySelectionView: View {
     @ObservedObject var viewModel: CreateRecordViewModel

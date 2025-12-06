@@ -70,6 +70,7 @@
 "create_room_option_format" = "%d-кімнатна";
 "create_action_to_record" = "До запису";
 "create_save_record" = "Зберегти звіт";
+"days_short" = " д";
 
 /* Record Form */
 "form_title_label" = "Назва звіту";
@@ -205,3 +206,8 @@
 "realm_room_not_found" = "Кімнату не знайдено";
 "realm_operation_failed" = "Помилка операції: %@";
 "realm_invalid_data" = "Невалідні дані";
+/* PDF Export */
+"pdf_date_created" = "Дата створення: %@";
+"pdf_total_photos" = "Всього фото: %d";
+"pdf_generated_by" = "Згенеровано RentInspector • %@";
+"pdf_statistics_title" = "Статистика";

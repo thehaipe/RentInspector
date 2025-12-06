@@ -1,7 +1,7 @@
 /*
  Екран налаштувань додатку
  */
-import SwiftUI
+internal import SwiftUI
 
 struct SettingsView: View {
     @StateObject private var viewModel = SettingsViewModel()

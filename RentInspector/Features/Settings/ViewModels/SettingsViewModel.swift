@@ -1,7 +1,7 @@
 /*
  Класс для роботи з налаштуваннями додатку
  */
-import SwiftUI
+internal import SwiftUI
 internal import Combine
 
 @MainActor

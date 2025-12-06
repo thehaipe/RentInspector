@@ -1,7 +1,7 @@
 /*
  Екран відображення списку всіх записів
  */
-import SwiftUI
+internal import SwiftUI
 import RealmSwift
 
 struct RecordsView: View {

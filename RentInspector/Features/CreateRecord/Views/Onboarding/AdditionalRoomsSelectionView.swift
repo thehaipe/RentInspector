@@ -1,7 +1,7 @@
 /*
  Екран додоаткових кімнат, які можуть як бути в квартирі, так їх може і не бути (гардероб, кладова, інше). 
  */
-import SwiftUI
+internal import SwiftUI
 
 struct AdditionalRoomsSelectionView: View {
     @ObservedObject var viewModel: CreateRecordViewModel

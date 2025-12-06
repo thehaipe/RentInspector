@@ -1,5 +1,5 @@
 //Entry Point
-import SwiftUI
+internal import SwiftUI
 import RealmSwift
 internal import Combine
 @main

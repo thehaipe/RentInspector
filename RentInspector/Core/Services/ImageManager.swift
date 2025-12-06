@@ -1,4 +1,4 @@
-import SwiftUI
+internal import SwiftUI
 
 class ImageManager {
     static let shared = ImageManager()

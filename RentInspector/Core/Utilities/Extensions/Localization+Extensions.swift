@@ -1,4 +1,4 @@
-import SwiftUI
+internal import SwiftUI
 
 extension String {
     var localized: String {
@@ -38,8 +38,17 @@ extension RecordsViewModel.SortOrder: LocalizableEnum {
 extension RoomType: LocalizableEnum {
     var localizedKeyPrefix: String { "room_type" }
 }
-extension RecordStage: LocalizableEnum {
-    var localizedKeyPrefix: String { "stage" }
+extension RoomType {
+    var localizedStringValue: String {
+        let key = "room_type_\(self.rawValue)"
+        return NSLocalizedString(key, comment: "")
+    }
+}
+extension RecordStage {
+    var localizedStringValue: String {
+        let key = "stage_\(self.rawValue)"
+        return NSLocalizedString(key, comment: "")
+    }
 }
 extension ThemeManager.Theme: LocalizableEnum {
     

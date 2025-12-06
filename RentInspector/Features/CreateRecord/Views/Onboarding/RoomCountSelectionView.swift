@@ -1,7 +1,7 @@
 /*
  Екран вибору кількості кімнат
  */
-import SwiftUI
+internal import SwiftUI
 
 struct RoomCountSelectionView: View {
     @ObservedObject var viewModel: CreateRecordViewModel

@@ -1,7 +1,7 @@
 /*
  Клас для створення звіту за шаблоном (кількість кімнат, наявність балкону чи лоджі, гардеробу, кладової або іншої кімнати). Тільки цей клас обслуговує створення звіту.
  */
-import SwiftUI
+internal import SwiftUI
 internal import Combine
 import RealmSwift
 
@@ -75,8 +75,12 @@ class CreateRecordViewModel: ObservableObject {
         var comment: String
         var photos: [Data]
         
-        var displayName: String {
-            return customName.isEmpty ? type.displayName : customName
+        var displayName: LocalizedStringKey {
+            if customName.isEmpty {
+                return type.displayName
+            } else {
+                return LocalizedStringKey(customName)
+            }
         }
     }
     

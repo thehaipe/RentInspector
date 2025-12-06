@@ -1,4 +1,4 @@
-import SwiftUI
+internal import SwiftUI
 import RealmSwift
 
 struct RoomDetailView: View {
@@ -23,7 +23,7 @@ struct RoomDetailView: View {
                     
                     // Коментар (Read Only)
                     if !room.comment.isEmpty {
-                        infoSection(title: "records_comment", text: room.comment)
+                        infoSection(title: "records_comment", text: room.displayName)
                     }
                     
                     // Фотографії (Тільки перегляд)
@@ -67,7 +67,7 @@ struct RoomDetailView: View {
     }
     
     // Універсальна картка для тексту
-    private func infoSection(title: String, text: String) -> some View {
+    private func infoSection(title: LocalizedStringKey, text: LocalizedStringKey) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(title)
                 .font(AppTheme.headline)

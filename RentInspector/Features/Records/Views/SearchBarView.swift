@@ -1,7 +1,7 @@
 /*
  UI-елемент: строка пошуку за назвою
  */
-import SwiftUI
+internal import SwiftUI
 
 struct SearchBar: View {
     @Binding var text: String

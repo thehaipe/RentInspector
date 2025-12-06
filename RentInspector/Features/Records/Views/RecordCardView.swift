@@ -1,7 +1,7 @@
 /*
  Екран-карточка запису для ScrollView, щоб відобразити його мініатюру у RecordsView
  */
-import SwiftUI
+internal import SwiftUI
 import RealmSwift
 
 struct RecordCardView: View {
@@ -73,10 +73,10 @@ struct RecordCardView: View {
                 
                 // Нагадування
                 if record.reminderInterval > 0 {
-                    statItem(
-                        icon: "bell.fill",
-                        value: "\(record.reminderInterval)д",
-                        label: ""
+                    let daysValue = "\(record.reminderInterval)\("days_short".localized)"
+                    statItem(icon: "bell.fill",
+                    value: daysValue,
+                    label: ""
                     )
                 }
                 

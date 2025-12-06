@@ -1,4 +1,4 @@
-import SwiftUI
+internal import SwiftUI
 
 struct PropertiesListView: View {
     @StateObject private var viewModel = PropertyViewModel()

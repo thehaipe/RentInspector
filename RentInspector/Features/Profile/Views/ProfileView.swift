@@ -1,7 +1,7 @@
 /*
  Екран профілю користувача
  */
-import SwiftUI
+internal import SwiftUI
 
 struct ProfileView: View {
     @StateObject private var viewModel = ProfileViewModel()

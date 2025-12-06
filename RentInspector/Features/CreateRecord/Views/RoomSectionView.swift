@@ -1,7 +1,7 @@
 /*
  Шаблон кімнати, використовується як фабрика для інших кімнат у формі.
  */
-import SwiftUI
+internal import SwiftUI
 import PhotosUI
 
 struct RoomSectionView: View {

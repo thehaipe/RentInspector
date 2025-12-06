@@ -1,7 +1,7 @@
 /*
  Клас для роботи з готовими записами. Фільтація, завантаження з БД, видалення.
  */
-import SwiftUI
+internal import SwiftUI
 internal import Combine
 
 @MainActor
@@ -69,7 +69,7 @@ class RecordsViewModel: ObservableObject {
         // Пошук за текстом
         if !searchText.isEmpty {
             result = result.filter { record in
-                record.displayTitle.localizedCaseInsensitiveContains(searchText)
+                record.titleString.localizedCaseInsensitiveContains(searchText)
             }
         }
         

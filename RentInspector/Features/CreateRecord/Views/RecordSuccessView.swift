@@ -1,7 +1,7 @@
 /*
  Екран успішно створеного звіту. Звідси існує можливість перейти до звітів або одразу надіслати його у PDF форматі у інші сервіси (наприклад у Telegram, WhatsApp, Viber і тд.)
  */
-import SwiftUI
+internal import SwiftUI
 
 struct RecordSuccessView: View {
     let record: Record  

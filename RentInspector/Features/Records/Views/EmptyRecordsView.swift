@@ -1,7 +1,7 @@
 /*
  Екран, при випадку коли звітів ще не створено
  */
-import SwiftUI
+internal import SwiftUI
 
 struct EmptyRecordsView: View {
     let onCreateRecord: () -> Void

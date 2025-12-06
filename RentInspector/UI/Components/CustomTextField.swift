@@ -1,7 +1,7 @@
 /*
  UI-елемент: Поле пошуку
  */
-import SwiftUI
+internal import SwiftUI
 
 struct CustomTextFieldStyle: TextFieldStyle {
     func _body(configuration: TextField<Self._Label>) -> some View {

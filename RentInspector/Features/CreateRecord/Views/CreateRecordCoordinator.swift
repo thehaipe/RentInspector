@@ -1,7 +1,7 @@
 /*
  Керування стадіями онбордінгу. 
  */
-import SwiftUI
+internal import SwiftUI
 
 struct CreateRecordCoordinator: View {
     @StateObject private var viewModel: CreateRecordViewModel
@@ -104,7 +104,7 @@ struct CreateRecordCoordinator: View {
             case .additionalRooms:
                 stepNameKey = "create_step_additional"
             case .recordForm:
-                stepNameKey = "create_step_form"       
+                stepNameKey = "create_step_form"
             }
             return "onboarding_step_format".localized(stepNumber, stepNameKey.localized)
         }

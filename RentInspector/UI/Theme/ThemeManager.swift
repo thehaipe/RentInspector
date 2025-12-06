@@ -1,7 +1,7 @@
 /*
  Клас для роботи з вибором теми.
  */
-import SwiftUI
+internal import SwiftUI
 internal import Combine
 
 class ThemeManager: ObservableObject {

@@ -2,7 +2,7 @@
  Опис типів кімнат. Тут описані базові, у майбутньому цей enum легко розширити без переписування всього додатку
  */
 import Foundation
-
+internal import SwiftUI
 enum RoomType: String, Codable, CaseIterable {
     case bedroom = "Bedroom"
     case kitchen = "Kitchen"
@@ -13,18 +13,10 @@ enum RoomType: String, Codable, CaseIterable {
     case storage = "Storage"
     case other = "Other"
     
-    var displayName: String {
-        switch self {
-        case .bedroom: return "Кімната"
-        case .kitchen: return "Кухня"
-        case .bathroom: return "Санвузол"
-        case .balcony: return "Балкон"
-        case .loggia: return "Лоджа"
-        case .wardrobe: return "Гардероб"
-        case .storage: return "Кладова"
-        case .other: return "Інше"
+    var displayName: LocalizedStringKey {
+            let key = "room_type_\(self.rawValue)"
+            return LocalizedStringKey(key)
         }
-    }
     
     var icon: String {
         switch self {

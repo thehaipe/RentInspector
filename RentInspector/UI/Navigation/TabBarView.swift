@@ -1,7 +1,7 @@
 /*
  UI-елемент: Навігація
  */
-import SwiftUI
+internal import SwiftUI
 
 struct TabBarView: View {
     @EnvironmentObject var realmManager: RealmManager

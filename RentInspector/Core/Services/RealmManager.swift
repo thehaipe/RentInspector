@@ -381,7 +381,7 @@ class RealmManager: ObservableObject {
     func searchRecords(query: String) -> [Record] {
         guard !query.isEmpty else { return records }
         return records.filter { record in
-            record.displayTitle.localizedCaseInsensitiveContains(query)
+            record.titleString.localizedCaseInsensitiveContains(query)
         }
     }
     
