@@ -131,6 +131,7 @@
 "settings_clear_alert_title" = "Очистити всі дані?";
 "settings_clear_alert_message" = "Всі звіти будуть видалені назавжди. Цю дію неможливо скасувати.";
 "settings_choose_theme" = "Вибір теми";
+"settings_me" = "Валентин Мєдєнцов";
 
 /* Profile */
 "profile" = "Профіль";

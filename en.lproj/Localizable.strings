@@ -36,7 +36,7 @@
 "records_sort" = "Sort";
 "records_filter" = "Filter";
 "records_filter_by_date" = "Filter by Date";
-"records_new_record" = "New Report";
+"records_new_record" = "New Record";
 "records_photos" = "Photos";
 "records_no_photos" = "No photos";
 "records_comment" = "Comment";
@@ -51,7 +51,7 @@
 "record_room" = "Rooms"; // Used for singular/plural context usually, kept as "Rooms" for general label
 "record_photo" = "Photos";
 "record_stage" = "Stage";
-"record_created" = "Report Created!";
+"record_created" = "Record Created!";
 "record_next_visit" = "Next visit: %@";
 "photo_number_format" = "Photo %d";
 
@@ -132,7 +132,7 @@
 "settings_clear_alert_title" = "Clear All Data?";
 "settings_clear_alert_message" = "All records will be permanently deleted. This action cannot be undone.";
 "settings_choose_theme" = "Choose Theme";
-
+"settings_me" = "Valentyn Miedientsov";
 /* Profile */
 "profile" = "Profile";
 "profile_name_label" = "Name";

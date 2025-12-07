@@ -33,7 +33,7 @@ struct SettingsView: View {
                     Section {
                         infoRow(icon: "info.circle.fill", title: "settings_version", value: Constants.AppInfo.version)
                         infoRow(icon: "number.circle.fill", title: "settings_build", value: Constants.AppInfo.build)
-                        infoRow(icon: "hammer.fill", title: "settings_developer", value: "")
+                        infoRow(icon: "hammer.fill", title: "settings_developer", value: "settings_me")
                     } header: {
                         Text("settings_about")
                     }
@@ -164,7 +164,7 @@ struct SettingsView: View {
             
             Spacer()
             
-            Text(value)
+            Text(value.localized)
                 .foregroundColor(AppTheme.textSecondary)
         }
     }
