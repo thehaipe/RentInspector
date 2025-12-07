@@ -169,16 +169,15 @@
 "remiender" = "Reminder";
 
 /* --- (Enums & Dynamic Phrases) --- */
-/* Date Filter (RecordsViewModel) */
+/* Sort & Filter */
+"sort_ascending" = "Oldest First";
+"sort_descending" = "Newest First";
+
 "filter_all" = "All";
 "filter_today" = "Today";
 "filter_week" = "Week";
 "filter_month" = "Month";
 "filter_year" = "Year";
-
-/* Sort Order (RecordsViewModel) */
-"sort_ascending" = "Ascending";
-"sort_descending" = "Descending";
 
 /* App Theme (ThemeManager) */
 "theme_light" = "Light";

@@ -168,16 +168,15 @@
 "remiender" = "Нагадування";
 
 /* --- (Enums & Dynamic Phrases) --- */
-/* Date Filter (RecordsViewModel) */
+/* Sort & Filter */
+"sort_ascending" = "Старіші";
+"sort_descending" = "Новіші";
+
 "filter_all" = "Всі";
 "filter_today" = "Сьогодні";
 "filter_week" = "Тиждень";
 "filter_month" = "Місяць";
 "filter_year" = "Рік";
-
-/* Sort Order (RecordsViewModel) */
-"sort_ascending" = "За зростанням";
-"sort_descending" = "За спаданням";
 
 /* App Theme (ThemeManager) */
 "theme_light" = "Світла";

@@ -52,7 +52,7 @@ struct RecordsView: View {
                                     viewModel.setSortOrder(order)
                                 }) {
                                     Label(
-                                        order.rawValue,
+                                        order.displayName,
                                         systemImage: viewModel.sortOrder == order ? "arrow.down.circle" : order.icon
                                     )
                                 }
@@ -153,7 +153,7 @@ struct RecordsView: View {
                             showFilterSheet = false
                         }) {
                             HStack {
-                                Text(filter.rawValue)
+                                Text(filter.displayName)
                                     .foregroundColor(AppTheme.textPrimary)
                                 Spacer()
                                 if viewModel.selectedDateFilter == filter {

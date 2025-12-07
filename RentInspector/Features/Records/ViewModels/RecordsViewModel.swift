@@ -9,7 +9,6 @@ class RecordsViewModel: ObservableObject {
     @Published var records: [Record] = []
     @Published var searchText: String = "" {
         didSet {
-            // Викликаємо перевірку при зміні тексту пошуку
             checkSearchResults()
         }
     }
@@ -23,24 +22,33 @@ class RecordsViewModel: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     
     enum DateFilter: String, CaseIterable {
-            case all = "all"
-            case today = "today"
-            case week = "week"
-            case month = "month"
-            case year = "year"
+        case all = "all"
+        case today = "today"
+        case week = "week"
+        case month = "month"
+        case year = "year"
+        
+        var displayName: LocalizedStringKey {
+            let key = "sort_\(self.rawValue)"
+            return LocalizedStringKey(key)
         }
+    }
     
     enum SortOrder: String, CaseIterable {
-            case ascending = "ascending"
-            case descending = "descending"
-            
-            var icon: String {
-                switch self {
-                case .ascending: return "arrow.up.circle"
-                case .descending: return "arrow.down.circle"
-                }
+        case ascending = "ascending"
+        case descending = "descending"
+        
+        var displayName: LocalizedStringKey {
+            let key = "filter_\(self.rawValue)"
+            return LocalizedStringKey(key)
+        }
+        var icon: String {
+            switch self {
+            case .ascending: return "arrow.up.circle"
+            case .descending: return "arrow.down.circle"
             }
         }
+    }
     
     init() {
         self.records = realmManager.records
