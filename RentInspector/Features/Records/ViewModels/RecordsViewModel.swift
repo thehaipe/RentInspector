@@ -29,7 +29,7 @@ class RecordsViewModel: ObservableObject {
         case year = "year"
         
         var displayName: LocalizedStringKey {
-            let key = "sort_\(self.rawValue)"
+            let key = "filter_\(self.rawValue)"
             return LocalizedStringKey(key)
         }
     }
@@ -39,9 +39,10 @@ class RecordsViewModel: ObservableObject {
         case descending = "descending"
         
         var displayName: LocalizedStringKey {
-            let key = "filter_\(self.rawValue)"
+            let key = "sort_\(self.rawValue)"
             return LocalizedStringKey(key)
         }
+        
         var icon: String {
             switch self {
             case .ascending: return "arrow.up.circle"
