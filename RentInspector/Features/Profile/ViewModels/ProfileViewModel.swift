@@ -2,7 +2,7 @@
  Клас для роботи з профілем користувача (відображення статистики, юзернейму)
  */
 
-import SwiftUI
+internal import SwiftUI
 internal import Combine
 
 class ProfileViewModel: ObservableObject {

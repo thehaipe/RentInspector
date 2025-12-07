@@ -1,7 +1,7 @@
 /*
  Кольорова гамма, стандартизовано для використання в різних частинах програми
  */
-import SwiftUI
+internal import SwiftUI
 
 struct AppTheme {
     // MARK: - Colors

@@ -10,20 +10,22 @@
  @Persisted var createdAt: Date = Date() - Дата створення звіту
  @Persisted var updatedAt: Date = Date() - Дата оновлення звіту (планується забрати до версії 2.0)
  */
+
 import Foundation
 import RealmSwift
+internal import SwiftUI
 
 class Record: Object, ObjectKeyIdentifiable {
     @Persisted(primaryKey: true) var id: ObjectId
     @Persisted var title: String = ""
     @Persisted var stage: String = RecordStage.moveIn.rawValue
-    @Persisted var rooms: List<Room>
-    @Persisted var reminderInterval: Int = 0 // Днів до нагадування (0 = вимкнено)
+    @Persisted var rooms: RealmSwift.List<Room>
+    @Persisted var reminderInterval: Int = 0
     @Persisted var nextReminderDate: Date?
     @Persisted var createdAt: Date = Date()
-    
     @Persisted var parentId: ObjectId?
-    @Persisted(originProperty: "records") var assignee: LinkingObjects<Property>
+    @Persisted(originProperty: "records") var assignee: RealmSwift.LinkingObjects<Property>
+    
     var parentProperty: Property? {
         return assignee.first
     }
@@ -33,9 +35,16 @@ class Record: Object, ObjectKeyIdentifiable {
         get { RecordStage(rawValue: stage) ?? .moveIn }
         set { stage = newValue.rawValue }
     }
-    
-    var displayTitle: String {
-        return title.isEmpty ? "Record \(createdAt.formatted(date: .abbreviated, time: .omitted))" : title
+    var titleString: String {
+        if title.isEmpty {
+            let dateString = createdAt.formatted(date: .abbreviated, time: .omitted)
+            return "default_record_title_format".localized(dateString)
+        } else {
+            return title
+        }
+    }
+    var displayTitle: LocalizedStringKey {
+        return LocalizedStringKey(titleString)
     }
     
     var totalPhotos: Int {
@@ -48,21 +57,22 @@ class Record: Object, ObjectKeyIdentifiable {
         self.stage = stage.rawValue
         self.createdAt = Date()
     }
+    
     func detached() -> Record {
-            let detachedRecord = Record()
-            detachedRecord.id = self.id
-            detachedRecord.title = self.title
-            detachedRecord.stage = self.stage
-            detachedRecord.reminderInterval = self.reminderInterval
-            detachedRecord.nextReminderDate = self.nextReminderDate
-            detachedRecord.createdAt = self.createdAt
-            
-            detachedRecord.parentId = self.parentId
-            
-            for room in self.rooms {
-                detachedRecord.rooms.append(room.detached())
-            }
-            
-            return detachedRecord
+        let detachedRecord = Record()
+        detachedRecord.id = self.id
+        detachedRecord.title = self.title
+        detachedRecord.stage = self.stage
+        detachedRecord.reminderInterval = self.reminderInterval
+        detachedRecord.nextReminderDate = self.nextReminderDate
+        detachedRecord.createdAt = self.createdAt
+        
+        detachedRecord.parentId = self.parentId
+        
+        for room in self.rooms {
+            detachedRecord.rooms.append(room.detached())
         }
+        
+        return detachedRecord
+    }
 }

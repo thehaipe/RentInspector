@@ -1,7 +1,7 @@
 /*
  Шаблон кімнати, використовується як фабрика для інших кімнат у формі.
  */
-import SwiftUI
+internal import SwiftUI
 import PhotosUI
 
 struct RoomSectionView: View {
@@ -91,15 +91,15 @@ struct RoomSectionView: View {
             }
             .padding(16)
         }
-        .alert("Видалити кімнату?", isPresented: $showDeleteAlert) {
-            Button("Скасувати", role: .cancel) { }
-            Button("Видалити", role: .destructive) {
+        .alert("error_delete_room_title", isPresented: $showDeleteAlert) {
+            Button("general_cancel", role: .cancel) { }
+            Button("general_delete", role: .destructive) {
                 withAnimation {
                     viewModel.deleteRoom(at: roomIndex)
                 }
             }
         } message: {
-            Text("Ви впевнені, що хочете видалити цю кімнату та всі введені дані?")
+            Text("error_delete_comfirmation")
         }
     }
     
@@ -107,7 +107,7 @@ struct RoomSectionView: View {
         
         private var nameField: some View {
             VStack(alignment: .leading, spacing: 8) {
-                Text("Назва")
+                Text("form_record_title_label")
                     .font(AppTheme.callout)
                     .foregroundColor(AppTheme.textSecondary)
                 
@@ -138,7 +138,7 @@ struct RoomSectionView: View {
                             HStack(spacing: 4) {
                                 Image(systemName: "checkmark.circle.fill")
                                     .font(.caption)
-                                Text("Готово")
+                                Text("general_done")
                                     .font(AppTheme.caption)
                                     .fontWeight(.semibold)
                             }
@@ -159,7 +159,7 @@ struct RoomSectionView: View {
         
         private var commentField: some View {
             VStack(alignment: .leading, spacing: 8) {
-                Text("Коментар")
+                Text("records_comment")
                     .font(AppTheme.callout)
                     .foregroundColor(AppTheme.textSecondary)
                 TextEditor(text: Binding(
@@ -192,7 +192,7 @@ struct RoomSectionView: View {
                             HStack(spacing: 4) {
                                 Image(systemName: "checkmark.circle.fill")
                                     .font(.caption)
-                                Text("Готово")
+                                Text("general_done")
                                     .font(AppTheme.caption)
                                     .fontWeight(.semibold)
                             }
@@ -214,7 +214,7 @@ struct RoomSectionView: View {
     private var photosSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
-                Text("Фотографії")
+                Text("records_photos")
                     .font(AppTheme.callout)
                     .foregroundColor(AppTheme.textSecondary)
                 
@@ -237,7 +237,7 @@ struct RoomSectionView: View {
                             VStack(spacing: 8) {
                                 Image(systemName: "plus")
                                     .font(.title2)
-                                Text("Додати")
+                                Text("general_add")
                                     .font(AppTheme.caption)
                             }
                             .foregroundColor(AppTheme.primaryColor)

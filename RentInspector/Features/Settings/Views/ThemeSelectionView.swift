@@ -1,7 +1,7 @@
 /*
  UI-компонент: Зміна теми додатку
  */
-import SwiftUI
+internal import SwiftUI
 
 struct ThemeSelectionView: View {
     @EnvironmentObject var themeManager: ThemeManager
@@ -40,8 +40,7 @@ struct ThemeSelectionView: View {
                             Text(theme.displayName)
                                 .font(AppTheme.headline)
                                 .foregroundColor(AppTheme.textPrimary)
-                            
-                            Text(themeDescription(for: theme))
+                            Text(theme.description)
                                 .font(AppTheme.caption)
                                 .foregroundColor(AppTheme.textSecondary)
                         }
@@ -59,19 +58,8 @@ struct ThemeSelectionView: View {
                 }
             }
         }
-        .navigationTitle("Вибір теми")
+        .navigationTitle("settings_choose_theme")
         .navigationBarTitleDisplayMode(.inline)
-    }
-    
-    private func themeDescription(for theme: ThemeManager.Theme) -> String {
-        switch theme {
-        case .light:
-            return "Завжди світла тема"
-        case .dark:
-            return "Завжди темна тема"
-        case .auto:
-            return "Відповідно до системи"
-        }
     }
 }
 

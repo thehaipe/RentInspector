@@ -1,47 +1,48 @@
 /*
  Екран налаштувань додатку
  */
-import SwiftUI
+internal import SwiftUI
 
 struct SettingsView: View {
     @StateObject private var viewModel = SettingsViewModel()
     @EnvironmentObject var themeManager: ThemeManager
     @State private var showThemeSheet = false
-    
+    @AppStorage("selectedLanguage") private var languageCode = "uk"
     var body: some View {
             ZStack {
                 List {
                     // Секція Appearance
                     Section {
                         themeButton
+                        languagePicker
                     } header: {
-                        Text("Зовнішній вигляд")
+                        Text("settings_appearance")
                     }
-                    
-                    // Секція Data
+                    // Секція Stats & Data
                     Section {
+                        infoRow(icon: "clock.fill", title: "profile_app_usage", value: installDate)
                         NavigationLink(destination: RecordsView()) {
                             storageInfo
                         }
                         clearDataButton
                     } header: {
-                        Text("Дані")
+                        Text("settings_data")
                     }
                     
                     // Секція About
                     Section {
-                        aboutRow(icon: "info.circle.fill", title: "Версія", value: Constants.AppInfo.version)
-                        aboutRow(icon: "number.circle.fill", title: "Збірка", value: Constants.AppInfo.build)
-                        aboutRow(icon: "hammer.fill", title: "Розробник", value: "")
+                        infoRow(icon: "info.circle.fill", title: "settings_version", value: Constants.AppInfo.version)
+                        infoRow(icon: "number.circle.fill", title: "settings_build", value: Constants.AppInfo.build)
+                        infoRow(icon: "hammer.fill", title: "settings_developer", value: "")
                     } header: {
-                        Text("Про додаток")
+                        Text("settings_about")
                     }
                 }
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     //розташування або principal, або largeTitle, чекаю оновлення аби подивитись Canvas
                     ToolbarItem(placement: .principal) {
-                        Text("Налаштування")
+                        Text("settings")
                             .font(AppTheme.title2)
                             .fontWeight(.bold)
                     }
@@ -49,13 +50,13 @@ struct SettingsView: View {
                 .sheet(isPresented: $showThemeSheet) {
                     themeSelectionSheet
                 }
-                .alert("Очистити всі дані?", isPresented: $viewModel.showClearDataAlert) {
-                    Button("Скасувати", role: .cancel) { }
-                    Button("Видалити", role: .destructive) {
+                .alert("settings_clear_alert_title", isPresented: $viewModel.showClearDataAlert) {
+                    Button("general_cancel", role: .cancel) { }
+                    Button("general_delete", role: .destructive) {
                         viewModel.clearAllData()
                     }
                 } message: {
-                    Text("Всі звіти будуть видалені назавжди. Цю дію неможливо скасувати.")
+                    Text("error_delete_all_records_alert_title")
                 }
                 
                 // Success Toast
@@ -81,7 +82,7 @@ struct SettingsView: View {
                     .foregroundColor(AppTheme.primaryColor)
                     .frame(width: 30)
                 
-                Text("Тема")
+                Text("settings_theme")
                     .foregroundColor(AppTheme.textPrimary)
                 
                 Spacer()
@@ -95,7 +96,26 @@ struct SettingsView: View {
             }
         }
     }
-    
+    // MARK: - Language Picker
+        
+        private var languagePicker: some View {
+            Picker(selection: $languageCode) {
+                ForEach(Constants.AppLanguage.allCases) { language in
+                    Text(language.displayName)
+                        .tag(language.rawValue)
+                }
+            } label: {
+                HStack {
+                    Image(systemName: "globe")
+                        .foregroundColor(AppTheme.primaryColor)
+                        .frame(width: 30)
+                    
+                    Text("settings_language")
+                        .foregroundColor(AppTheme.textPrimary)
+                }
+            }
+            .pickerStyle(.automatic)
+        }
     // MARK: - Storage Info
     
     private var storageInfo: some View {
@@ -104,7 +124,7 @@ struct SettingsView: View {
                 .foregroundColor(AppTheme.primaryColor)
                 .frame(width: 30)
             
-            Text("Звітів збережено")
+            Text("settings_storage_info")
                 .foregroundColor(AppTheme.textPrimary)
             
             Spacer()
@@ -125,7 +145,7 @@ struct SettingsView: View {
                     .foregroundColor(AppTheme.errorColor)
                     .frame(width: 30)
                 
-                Text("Очистити всі дані")
+                Text("settings_clear_data")
                     .foregroundColor(AppTheme.errorColor)
             }
         }
@@ -133,7 +153,7 @@ struct SettingsView: View {
     
     // MARK: - About Row
     
-    private func aboutRow(icon: String, title: String, value: String) -> some View {
+    private func infoRow(icon: String, title: LocalizedStringKey, value: String) -> some View {
         HStack {
             Image(systemName: icon)
                 .foregroundColor(AppTheme.primaryColor)
@@ -179,11 +199,11 @@ struct SettingsView: View {
                     }
                 }
             }
-            .navigationTitle("Вибір теми")
+            .navigationTitle("settings_choose_theme")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Готово") {
+                    Button("general_done") {
                         showThemeSheet = false
                     }
                 }
@@ -200,7 +220,7 @@ struct SettingsView: View {
                     Image(systemName: "checkmark.circle.fill")
                         .foregroundColor(AppTheme.successColor)
                     
-                    Text("Дані успішно видалено")
+                    Text("success_all_records_deleted")
                         .font(AppTheme.callout)
                         .foregroundColor(AppTheme.textPrimary)
                     
@@ -240,6 +260,16 @@ struct SettingsView: View {
             }
             .padding(.top, 16)
             .transition(.move(edge: .top).combined(with: .opacity))
+        }
+        private var installDate: String {
+            if let installDate = UserDefaults.standard.object(forKey: "installDate") as? Date {
+                return installDate.formatted(date: .abbreviated, time: .omitted)
+            } else {
+                // Якщо дати немає (перший запуск), зберігаємо поточну
+                let now = Date()
+                UserDefaults.standard.set(now, forKey: "installDate")
+                return now.formatted(date: .abbreviated, time: .omitted)
+            }
         }
 }
 

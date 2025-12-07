@@ -10,6 +10,7 @@
 		A31137712ED05D7500CE8C75 /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = A311373D2ED05D7500CE8C75 /* README.md */; };
 		A3A5BB412EC1194800A54692 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = A3ABBDF42EB793F00079B59C /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		A3ABBDF52EB793F00079B59C /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = A3ABBDF42EB793F00079B59C /* RealmSwift */; };
+		A3C8CC7D2EDFA37300CD5BD2 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A3C8CC7B2EDFA37300CD5BD2 /* Localizable.strings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -29,6 +30,8 @@
 /* Begin PBXFileReference section */
 		A311373D2ED05D7500CE8C75 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		A3ABBDE52EB790470079B59C /* RentInspector.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RentInspector.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A3C8CC7C2EDFA37300CD5BD2 /* uk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = uk; path = uk.lproj/Localizable.strings; sourceTree = "<group>"; };
+		A3C8CC7E2EDFA37700CD5BD2 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -67,6 +70,7 @@
 		A3ABBDDC2EB790470079B59C = {
 			isa = PBXGroup;
 			children = (
+				A3C8CC7B2EDFA37300CD5BD2 /* Localizable.strings */,
 				A3ABBDE72EB790470079B59C /* RentInspector */,
 				A3ABBDE62EB790470079B59C /* Products */,
 				A311373D2ED05D7500CE8C75 /* README.md */,
@@ -124,11 +128,11 @@
 				};
 			};
 			buildConfigurationList = A3ABBDE02EB790470079B59C /* Build configuration list for PBXProject "RentInspector" */;
-			developmentRegion = en;
+			developmentRegion = uk;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
-				Base,
+				uk,
 			);
 			mainGroup = A3ABBDDC2EB790470079B59C;
 			minimizedProjectReferenceProxies = 1;
@@ -150,6 +154,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A3C8CC7D2EDFA37300CD5BD2 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -165,6 +170,18 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		A3C8CC7B2EDFA37300CD5BD2 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A3C8CC7C2EDFA37300CD5BD2 /* uk */,
+				A3C8CC7E2EDFA37700CD5BD2 /* en */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		A3ABBDEE2EB790480079B59C /* Debug */ = {
@@ -227,6 +244,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -284,6 +302,7 @@
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -298,10 +317,11 @@
 				DEVELOPMENT_TEAM = 4RM8QA94J7;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = Rentinspector;
+				INFOPLIST_KEY_CFBundleDisplayName = RentInspector;
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Додатку потрібен доступ до фото для додавання їх у звіти.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UIStatusBarStyle = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
@@ -336,10 +356,11 @@
 				DEVELOPMENT_TEAM = 4RM8QA94J7;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = Rentinspector;
+				INFOPLIST_KEY_CFBundleDisplayName = RentInspector;
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Додатку потрібен доступ до фото для додавання їх у звіти.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UIStatusBarStyle = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";

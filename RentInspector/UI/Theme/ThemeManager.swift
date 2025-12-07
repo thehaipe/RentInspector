@@ -1,7 +1,7 @@
 /*
- Клас для роботи з вибором теми. 
+ Клас для роботи з вибором теми.
  */
-import SwiftUI
+internal import SwiftUI
 internal import Combine
 
 class ThemeManager: ObservableObject {
@@ -18,14 +18,15 @@ class ThemeManager: ObservableObject {
         case dark = "Dark"
         case auto = "Auto"
         
-        var displayName: String {
-            switch self {
-            case .light: return "Світла"
-            case .dark: return "Темна"
-            case .auto: return "Авто"
-            }
+        var displayName: LocalizedStringKey {
+            let key = "theme_\(self.rawValue.lowercased())"
+            return LocalizedStringKey(key)
         }
         
+        var description: LocalizedStringKey {
+            let key = "theme_desc_\(self.rawValue.lowercased())"
+            return LocalizedStringKey(key)
+        }
         var icon: String {
             switch self {
             case .light: return "sun.max.fill"

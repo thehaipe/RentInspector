@@ -1,7 +1,7 @@
 /*
  Екран профілю користувача
  */
-import SwiftUI
+internal import SwiftUI
 
 struct ProfileView: View {
     @StateObject private var viewModel = ProfileViewModel()
@@ -18,7 +18,7 @@ struct ProfileView: View {
                     nameSection
                     
                     // Статистика
-                    statisticsSection
+                    //statisticsSection
                     
                     Spacer()
                 }
@@ -29,7 +29,7 @@ struct ProfileView: View {
             .toolbar {
                 //розташування або principal, або largeTitle, чекаю оновлення аби подивитись Canvas
                 ToolbarItem(placement: .principal) {
-                    Text("Профіль")
+                    Text("profile")
                         .font(AppTheme.title2)
                         .fontWeight(.bold)
                 }
@@ -93,7 +93,7 @@ struct ProfileView: View {
             }
             .shadow(color: AppTheme.primaryColor.opacity(0.3), radius: 20, y: 10)
             
-            Text("Welcome!")
+            Text("profile_welcome_user_format".localized(viewModel.userName))
                 .font(AppTheme.title3)
                 .foregroundColor(AppTheme.textPrimary)
         }
@@ -103,11 +103,11 @@ struct ProfileView: View {
     
     private var nameSection: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("Ім'я")
+            Text("profile_name_label")
                 .font(AppTheme.headline)
                 .foregroundColor(AppTheme.textPrimary)
             
-            TextField("Введіть ваше ім'я", text: $viewModel.userName)
+            TextField("profile_name_placeholder", text: $viewModel.userName)
                 .textFieldStyle(CustomTextFieldStyle())
                 .focused($isNameFocused)
                 .submitLabel(.done)
@@ -122,7 +122,7 @@ struct ProfileView: View {
                 viewModel.saveUserName()
                 isNameFocused = false
             }) {
-                Text("Зберегти")
+                Text("general_save")
                     .font(AppTheme.headline)
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
@@ -135,59 +135,6 @@ struct ProfileView: View {
         .padding(20)
         .background(AppTheme.secondaryBackgroundColor)
         .cornerRadius(AppTheme.cornerRadiusMedium)
-    }
-    
-    // MARK: - Statistics Section
-    
-    private var statisticsSection: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Text("Статистика")
-                .font(AppTheme.headline)
-                .foregroundColor(AppTheme.textPrimary)
-            
-            VStack(spacing: 12) {
-                statisticRow(
-                    icon: "doc.text.fill",
-                    title: "Всього звітів",
-                    value: "\(RealmManager.shared.getRecordCount())"
-                )
-                
-                statisticRow(
-                    icon: "clock.fill",
-                    title: "Використовуєте додаток з",
-                    value: installDate
-                )
-                
-                statisticRow(
-                    icon: "info.circle.fill",
-                    title: "Версія",
-                    value: "\(Constants.AppInfo.version) (\(Constants.AppInfo.build))"
-                )
-            }
-        }
-        .padding(20)
-        .background(AppTheme.secondaryBackgroundColor)
-        .cornerRadius(AppTheme.cornerRadiusMedium)
-    }
-    
-    private func statisticRow(icon: String, title: String, value: String) -> some View {
-        HStack {
-            Image(systemName: icon)
-                .foregroundColor(AppTheme.primaryColor)
-                .frame(width: 30)
-            
-            Text(title)
-                .font(AppTheme.callout)
-                .foregroundColor(AppTheme.textSecondary)
-            
-            Spacer()
-            
-            Text(value)
-                .font(AppTheme.callout)
-                .fontWeight(.semibold)
-                .foregroundColor(AppTheme.textPrimary)
-        }
-        //Зміено, спроба зробити перехід до RecordsView(), результат потрібно провалідувати після оновлення симулятора
     }
     
     private var installDate: String {
@@ -208,7 +155,7 @@ struct ProfileView: View {
                 Image(systemName: "checkmark.circle.fill")
                     .foregroundColor(AppTheme.successColor)
                 
-                Text("Ім'я збережено")
+                Text("success_name_saved")
                     .font(AppTheme.callout)
                     .foregroundColor(AppTheme.textPrimary)
                 

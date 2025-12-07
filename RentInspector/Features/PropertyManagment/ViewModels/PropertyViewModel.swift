@@ -1,4 +1,4 @@
-import SwiftUI
+internal import SwiftUI
 internal import Combine
 import RealmSwift
 
@@ -12,8 +12,8 @@ class PropertyViewModel: ObservableObject {
         didSet { checkSearchResults() }
     }
     @Published var isSearching: Bool = false
-    @Published var selectedDateFilter: RecordsViewModel.DateFilter = .all // Використовуємо існуючий Enum!
-    @Published var sortOrder: RecordsViewModel.SortOrder = .descending // Використовуємо існуючий Enum!
+    @Published var selectedDateFilter: RecordsViewModel.DateFilter = .all
+    @Published var sortOrder: RecordsViewModel.SortOrder = .descending 
     
     // UI State: Модальні вікна та Тости
     @Published var showAddPropertySheet: Bool = false
@@ -100,7 +100,7 @@ class PropertyViewModel: ObservableObject {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) { [weak self] in
             guard let self = self else { return }
             if !self.searchText.isEmpty && !self.properties.isEmpty && self.filteredProperties.isEmpty {
-                self.showError("Об'єкт за запитом '\(self.searchText)' не знайдено")
+                self.showError("property_search_not_found".localized(self.searchText))
             }
         }
     }

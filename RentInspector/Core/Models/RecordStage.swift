@@ -2,18 +2,15 @@
  Опис стадій. Заселення, Проживання, Виселення
  */
 import Foundation
-
+internal import SwiftUI // for LocalizedStringKey
 enum RecordStage: String, Codable, CaseIterable {
     case moveIn = "Move In"
     case living = "Living"
     case moveOut = "Move Out"
     
-    var displayName: String {
-        switch self {
-        case .moveIn: return "Заселення"
-        case .living: return "Проживання"
-        case .moveOut: return "Виселення"
-        }
+    var displayName: LocalizedStringKey {
+        let key = "stage_\(self.rawValue)"
+        return LocalizedStringKey(key)
     }
     
     var icon: String {
@@ -24,3 +21,4 @@ enum RecordStage: String, Codable, CaseIterable {
         }
     }
 }
+

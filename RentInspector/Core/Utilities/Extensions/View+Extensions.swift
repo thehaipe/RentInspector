@@ -4,7 +4,7 @@
 //
 //  Created by Valentyn on 07.11.2025.
 //
-import SwiftUI
+internal import SwiftUI
 
 extension View {
     /// Приховує клавіатуру

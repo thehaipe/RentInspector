@@ -1,12 +1,12 @@
 //Entry Point
-import SwiftUI
+internal import SwiftUI
 import RealmSwift
 internal import Combine
 @main
 struct RentInspectorApp: SwiftUI.App {
     @StateObject private var realmManager = RealmManager.shared
     @StateObject private var themeManager = ThemeManager.shared
-    
+    @AppStorage("selectedLanguage") private var languageCode = "uk"
     init() {
         configureAppearance()
     }
@@ -17,6 +17,7 @@ struct RentInspectorApp: SwiftUI.App {
                 .environmentObject(realmManager)
                 .environmentObject(themeManager)
                 .preferredColorScheme(themeManager.currentColorScheme)
+                .environment(\.locale, Locale(identifier: languageCode))
         }
     }
     

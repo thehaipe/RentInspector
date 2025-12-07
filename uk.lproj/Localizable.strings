@@ -1,0 +1,212 @@
+/* Localizable.strings
+  RentInspector
+
+  Ukrainian Localization
+*/
+
+/* General Actions */
+"general_save" = "Зберегти";
+"general_cancel" = "Скасувати";
+"general_delete" = "Видалити";
+"general_edit" = "Редагувати";
+"general_done" = "Готово";
+"general_back" = "Назад";
+"general_next" = "Далі";
+"general_close" = "Закрити";
+"general_add" = "Додати";
+"general_create" = "Створити";
+"general_error" = "Помилка";
+"general_success" = "Успіх";
+"general_change" = "Змінити";
+"general_pdf_export" = "Експортувати PDF";
+
+/* Tab Bar */
+"tab_records" = "Звіти";
+"tab_profile" = "Профіль";
+"tab_settings" = "Налаштування";
+"tab_properties" = "Об'єкти";
+
+/* Records List */
+"records_title" = "Звіти";
+"records_empty_title" = "Немає звітів";
+"records_empty_desc" = "Створіть свій перший звіт про стан нерухомості";
+"records_first_record" = "Створити перший звіт";
+"records_create_button" = "Створити звіт";
+"records_search_placeholder" = "Пошук за назвою...";
+"records_sort" = "Сортування";
+"records_filter" = "Фільтрація";
+"records_filter_by_date" = "Фільтр за датою";
+"records_new_record" = "Новий звіт";
+"records_photos" = "Фотографії";
+"records_no_photos" = "Фото відсутні";
+"records_comment" = "Коментар";
+"records_new_property" = "Новий обʼєкт";
+"records_delete_record" = "Видалити звіт";
+
+/* Record Detail & Actions */
+"export_pdf_from_selected_record" = "Експорт PDF";
+"delete_record" = "Видалити звіт?"; 
+"edit_record_title" = "Редагувати назву";
+"record_rooms" = "Кімнати";
+"record_room" = "Кімнат";
+"record_photo" = "Фото";
+"record_stage" = "Етап";
+"record_created" = "Звіт створено!";
+"record_next_visit" = "Наступний візит: %@";
+"photo_number_format" = "Фото %d";
+
+/* Create Record Flow */
+"onboarding_step_format" = "Крок %d: %@"; 
+"create_step_rooms" = "Кількість кімнат";
+"create_step_balcony" = "Балкон та лоджія";
+"create_step_additional" = "Додаткові приміщення";
+"create_step_form" = "Заповнення звіту";
+"create_room_count_title" = "Скільки кімнат?";
+"create_room_count_subtitle" = "Оберіть кількість житлових кімнат";
+"create_balcony_title" = "Чи є у вас балкон, лоджа?";
+"create_balcony_subtitle" = "Оберіть наявні опції";
+"create_additional_title" = "Додаткові кімнати";
+"create_additional_subtitle" = "Вкажіть кількість додаткових приміщень";
+"create_room_option_format" = "%d-кімнатна";
+"create_action_to_record" = "До запису";
+"create_save_record" = "Зберегти звіт";
+"days_short" = " д";
+
+/* Record Form */
+"form_title_label" = "Назва звіту";
+"form_blank_address" = "Без адреси";
+"form_title_placeholder" = "Наприклад: Квартира на Шевченка";
+"form_stage_label" = "Етап";
+"form_reminder_label" = "Нагадування про візит";
+"form_reminder_none" = "Не встановлено";
+"form_reminder_days" = "Кожні %d днів";
+"form_add_bathroom" = "Додати санвузол";
+"form_add_photo" = "Додати фото";
+"form_remiender_range" = "Інтервал нагадування";
+"form_record_title_label" = "Назва";
+
+/* Properties Management */
+"property" = "Обʼєкт нерухомості";
+"choose_property" = "Обрати обʼєкт";
+"no_properties" = "Немає обʼєктів";
+"create_first_property" = "Створіть свій перший обʼєкт нерухомості, щоб групувати звіти.";
+"add_property" = "Додати обʼєкт";
+"property_placeholder_name_label" = "Назва (напр. Студія на окружній)";
+"property_placeholder_address_label" = "Адреса (напр. вул. Наукова 1)";
+"deatach_record_from_property" = "Відвʼязати від обʼєкту";
+"property_no_records_yet" = "У цьому обʼєкті ще намає звітів";
+"not_attach_to_property" = "Не привʼязувати";
+"attach_to_property" = "Привʼязати до обʼєкту";
+"choose_property_title" = "Оберіть обʼєкт";
+"property_search_not_found" = "Об'єкт за запитом '%@' не знайдено";
+"property_information" = "Інформація про обʼєкт";
+
+/* Room Types */
+"room_type_Bedroom" = "Кімната";
+"room_type_Kitchen" = "Кухня";
+"room_type_Bathroom" = "Санвузол";
+"room_type_Balcony" = "Балкон";
+"room_type_Loggia" = "Лоджія";
+"room_type_Wardrobe" = "Гардероб";
+"room_type_Storage" = "Кладова";
+"room_type_Other" = "Інше";
+
+/* Record Stages */
+"stage_Move In" = "Заселення";
+"stage_Living" = "Проживання";
+"stage_Move Out" = "Виселення";
+
+/* Settings */
+"settings" = "Налаштування";
+"settings_appearance" = "Зовнішній вигляд";
+"settings_theme" = "Тема";
+"settings_language" = "Мова";
+"settings_data" = "Статистика і дані";
+"settings_storage_info" = "Звітів збережено";
+"settings_clear_data" = "Очистити всі дані";
+"settings_about" = "Про додаток";
+"settings_version" = "Версія";
+"settings_build" = "Збірка";
+"settings_developer" = "Розробник";
+"settings_clear_alert_title" = "Очистити всі дані?";
+"settings_clear_alert_message" = "Всі звіти будуть видалені назавжди. Цю дію неможливо скасувати.";
+"settings_choose_theme" = "Вибір теми";
+
+/* Profile */
+"profile" = "Профіль";
+"profile_name_label" = "Ім'я";
+"profile_name_placeholder" = "Введіть ваше ім'я";
+"profile_stats" = "Статистика";
+"profile_total_records" = "Всього звітів";
+"profile_app_usage" = "Використовуєте додаток з";
+"profile_welcome_user_format" = "Вітаємо, %@ 👋";
+
+/* Success Messages */
+"success_name_saved" = "Імʼя збережено!";
+"success_all_records_deleted" = "Дані успішно видалено";
+
+/* Errors & Validation */
+"error_name_short" = "Ім'я має містити мінімум 2 символи";
+"error_name_long" = "Ім'я занадто довге";
+"error_name_invalid" = "Недопустимі символи в імені";
+"error_name_letters_only" = "Дозволено тільки літери (латиниця/кирилиця)";
+"error_name_digits" = "Ім'я не може містити цифри";
+"error_name_special_chars" = "Ім'я не може містити спецсимволи";
+
+"error_save_failed" = "Не вдалося зберегти дані";
+"error_delete_room_title" = "Видалити кімнату?";
+"error_delete_room_message" = "Ця кімната та всі її фото будуть видалені.";
+"error_delete_comfirmation" = "Ви впевнені, що хочете видалити цю кімнату та всі введені дані?";
+"error_delete_record_confirmation" = "Цей звіт буде видалено назавжди. Цю дію неможливо скасувати.";
+"error_delete_all_records_alert_title" = "Всі звіти будуть видалені назавжди. Цю дію неможливо скасувати.";
+"error_unknown" = "Невідома помилка";
+
+/* Miscellaneous / Common Phrases */
+"add_bathroom" = "Додати санвузол";
+"turned_off" = "Вимкнено";
+"days" = "днів";
+"remiender" = "Нагадування";
+
+/* --- (Enums & Dynamic Phrases) --- */
+/* Sort & Filter */
+"sort_ascending" = "Старіші";
+"sort_descending" = "Новіші";
+
+"filter_all" = "Всі";
+"filter_today" = "Сьогодні";
+"filter_week" = "Тиждень";
+"filter_month" = "Місяць";
+"filter_year" = "Рік";
+
+/* App Theme (ThemeManager) */
+"theme_light" = "Світла";
+"theme_dark" = "Темна";
+"theme_auto" = "Авто";
+"theme_desc_light" = "Завжди світла тема";
+"theme_desc_dark" = "Завжди темна тема";
+"theme_desc_auto" = "Відповідно до системи";
+
+/* Default Generated Names (CreateRecordViewModel) */
+/* %d will be replaced by number (e.g. "Кімната 1") */
+"default_room_bedroom" = "Кімната %d";
+"default_room_bathroom" = "Санвузол %d";
+"default_room_wardrobe" = "Гардероб %d";
+"default_room_storage" = "Кладова %d";
+"default_room_other" = "Інше %d";
+"default_room_balcony" = "Балкон %d";
+"default_room_loggia" = "Лоджія %d";
+"default_record_title_format" = "Звіт %@"; /* e.g. Record 20 Nov */
+
+/* Search & Errors */
+"search_result_not_found" = "Звіт за назвою '%@' не знайдено";
+/* Realm Errors */
+"realm_no_records" = "Немає записів до видалення";
+"realm_record_not_found" = "Запис не знайдено";
+"realm_room_not_found" = "Кімнату не знайдено";
+"realm_operation_failed" = "Помилка операції: %@";
+"realm_invalid_data" = "Невалідні дані";
+/* PDF Export */
+"pdf_date_created" = "Дата створення: %@";
+"pdf_total_photos" = "Всього фото: %d";
+"pdf_generated_by" = "Згенеровано RentInspector • %@";
+"pdf_statistics_title" = "Статистика";

@@ -1,7 +1,7 @@
 /*
  Клас для роботи з готовими записами. Фільтація, завантаження з БД, видалення.
  */
-import SwiftUI
+internal import SwiftUI
 internal import Combine
 
 @MainActor
@@ -9,7 +9,6 @@ class RecordsViewModel: ObservableObject {
     @Published var records: [Record] = []
     @Published var searchText: String = "" {
         didSet {
-            // Викликаємо перевірку при зміні тексту пошуку
             checkSearchResults()
         }
     }
@@ -23,16 +22,26 @@ class RecordsViewModel: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     
     enum DateFilter: String, CaseIterable {
-        case all = "Всі"
-        case today = "Сьогодні"
-        case week = "Тиждень"
-        case month = "Місяць"
-        case year = "Рік"
+        case all = "all"
+        case today = "today"
+        case week = "week"
+        case month = "month"
+        case year = "year"
+        
+        var displayName: LocalizedStringKey {
+            let key = "filter_\(self.rawValue)"
+            return LocalizedStringKey(key)
+        }
     }
     
     enum SortOrder: String, CaseIterable {
-        case ascending = "За зростанням"
-        case descending = "За спаданням"
+        case ascending = "ascending"
+        case descending = "descending"
+        
+        var displayName: LocalizedStringKey {
+            let key = "sort_\(self.rawValue)"
+            return LocalizedStringKey(key)
+        }
         
         var icon: String {
             switch self {
@@ -69,7 +78,7 @@ class RecordsViewModel: ObservableObject {
         // Пошук за текстом
         if !searchText.isEmpty {
             result = result.filter { record in
-                record.displayTitle.localizedCaseInsensitiveContains(searchText)
+                record.titleString.localizedCaseInsensitiveContains(searchText)
             }
         }
         
@@ -96,7 +105,7 @@ class RecordsViewModel: ObservableObject {
             if !currentSearchText.isEmpty
                 && !self.records.isEmpty
                 && self.filteredRecords.isEmpty {
-                self.showError("Звіт за назвою '\(currentSearchText)' не знайдено")
+                self.showError("search_result_not_found".localized(currentSearchText))
             }
         }
     }

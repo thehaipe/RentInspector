@@ -1,7 +1,7 @@
 /*
  Керування стадіями онбордінгу. 
  */
-import SwiftUI
+internal import SwiftUI
 
 struct CreateRecordCoordinator: View {
     @StateObject private var viewModel: CreateRecordViewModel
@@ -93,17 +93,21 @@ struct CreateRecordCoordinator: View {
     }
     
     private var stepTitle: String {
-        switch viewModel.currentStep {
-        case .roomCount:
-            return "Крок 1: Кількість кімнат"
-        case .balconyLoggia:
-            return "Крок 2: Балкон та лоджія"
-        case .additionalRooms:
-            return "Крок 3: Додаткові приміщення"
-        case .recordForm:
-            return "Крок 4: Заповнення звіту"
+            let stepNumber = viewModel.currentStep.rawValue + 1
+            let stepNameKey: String
+            
+            switch viewModel.currentStep {
+            case .roomCount:
+                stepNameKey = "create_step_rooms"
+            case .balconyLoggia:
+                stepNameKey = "create_step_balcony"
+            case .additionalRooms:
+                stepNameKey = "create_step_additional"
+            case .recordForm:
+                stepNameKey = "create_step_form"
+            }
+            return "onboarding_step_format".localized(stepNumber, stepNameKey.localized)
         }
-    }
     
     // MARK: - Current Step View
     

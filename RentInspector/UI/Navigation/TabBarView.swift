@@ -1,7 +1,7 @@
 /*
  UI-елемент: Навігація
  */
-import SwiftUI
+internal import SwiftUI
 
 struct TabBarView: View {
     @EnvironmentObject var realmManager: RealmManager
@@ -20,7 +20,7 @@ struct TabBarView: View {
             // PropertiesListView вже має свій NavigationStack всередині
             PropertiesListView()
                 .tabItem {
-                    Label("Properties", systemImage: "building.2.fill")
+                    Label("tab_properties", systemImage: "building.2.fill")
                 }
                 .tag(Tab.properties)
             
@@ -29,7 +29,7 @@ struct TabBarView: View {
                 RecordsView()
             }
             .tabItem {
-                Label("Recent", systemImage: "clock.fill")
+                Label("tab_records", systemImage: "clock.fill")
             }
             .tag(Tab.recent)
             
@@ -38,7 +38,7 @@ struct TabBarView: View {
                 ProfileView()
             }
             .tabItem {
-                Label("Profile", systemImage: "person.fill")
+                Label("tab_profile", systemImage: "person.fill")
             }
             .tag(Tab.profile)
             
@@ -47,7 +47,7 @@ struct TabBarView: View {
                 SettingsView()
             }
             .tabItem {
-                Label("Settings", systemImage: "gearshape.fill")
+                Label("tab_settings", systemImage: "gearshape.fill")
             }
             .tag(Tab.settings)
         }

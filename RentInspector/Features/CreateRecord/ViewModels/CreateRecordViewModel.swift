@@ -1,9 +1,10 @@
 /*
  Клас для створення звіту за шаблоном (кількість кімнат, наявність балкону чи лоджі, гардеробу, кладової або іншої кімнати). Тільки цей клас обслуговує створення звіту.
  */
-import SwiftUI
+internal import SwiftUI
 internal import Combine
 import RealmSwift
+
 @MainActor
 class CreateRecordViewModel: ObservableObject {
     // MARK: - Published Properties
@@ -52,11 +53,14 @@ class CreateRecordViewModel: ObservableObject {
             recordStage = .living
         }
     }
+    
     private var realmManager = RealmManager.shared
+    
     init(preselectedProperty: Property? = nil) {
         self.selectedProperty = preselectedProperty
         autoSelectValidStage()
     }
+    
     enum OnboardingStep: Int, CaseIterable {
         case roomCount = 0
         case balconyLoggia = 1
@@ -71,10 +75,15 @@ class CreateRecordViewModel: ObservableObject {
         var comment: String
         var photos: [Data]
         
-        var displayName: String {
-            return customName.isEmpty ? type.displayName : customName
+        var displayName: LocalizedStringKey {
+            if customName.isEmpty {
+                return type.displayName
+            } else {
+                return LocalizedStringKey(customName)
+            }
         }
     }
+    
     var disabledStages: [RecordStage] {
         guard let property = selectedProperty else { return [] }
         var disabled: [RecordStage] = []
@@ -90,6 +99,7 @@ class CreateRecordViewModel: ObservableObject {
         
         return disabled
     }
+    
     // MARK: - Navigation
     
     func nextStep() {
@@ -135,7 +145,7 @@ class CreateRecordViewModel: ObservableObject {
         for i in 1...selectedRoomCount {
             rooms.append(RoomData(
                 type: .bedroom,
-                customName: "Кімната \(i)",
+                customName: "default_room_bedroom".localized(i),
                 comment: "",
                 photos: []
             ))
@@ -144,7 +154,9 @@ class CreateRecordViewModel: ObservableObject {
         // Додаємо кухню
         rooms.append(RoomData(
             type: .kitchen,
-            customName: "",
+            // Кухня зазвичай одна, тому використовуємо ключ без %d (якщо він так прописаний)
+            // Або .localized(1), якщо ключ "Kitchen %d"
+            customName: "room_type_Kitchen".localized,
             comment: "",
             photos: []
         ))
@@ -152,7 +164,8 @@ class CreateRecordViewModel: ObservableObject {
         // Додаємо санвузол (завжди мінімум 1)
         rooms.append(RoomData(
             type: .bathroom,
-            customName: "",
+            // Виправлено: додав (1), бо ключ "default_room_bathroom" містить %d
+            customName: "default_room_bathroom".localized(1),
             comment: "",
             photos: []
         ))
@@ -161,7 +174,7 @@ class CreateRecordViewModel: ObservableObject {
         if hasBalcony {
             rooms.append(RoomData(
                 type: .balcony,
-                customName: "",
+                customName: "default_room_balcony".localized(1),
                 comment: "",
                 photos: []
             ))
@@ -171,7 +184,7 @@ class CreateRecordViewModel: ObservableObject {
         if hasLoggia {
             rooms.append(RoomData(
                 type: .loggia,
-                customName: "",
+                customName: "default_room_loggia".localized(1),
                 comment: "",
                 photos: []
             ))
@@ -182,7 +195,7 @@ class CreateRecordViewModel: ObservableObject {
             for i in 1...wardrobeCount {
                 rooms.append(RoomData(
                     type: .wardrobe,
-                    customName: wardrobeCount > 1 ? "Гардероб \(i)" : "",
+                    customName: "default_room_wardrobe".localized(i),
                     comment: "",
                     photos: []
                 ))
@@ -195,7 +208,7 @@ class CreateRecordViewModel: ObservableObject {
             for i in 1...storageCount {
                 rooms.append(RoomData(
                     type: .storage,
-                    customName: storageCount > 1 ? "Кладова \(i)" : "",
+                    customName: "default_room_storage".localized(i),
                     comment: "",
                     photos: []
                 ))
@@ -208,7 +221,7 @@ class CreateRecordViewModel: ObservableObject {
             for i in 1...otherCount {
                 rooms.append(RoomData(
                     type: .other,
-                    customName: "Інше \(i)",
+                    customName: "default_room_other".localized(i),
                     comment: "",
                     photos: []
                 ))
@@ -239,9 +252,11 @@ class CreateRecordViewModel: ObservableObject {
     }
     
     func addBathroom() {
+        // Виправлено: Тепер назва "Санвузол N" локалізована
+        let nextNumber = rooms.filter { $0.type == .bathroom }.count + 1
         rooms.append(RoomData(
             type: .bathroom,
-            customName: "Санвузол \(rooms.filter { $0.type == .bathroom }.count + 1)",
+            customName: "default_room_bathroom".localized(nextNumber),
             comment: "",
             photos: []
         ))
@@ -266,12 +281,13 @@ class CreateRecordViewModel: ObservableObject {
         guard index < rooms.count else { return }
         rooms.remove(at: index)
     }
+    
     // MARK: - Save Record
     
     func saveRecord(completion: @escaping (Record?) -> Void) {
         isLoading = true
         let newRecord = Record(
-            title: recordTitle.isEmpty ? "Record \(Date().formatted(date: .abbreviated, time: .omitted))" : recordTitle,
+            title: recordTitle.isEmpty ? "default_record_title_format".localized(Date().formatted(date: .abbreviated, time: .omitted)) : recordTitle,
             stage: recordStage
         )
         newRecord.reminderInterval = reminderInterval
@@ -302,7 +318,7 @@ class CreateRecordViewModel: ObservableObject {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
             self?.isLoading = false
             self?.showSuccessView = true
-            completion(newRecord.detached())  // Повертаємо DEATACHED копію, бо звичайна ламає View
+            completion(newRecord.detached())  // Повертаємо DETACHED копію
         }
     }
     

@@ -1,7 +1,7 @@
 /*
  Екран, при випадку коли звітів ще не створено
  */
-import SwiftUI
+internal import SwiftUI
 
 struct EmptyRecordsView: View {
     let onCreateRecord: () -> Void
@@ -10,7 +10,7 @@ struct EmptyRecordsView: View {
     var body: some View {
         VStack(spacing: 24) {
             // Вітання
-            Text("Welcome, \(userName) 👋")
+            Text("profile_welcome_user_formar".localized(userName))
                 .font(AppTheme.title2)
                 .foregroundColor(AppTheme.textPrimary)
                 .padding(.top, 40)
@@ -24,11 +24,11 @@ struct EmptyRecordsView: View {
             
             // Текст
             VStack(spacing: 8) {
-                Text("Немає звітів")
+                Text("records_empty_title")
                     .font(AppTheme.title2)
                     .foregroundColor(AppTheme.textPrimary)
                 
-                Text("Створіть свій перший звіт про стан нерухомості")
+                Text("records_empty_desc")
                     .font(AppTheme.body)
                     .foregroundColor(AppTheme.textSecondary)
                     .multilineTextAlignment(.center)
@@ -40,7 +40,7 @@ struct EmptyRecordsView: View {
                 HStack(spacing: 12) {
                     Image(systemName: "plus.circle.fill")
                         .font(.title3)
-                    Text("Створити звіт")
+                    Text("records_create_button")
                         .font(AppTheme.headline)
                 }
                 .foregroundColor(.white)

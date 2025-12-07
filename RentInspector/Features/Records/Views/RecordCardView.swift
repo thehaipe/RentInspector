@@ -1,7 +1,7 @@
 /*
  Екран-карточка запису для ScrollView, щоб відобразити його мініатюру у RecordsView
  */
-import SwiftUI
+internal import SwiftUI
 import RealmSwift
 
 struct RecordCardView: View {
@@ -61,22 +61,22 @@ struct RecordCardView: View {
                 statItem(
                     icon: "door.left.hand.open",
                     value: "\(record.rooms.count)",
-                    label: "Кімнат"
+                    label: "record_room"
                 )
                 
                 // Фото
                 statItem(
                     icon: "photo",
                     value: "\(record.totalPhotos)",
-                    label: "Фото"
+                    label: "record_photo"
                 )
                 
                 // Нагадування
                 if record.reminderInterval > 0 {
-                    statItem(
-                        icon: "bell.fill",
-                        value: "\(record.reminderInterval)д",
-                        label: ""
+                    let daysValue = "\(record.reminderInterval)\("days_short".localized)"
+                    statItem(icon: "bell.fill",
+                    value: daysValue,
+                    label: ""
                     )
                 }
                 
@@ -90,7 +90,7 @@ struct RecordCardView: View {
     }
     
     // Повернули старий дизайн: Іконка (Колір) + Число (Жирне) + Текст (Сірий)
-    private func statItem(icon: String, value: String, label: String) -> some View {
+    private func statItem(icon: String, value: String, label: LocalizedStringKey) -> some View {
         HStack(spacing: 6) {
             Image(systemName: icon)
                 .font(.body) // Трохи більша іконка

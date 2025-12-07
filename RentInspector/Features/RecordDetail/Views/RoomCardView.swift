@@ -1,7 +1,7 @@
 /*
  Екран-елемент RecordDetailView
  */
-import SwiftUI
+internal import SwiftUI
 
 struct RoomCardView: View {
     let room: Room

@@ -10,14 +10,13 @@
  */
 import Foundation
 import RealmSwift
-
+internal import SwiftUI
 class Room: Object, ObjectKeyIdentifiable {
     @Persisted(primaryKey: true) var id: ObjectId
     @Persisted var type: String // RoomType.rawValue
     @Persisted var customName: String = ""
     @Persisted var comment: String = ""
-    //@Persisted var photoData: List<Data> // Зберігаю фото як Data
-    @Persisted var photoPaths: List<String>
+    @Persisted var photoPaths: RealmSwift.List<String>
     @Persisted var createdAt: Date = Date()
     
     var roomType: RoomType {
@@ -25,10 +24,20 @@ class Room: Object, ObjectKeyIdentifiable {
         set { type = newValue.rawValue }
     }
     
-    var displayName: String {
-        return customName.isEmpty ? roomType.displayName : customName
+    var displayName: LocalizedStringKey {
+            if customName.isEmpty {
+                return roomType.displayName
+            } else {
+                return LocalizedStringKey(customName)
+            }
+        }
+    var displayNameString: String {
+        if customName.isEmpty {
+            return roomType.localizedStringValue
+        } else {
+            return customName
+        }
     }
-    
     convenience init(type: RoomType, customName: String = "") {
         self.init()
         self.type = type.rawValue

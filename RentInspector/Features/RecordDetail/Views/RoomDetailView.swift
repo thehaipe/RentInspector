@@ -1,4 +1,4 @@
-import SwiftUI
+internal import SwiftUI
 import RealmSwift
 
 struct RoomDetailView: View {
@@ -19,11 +19,11 @@ struct RoomDetailView: View {
                     roomTypeSection
                     
                     // Назва (Read Only)
-                    infoSection(title: "Назва", text: room.displayName)
+                    infoSection(title: "form_record_title_label", text: room.displayName)
                     
                     // Коментар (Read Only)
                     if !room.comment.isEmpty {
-                        infoSection(title: "Коментар", text: room.comment)
+                        infoSection(title: "records_comment", text: room.displayName)
                     }
                     
                     // Фотографії (Тільки перегляд)
@@ -35,7 +35,7 @@ struct RoomDetailView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Закрити") {
+                    Button("general_close") {
                         dismiss()
                     }
                 }
@@ -67,7 +67,7 @@ struct RoomDetailView: View {
     }
     
     // Універсальна картка для тексту
-    private func infoSection(title: String, text: String) -> some View {
+    private func infoSection(title: LocalizedStringKey, text: LocalizedStringKey) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(title)
                 .font(AppTheme.headline)
@@ -85,12 +85,12 @@ struct RoomDetailView: View {
     
     private var photosSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Фотографії")
+            Text("records_photos")
                 .font(AppTheme.headline)
                 .foregroundColor(AppTheme.textPrimary)
             
             if room.photoPaths.isEmpty {
-                Text("Фото відсутні")
+                Text("records_no_photos")
                     .font(AppTheme.body)
                     .foregroundColor(AppTheme.textSecondary)
                     .italic()
@@ -118,7 +118,7 @@ struct RoomDetailView: View {
                         .clipped()
                 }
                 
-                Text("Фото \(index + 1)")
+                Text("photo_number_format".localized(index + 1))
                     .font(AppTheme.callout)
                     .fontWeight(.semibold)
                     .foregroundColor(AppTheme.textPrimary)

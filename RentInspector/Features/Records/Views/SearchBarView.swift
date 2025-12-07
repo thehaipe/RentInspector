@@ -1,7 +1,7 @@
 /*
  UI-елемент: строка пошуку за назвою
  */
-import SwiftUI
+internal import SwiftUI
 
 struct SearchBar: View {
     @Binding var text: String
@@ -11,7 +11,7 @@ struct SearchBar: View {
             Image(systemName: "magnifyingglass")
                 .foregroundColor(AppTheme.textSecondary)
             
-            TextField("Пошук за назвою...", text: $text)
+            TextField("records_search_placeholder", text: $text)
                 .textFieldStyle(PlainTextFieldStyle())
             
             if !text.isEmpty {
