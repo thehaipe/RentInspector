@@ -29,9 +29,9 @@
 /* Records List */
 "records_title" = "Records";
 "records_empty_title" = "No records yet";
-"records_empty_desc" = "Create your first property inspection report";
-"records_first_record" = "Create First Report";
-"records_create_button" = "Create Report";
+"records_empty_desc" = "Create your first property inspection record";
+"records_first_record" = "Create First Record";
+"records_create_button" = "Create Record";
 "records_search_placeholder" = "Search by title...";
 "records_sort" = "Sort";
 "records_filter" = "Filter";
