@@ -9,11 +9,6 @@ struct EmptyRecordsView: View {
     
     var body: some View {
         VStack(spacing: 24) {
-            // Вітання
-//            Text("profile_welcome_user_formar".localized(userName))
-//                .font(AppTheme.title2)
-//                .foregroundColor(AppTheme.textPrimary)
-//                .padding(.top, 40)
             
             Spacer()
             
