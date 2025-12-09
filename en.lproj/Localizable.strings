@@ -76,7 +76,7 @@
 /* Record Form */
 "form_title_label" = "Report Title";
 "form_blank_address" = "No Address";
-"form_title_placeholder" = "E.g. Apartment on Main St";
+"form_title_placeholder" = "E.g. Apartment on Naukova St";
 "form_stage_label" = "Stage";
 "form_reminder_label" = "Visit Reminder";
 "form_reminder_none" = "Not set";

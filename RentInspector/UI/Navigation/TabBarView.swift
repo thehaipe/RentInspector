@@ -24,7 +24,7 @@ struct TabBarView: View {
                 }
                 .tag(Tab.properties)
             
-            // 2. Вкладка "Останні" (Recent) - Колишній RecordsView
+            // 2. Вкладка "Останні" (Recent, RecordsView)
             NavigationStack {
                 RecordsView()
             }
@@ -34,13 +34,13 @@ struct TabBarView: View {
             .tag(Tab.recent)
             
             // 3. Profile Tab
-            NavigationStack {
-                ProfileView()
-            }
-            .tabItem {
-                Label("tab_profile", systemImage: "person.fill")
-            }
-            .tag(Tab.profile)
+//            NavigationStack {
+//                ProfileView()
+//            }
+//            .tabItem {
+//                Label("tab_profile", systemImage: "person.fill")
+//            }
+//            .tag(Tab.profile)
             
             // 4. Settings Tab
             NavigationStack {
@@ -51,7 +51,7 @@ struct TabBarView: View {
             }
             .tag(Tab.settings)
         }
-        .tint(AppTheme.primaryColor) // Використовуємо колір з теми
+        .tint(AppTheme.primaryColor) 
     }
 }
 

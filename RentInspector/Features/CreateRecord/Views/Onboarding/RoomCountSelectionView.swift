@@ -5,67 +5,73 @@ internal import SwiftUI
 
 struct RoomCountSelectionView: View {
     @ObservedObject var viewModel: CreateRecordViewModel
-    @Environment(\.dismiss) var dismiss
-    private let roomOptions = [1, 2, 3, 4, 5]
-    
-    var body: some View {
-        VStack(spacing: 32) {
-            // Заголовок
-            VStack(spacing: 8) {
-                Image(systemName: "bed.double.fill")
-                    .font(.system(size: 60))
-                    .foregroundColor(AppTheme.primaryColor)
-                
-                Text("create_step_rooms")
-                    .font(AppTheme.title)
-                    .foregroundColor(AppTheme.textPrimary)
-                
-                Text("create_room_count_subtitle")
-                    .font(AppTheme.body)
-                    .foregroundColor(AppTheme.textSecondary)
-            }
-            .padding(.top, 40)
-            
-            Spacer()
-            
-            // Вибір кількості кімнат
-            VStack(spacing: 16) {
-                ForEach(roomOptions, id: \.self) { count in
-                    roomOptionButton(count: count)
+        @Environment(\.dismiss) var dismiss
+        private let roomOptions = [1, 2, 3, 4, 5]
+        
+        var body: some View {
+            VStack(spacing: 0) {
+                VStack(spacing: 8) {
+                    Image(systemName: "bed.double.fill")
+                        .font(.system(size: 60))
+                        .foregroundColor(AppTheme.primaryColor)
+                    
+                    Text("create_step_rooms")
+                        .font(AppTheme.title)
+                        .foregroundColor(AppTheme.textPrimary)
+                    
+                    Text("create_room_count_subtitle")
+                        .font(AppTheme.body)
+                        .foregroundColor(AppTheme.textSecondary)
                 }
-            }
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Button("general_cancel") {
+                .padding(.top, 40)
+                .padding(.bottom, 32)
+                
+                ScrollView {
+                    VStack(spacing: 16) {
+                        ForEach(roomOptions, id: \.self) { count in
+                            roomOptionButton(count: count)
+                        }
+                    }
+                    .padding(.horizontal, 24)
+                }
+                
+                Spacer()
+                
+                // Кнопки навігації
+                HStack(spacing: 16) {
+                    Button(action: {
                         dismiss()
+                    }) {
+                        Text("general_cancel")
+                            .font(AppTheme.headline)
+                            .foregroundColor(AppTheme.primaryColor)
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 56)
+                            .background(AppTheme.secondaryBackgroundColor)
+                            .cornerRadius(AppTheme.cornerRadiusMedium)
+                    }
+                    
+                    Button(action: {
+                        viewModel.nextStep()
+                    }) {
+                        Text("general_next")
+                            .font(AppTheme.headline)
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 56)
+                            .background(AppTheme.primaryColor)
+                            .cornerRadius(AppTheme.cornerRadiusMedium)
                     }
                 }
+                .padding(.horizontal, 24)
+                .padding(.bottom, 32)
+                .padding(.top, 16)
+                .disabled(!viewModel.canProceed)
+                .opacity(viewModel.canProceed ? 1 : 0.6)
             }
-            .padding(.horizontal, 24)
-            
-            Spacer()
-            
-            // Кнопка Next
-            Button(action: {
-                viewModel.nextStep()
-            }) {
-                Text("general_next")
-                    .font(AppTheme.headline)
-                    .foregroundColor(.white)
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 56)
-                    .background(AppTheme.primaryColor)
-                    .cornerRadius(AppTheme.cornerRadiusMedium)
-            }
-            .padding(.horizontal, 24)
-            //БАГ-РЕПОРТ: Тестувальник №6, кнопка залазить в Safe Area, попереднє значення: 32
-            .padding(.bottom, 70)
-            .disabled(!viewModel.canProceed)
-            .opacity(viewModel.canProceed ? 1 : 0.6)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(AppTheme.backgroundColor)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(AppTheme.backgroundColor)
-    }
     
     private func roomOptionButton(count: Int) -> some View {
         Button(action: {

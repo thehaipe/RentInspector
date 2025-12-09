@@ -36,10 +36,15 @@ struct RecordFormView: View {
             }
             .padding()
         }
-        .navigationTitle(viewModel.recordTitle.isEmpty ? "records_new_record" : viewModel.recordTitle)
+        .navigationTitle(viewModel.recordTitle.isEmpty ? "records_new_record".localized() : viewModel.recordTitle)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
+                Button("general_back") {
+                    viewModel.previousStep()
+                }
+            }
+            ToolbarItem(placement: .topBarTrailing) {
                 Button("general_cancel") {
                     dismiss()
                 }
@@ -241,7 +246,7 @@ struct RecordFormView: View {
                             showReminderPicker = false
                         }) {
                             HStack {
-                                Text("\(days) days")
+                                Text("form_reminder_days".localized(days))
                                     .foregroundColor(AppTheme.textPrimary)
                                 Spacer()
                                 if viewModel.reminderInterval == days {

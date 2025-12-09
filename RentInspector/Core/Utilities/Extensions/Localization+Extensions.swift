@@ -1,12 +1,23 @@
 internal import SwiftUI
 
 extension String {
+    private var localizedBundle: Bundle {
+        let languageCode = UserDefaults.standard.string(forKey: "selectedLanguage") ?? "uk"
+        if let path = Bundle.main.path(forResource: languageCode, ofType: "lproj"),
+           let bundle = Bundle(path: path) {
+            return bundle
+        }
+        return .main
+    }
+
     var localized: String {
-        NSLocalizedString(self, comment: "")
+        // Використовуємо наш знайдений бандл замість стандартного
+        return NSLocalizedString(self, tableName: nil, bundle: localizedBundle, value: "", comment: "")
     }
     
     func localized(_ args: CVarArg...) -> String {
-        String(format: NSLocalizedString(self, comment: ""), arguments: args)
+        let format = NSLocalizedString(self, tableName: nil, bundle: localizedBundle, value: "", comment: "")
+        return String(format: format, arguments: args)
     }
 }
 

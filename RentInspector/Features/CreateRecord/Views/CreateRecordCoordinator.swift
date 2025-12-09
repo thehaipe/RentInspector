@@ -30,7 +30,7 @@ struct CreateRecordCoordinator: View {
                     // Success View
                     if let record = createdRecord {
                         RecordSuccessView(
-                            record: record,  //Передаємо Record об'єкт
+                            record: record,
                             onExportPDF: {
                                 exportPDF(record: record)
                             },
