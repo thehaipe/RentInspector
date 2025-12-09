@@ -36,7 +36,7 @@ struct RecordFormView: View {
             }
             .padding()
         }
-        .navigationTitle(viewModel.recordTitle.isEmpty ? "records_new_record".localized() : viewModel.recordTitle)
+        .navigationTitle(viewModel.recordTitle.isEmpty ? "records_new_record".localized : viewModel.recordTitle)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {

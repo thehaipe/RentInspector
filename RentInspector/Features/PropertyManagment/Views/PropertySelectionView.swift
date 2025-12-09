@@ -3,8 +3,9 @@ internal import SwiftUI
 struct PropertySelectionView: View {
     @Binding var selectedProperty: Property?
     @Environment(\.dismiss) var dismiss
-    @EnvironmentObject var realmManager: RealmManager // Беремо список звідси
+    @EnvironmentObject var realmManager: RealmManager
     @StateObject private var viewModel = PropertyViewModel()
+    @State private var showFilterSheet = false
     var body: some View {
         NavigationStack {
             List {
@@ -57,6 +58,9 @@ struct PropertySelectionView: View {
                     Button("general_cancel") { dismiss() }
                 }
             }
+            .sheet(isPresented: $viewModel.showAddPropertySheet) {
+                addPropertySheet
+            }
         }
         .onAppear {
             // Переконуємось, що дані свіжі
@@ -92,5 +96,10 @@ struct PropertySelectionView: View {
         }
         .presentationDetents([.medium])
     }
+}
+
+#Preview{
+    PropertySelectionView(selectedProperty: .constant(nil))
+        .environmentObject(RealmManager.shared)
 }
 

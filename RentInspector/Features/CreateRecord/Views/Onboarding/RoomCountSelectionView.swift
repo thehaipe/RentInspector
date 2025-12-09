@@ -94,14 +94,14 @@ struct RoomCountSelectionView: View {
             .padding(20)
             .background(
                 viewModel.selectedRoomCount == count
-                    ? AppTheme.primaryColor
-                    : AppTheme.secondaryBackgroundColor
+                ? AppTheme.primaryColor
+                : AppTheme.secondaryBackgroundColor
             )
             .cornerRadius(AppTheme.cornerRadiusMedium)
             .shadow(
                 color: viewModel.selectedRoomCount == count
-                    ? AppTheme.primaryColor.opacity(0.3)
-                    : AppTheme.shadowColor,
+                ? AppTheme.primaryColor.opacity(0.3)
+                : AppTheme.shadowColor,
                 radius: 8,
                 y: 4
             )
