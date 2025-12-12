@@ -17,6 +17,7 @@ class RealmManager: ObservableObject {
     private init() {
         setupRealm()
         loadRecordsSync()
+        loadProperties()
     }
     
     // MARK: - Setup
@@ -72,7 +73,6 @@ class RealmManager: ObservableObject {
     }
     
     // MARK: - Property Management
-    
     func loadProperties() {
             guard let realm = realm else { return }
             let results = realm.objects(Property.self).sorted(byKeyPath: "createdAt", ascending: false)

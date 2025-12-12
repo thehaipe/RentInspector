@@ -106,13 +106,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>189</string>
+					<string>191</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>188</string>
+					<string>190</string>
 					<key>Timestamp</key>
-					<string>786320108.954348</string>
+					<string>787233955.161786</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -125,19 +125,21 @@
 					</dict>
 				</dict>
 			</dict>
+			<key>is-complete</key>
+			<true/>
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string>                realm.delete(recordToDelete.rooms)
+				<string>            }
 </string>
 				<key>leading</key>
-				<string>        do {
-            try realm.write {
+				<string>                realm.delete(recordToDelete.rooms)
+                realm.delete(recordToDelete)
 </string>
 				<key>trailing</key>
-				<string>                realm.delete(recordToDelete)
-            }
-            
+				<string>            
+            DispatchQueue.global(qos: .background).async {
+                for path in photosToDelete {
 </string>
 			</dict>
 			<key>title</key>
