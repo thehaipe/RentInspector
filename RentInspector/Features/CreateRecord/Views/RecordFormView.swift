@@ -14,27 +14,41 @@ struct RecordFormView: View {
     var onRecordSaved: ((Record) -> Void)?
     
     var body: some View {
-        ScrollView {
-            VStack(spacing: 24) {
-                // Заголовок звіту
-                recordTitleSection
-                
-                //Привʼязка
-                addPropertyPicker
-                
-                // Етап звіту
-                recordStageSection
-                
-                // Секції кімнат
-                roomSectionsView
-                
-                // Нагадування
-                reminderSection
-                
-                // Кнопка збереження
-                saveButton
+        ZStack(alignment: .top) {
+            ScrollView {
+                VStack(spacing: 24) {
+                    // Заголовок звіту
+                    recordTitleSection
+                    
+                    //Привʼязка
+                    addPropertyPicker
+                    
+                    // Етап звіту
+                    recordStageSection
+                    
+                    // Секції кімнат
+                    roomSectionsView
+                    
+                    // Нагадування
+                    reminderSection
+                    
+                    // Кнопка збереження
+                    saveButton
+                }
+                .padding()
+                .padding(.bottom, 60)
             }
-            .padding()
+            
+            if viewModel.showStageConflictToast {
+                errorToast
+                    .onAppear {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                            withAnimation {
+                                viewModel.showStageConflictToast = false
+                            }
+                        }
+                    }
+            }
         }
         .navigationTitle(viewModel.recordTitle.isEmpty ? "records_new_record".localized : viewModel.recordTitle)
         .navigationBarTitleDisplayMode(.inline)
@@ -56,52 +70,52 @@ struct RecordFormView: View {
     }
     
     // MARK: - Record Title Section
-        
-        private var recordTitleSection: some View {
-            VStack(alignment: .leading, spacing: 8) {
-                Text("form_title_label")
-                    .font(AppTheme.headline)
-                    .foregroundColor(AppTheme.textPrimary)
-                
-                TextField("Record \(Date().formatted(date: .abbreviated, time: .omitted))", text: $viewModel.recordTitle)
-                    .textFieldStyle(CustomTextFieldStyle())
-                    .focused($isTitleFocused)
-                    .submitLabel(.done)
-                    .onChange(of: viewModel.recordTitle) { oldValue, newValue in
-                        if newValue.count > Constants.Limits.maxRecordTitleLength {
-                            viewModel.recordTitle = String(newValue.prefix(Constants.Limits.maxRecordTitleLength))
-                        }
-                    }
-                HStack {
-                    Text("\(viewModel.recordTitle.count)/\(Constants.Limits.maxRecordTitleLength)")
-                        .font(AppTheme.caption)
-                        .foregroundColor(AppTheme.textSecondary)
-                    
-                    Spacer()
-                    
-                    if isTitleFocused {
-                        Button(action: {
-                            isTitleFocused = false
-                        }) {
-                            HStack(spacing: 4) {
-                                Image(systemName: "checkmark.circle.fill")
-                                    .font(.caption)
-                                Text("general_done")
-                                    .font(AppTheme.caption)
-                                    .fontWeight(.semibold)
-                            }
-                            .foregroundColor(.white)
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 6)
-                            .background(AppTheme.primaryColor)
-                            .cornerRadius(12)
-                        }
-                        .transition(.opacity.combined(with: .scale(scale: 0.8)))
+    
+    private var recordTitleSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("form_title_label")
+                .font(AppTheme.headline)
+                .foregroundColor(AppTheme.textPrimary)
+            
+            TextField("Record \(Date().formatted(date: .abbreviated, time: .omitted))", text: $viewModel.recordTitle)
+                .textFieldStyle(CustomTextFieldStyle())
+                .focused($isTitleFocused)
+                .submitLabel(.done)
+                .onChange(of: viewModel.recordTitle) { oldValue, newValue in
+                    if newValue.count > Constants.Limits.maxRecordTitleLength {
+                        viewModel.recordTitle = String(newValue.prefix(Constants.Limits.maxRecordTitleLength))
                     }
                 }
-                .animation(.spring(response: 0.3, dampingFraction: 0.7), value: isTitleFocused)
+            HStack {
+                Text("\(viewModel.recordTitle.count)/\(Constants.Limits.maxRecordTitleLength)")
+                    .font(AppTheme.caption)
+                    .foregroundColor(AppTheme.textSecondary)
+                
+                Spacer()
+                
+                if isTitleFocused {
+                    Button(action: {
+                        isTitleFocused = false
+                    }) {
+                        HStack(spacing: 4) {
+                            Image(systemName: "checkmark.circle.fill")
+                                .font(.caption)
+                            Text("general_done")
+                                .font(AppTheme.caption)
+                                .fontWeight(.semibold)
+                        }
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 6)
+                        .background(AppTheme.primaryColor)
+                        .cornerRadius(12)
+                    }
+                    .transition(.opacity.combined(with: .scale(scale: 0.8)))
+                }
             }
+            .animation(.spring(response: 0.3, dampingFraction: 0.7), value: isTitleFocused)
         }
+    }
     
     // MARK: - Record Stage Section
     
@@ -120,39 +134,39 @@ struct RecordFormView: View {
     }
     
     private func stageButton(stage: RecordStage) -> some View {
-            let isDisabled = viewModel.disabledStages.contains(stage)
-            
-            return Button(action: {
-                if !isDisabled {
-                    withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                        viewModel.recordStage = stage
-                    }
+        let isDisabled = viewModel.disabledStages.contains(stage)
+        
+        return Button(action: {
+            if !isDisabled {
+                withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                    viewModel.recordStage = stage
                 }
-            }) {
-                VStack(spacing: 8) {
-                    Image(systemName: stage.icon)
-                        .font(.title2)
-                    
-                    Text(stage.displayName)
-                        .font(AppTheme.caption)
-                }
-                .foregroundColor(
-                    viewModel.recordStage == stage ? .white :
-                    (isDisabled ? AppTheme.textSecondary.opacity(0.5) : AppTheme.textPrimary)
-                )
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 12)
-                .background(
-                    viewModel.recordStage == stage
-                        ? AppTheme.primaryColor
-                        : AppTheme.secondaryBackgroundColor
-                )
-                .cornerRadius(AppTheme.cornerRadiusMedium)
-                .opacity(isDisabled ? 0.5 : 1.0)
-                .shadow(color: Color.black.opacity(0.05), radius: 2, x: 0, y: 1)
             }
-            .disabled(isDisabled) 
+        }) {
+            VStack(spacing: 8) {
+                Image(systemName: stage.icon)
+                    .font(.title2)
+                
+                Text(stage.displayName)
+                    .font(AppTheme.caption)
+            }
+            .foregroundColor(
+                viewModel.recordStage == stage ? .white :
+                    (isDisabled ? AppTheme.textSecondary.opacity(0.5) : AppTheme.textPrimary)
+            )
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 12)
+            .background(
+                viewModel.recordStage == stage
+                ? AppTheme.primaryColor
+                : AppTheme.secondaryBackgroundColor
+            )
+            .cornerRadius(AppTheme.cornerRadiusMedium)
+            .opacity(isDisabled ? 0.5 : 1.0)
+            .shadow(color: Color.black.opacity(0.05), radius: 2, x: 0, y: 1)
         }
+        .disabled(isDisabled)
+    }
     
     // MARK: - Room Sections
     
@@ -322,10 +336,10 @@ struct RecordFormView: View {
         Button(action: {
             viewModel.saveRecord { record in
                 if let record = record {
-                    onRecordSaved?(record)  
+                    onRecordSaved?(record)
                 }
             }
-            }) {
+        }) {
             HStack(spacing: 12) {
                 if viewModel.isLoading {
                     ProgressView()
@@ -346,6 +360,44 @@ struct RecordFormView: View {
         }
         .disabled(viewModel.isLoading || !viewModel.canProceed)
         .padding(.top, 16)
+    }
+    // MARK: - Error Toast
+    private var errorToast: some View {
+        VStack {
+            HStack(alignment: .top, spacing: 12) {
+                Image(systemName: "exclamationmark.triangle.fill")
+                    .foregroundColor(.red)
+                    .font(.system(size: 20))
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("error_stage_conflict_title".localized)
+                        .font(AppTheme.callout.weight(.semibold))
+                        .foregroundColor(AppTheme.textPrimary)
+                    Text("error_stage_conflict_message".localized)
+                        .font(AppTheme.caption)
+                        .foregroundColor(AppTheme.textPrimary.opacity(0.8))
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                Spacer()
+                Button {
+                    withAnimation {
+                        viewModel.showStageConflictToast = false
+                    }
+                } label: {
+                    Image(systemName: "xmark")
+                        .foregroundColor(AppTheme.textPrimary.opacity(0.5))
+                        .font(.system(size: 14))
+                }
+            }
+            .padding()
+            .background(AppTheme.secondaryBackgroundColor)
+            .cornerRadius(AppTheme.cornerRadiusMedium)
+            .shadow(color: AppTheme.shadowColor, radius: 10, y: 5)
+            .padding(.horizontal)
+            Spacer()
+        }
+        .padding(.top, 16)
+        .transition(.move(edge: .top).combined(with: .opacity))
+        .zIndex(100)
     }
 }
 

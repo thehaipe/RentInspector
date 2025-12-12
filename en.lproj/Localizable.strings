@@ -160,6 +160,8 @@
 "error_delete_comfirmation" = "Are you sure you want to delete this room and all entered data?";
 "error_delete_record_confirmation" = "This report will be deleted permanently. This action cannot be undone.";
 "error_delete_all_records_alert_title" = "All records will be deleted permanently. This action cannot be undone.";
+"error_stage_conflict_title" = "Stage Change Error";
+"error_stage_conflict_message" = "The object cannot contain more than one report with 'Move-in' or 'Move-out' stages.";
 "error_unknown" = "Unknown error";
 
 /* Miscellaneous / Common Phrases */

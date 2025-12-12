@@ -160,6 +160,8 @@
 "error_delete_comfirmation" = "Ви впевнені, що хочете видалити цю кімнату та всі введені дані?";
 "error_delete_record_confirmation" = "Цей звіт буде видалено назавжди. Цю дію неможливо скасувати.";
 "error_delete_all_records_alert_title" = "Всі звіти будуть видалені назавжди. Цю дію неможливо скасувати.";
+"error_stage_conflict_title" = "Помилка зміни етапу";
+"error_stage_conflict_message" = "В обʼєкті не може існувати більше 1 звіту з етапами \"Заселення\" або \"Виселення\".";
 "error_unknown" = "Невідома помилка";
 
 /* Miscellaneous / Common Phrases */

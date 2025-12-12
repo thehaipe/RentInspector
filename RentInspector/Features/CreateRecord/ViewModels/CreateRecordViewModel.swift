@@ -33,6 +33,7 @@ class CreateRecordViewModel: ObservableObject {
     // UI State
     @Published var isLoading: Bool = false
     @Published var showSuccessView: Bool = false
+    @Published var showStageConflictToast: Bool = false
     // Додатково, додати до обʼєкту
     @Published var selectedProperty: Property? {
         didSet {
@@ -51,6 +52,7 @@ class CreateRecordViewModel: ObservableObject {
             // 2. Якщо Виселення зайняте (а ми були на ньому) -> пропонуємо Проживання
             // 3. Якщо і Заселення і Виселення зайняті -> лишається тільки Проживання
             recordStage = .living
+            showStageConflictToast = true
         }
     }
     
