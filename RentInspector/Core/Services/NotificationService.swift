@@ -88,6 +88,16 @@ class NotificationService: NSObject {
             }
         }
     }
+    // 5. Перевірка статусу дозволів
+    // Припускаю, що буде такий користувач, який відхилить спеціально дозвіл на сповіщення
+    // і потім в AppStore напише мені негативний відгук що не працює нагадування про повторний візит
+    func checkPermissionStatus(completion: @escaping (UNAuthorizationStatus) -> Void) {
+        UNUserNotificationCenter.current().getNotificationSettings { settings in
+            DispatchQueue.main.async {
+                completion(settings.authorizationStatus)
+            }
+        }
+    }
     
     // MARK: - Helpers
     // Єдине місце формування ID, щоб уникнути помилок ручного вводу

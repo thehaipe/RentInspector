@@ -41,7 +41,8 @@ class CreateRecordViewModel: ObservableObject {
             autoSelectValidStage()
         }
     }
-    
+    // Стан дозволу на сповіщення
+    @Published var isNotificationsDenied: Bool = false
     private func autoSelectValidStage() {
         // Якщо об'єкт не вибрано, нічого не робимо
         guard let property = selectedProperty else { return }
@@ -62,6 +63,7 @@ class CreateRecordViewModel: ObservableObject {
     init(preselectedProperty: Property? = nil) {
         self.selectedProperty = preselectedProperty
         autoSelectValidStage()
+        checkNotificationPermissions()
     }
     
     enum OnboardingStep: Int, CaseIterable {
@@ -336,7 +338,12 @@ class CreateRecordViewModel: ObservableObject {
             completion(newRecord.detached())  // Повертаємо DETACHED копію
         }
     }
-    
+    // MARK: Notification Permissions
+    func checkNotificationPermissions() {
+        NotificationService.shared.checkPermissionStatus { [weak self] status in
+            self?.isNotificationsDenied = (status == .denied)
+        }
+    }
     // MARK: - Reset
     
     func reset() {

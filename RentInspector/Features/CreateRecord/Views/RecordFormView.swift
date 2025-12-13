@@ -11,6 +11,7 @@ struct RecordFormView: View {
     @State private var savedRecord: Record? = nil
     @State private var showPropertyPicker = false
     @FocusState private var isTitleFocused: Bool
+    @Environment(\.scenePhase) var scenePhase
     var onRecordSaved: ((Record) -> Void)?
     
     var body: some View {
@@ -66,6 +67,14 @@ struct RecordFormView: View {
         }
         .sheet(isPresented: $showReminderPicker) {
             reminderPickerSheet
+        }
+        .onAppear {
+            viewModel.checkNotificationPermissions()
+        }
+        .onChange(of: scenePhase) { newPhase in
+            if newPhase == .active {
+                viewModel.checkNotificationPermissions()
+            }
         }
     }
     
@@ -200,38 +209,73 @@ struct RecordFormView: View {
     // MARK: - Reminder Section
     
     private var reminderSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("form_reminder_label")
-                .font(AppTheme.headline)
-                .foregroundColor(AppTheme.textPrimary)
-            
-            Button(action: {
-                showReminderPicker = true
-            }) {
-                HStack {
-                    Image(systemName: "bell.fill")
-                        .foregroundColor(AppTheme.primaryColor)
-                    
-                    if viewModel.reminderInterval > 0 {
-                        Text("form_reminder_days".localized(viewModel.reminderInterval))
-                            .foregroundColor(AppTheme.textPrimary)
-                    } else {
-                        Text("form_reminder_none")
+            VStack(alignment: .leading, spacing: 12) {
+                Text("form_reminder_label")
+                    .font(AppTheme.headline)
+                    .foregroundColor(AppTheme.textPrimary)
+                
+                Button(action: {
+                    showReminderPicker = true
+                }) {
+                    HStack {
+                        Image(systemName: "bell.fill")
+                            .foregroundColor(AppTheme.primaryColor)
+                        
+                        if viewModel.reminderInterval > 0 {
+                            Text("form_reminder_days".localized(viewModel.reminderInterval))
+                                .foregroundColor(AppTheme.textPrimary)
+                        } else {
+                            Text("form_reminder_none")
+                                .foregroundColor(AppTheme.textSecondary)
+                        }
+                        
+                        Spacer()
+                        
+                        Image(systemName: "chevron.right")
+                            .font(.caption)
                             .foregroundColor(AppTheme.textSecondary)
                     }
-                    
-                    Spacer()
-                    
-                    Image(systemName: "chevron.right")
-                        .font(.caption)
-                        .foregroundColor(AppTheme.textSecondary)
+                    .padding()
+                    .background(AppTheme.secondaryBackgroundColor)
+                    .cornerRadius(AppTheme.cornerRadiusMedium)
                 }
-                .padding()
-                .background(AppTheme.secondaryBackgroundColor)
-                .cornerRadius(AppTheme.cornerRadiusMedium)
+                
+                if viewModel.isNotificationsDenied && viewModel.reminderInterval > 0 {
+                    Button(action: {
+                        // Відкриваємо налаштування iOS
+                        if let appSettings = URL(string: UIApplication.openSettingsURLString) {
+                            UIApplication.shared.open(appSettings)
+                        }
+                    }) {
+                        HStack(alignment: .top, spacing: 12) {
+                            Image(systemName: "exclamationmark.triangle.fill")
+                                .foregroundColor(.orange)
+                                .font(.system(size: 20))
+                            
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text("Сповіщення вимкнено") // Локалізуй як "notifications_disabled_title"
+                                    .font(AppTheme.subheadline)
+                                    .fontWeight(.semibold)
+                                    .foregroundColor(AppTheme.textPrimary)
+                                
+                                Text("Натисніть тут, щоб перейти в налаштування і увімкнути їх.") // Локалізуй як "notifications_disabled_message"
+                                    .font(AppTheme.caption)
+                                    .foregroundColor(AppTheme.textSecondary)
+                                    .multilineTextAlignment(.leading)
+                            }
+                        }
+                        .padding()
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(Color.orange.opacity(0.1))
+                        .cornerRadius(AppTheme.cornerRadiusMedium)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: AppTheme.cornerRadiusMedium)
+                                .stroke(Color.orange.opacity(0.3), lineWidth: 1)
+                        )
+                    }
+                }
             }
         }
-    }
     
     private var reminderPickerSheet: some View {
         NavigationStack {

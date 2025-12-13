@@ -17,6 +17,7 @@ class RecordDetailViewModel: ObservableObject {
     @Published var selectedRoomIndex: Int? = nil
     @Published var selectedProperty: Property?
     @Published var showPropertyPicker: Bool = false
+    @Published var isNotificationsDenied: Bool = false
     
     @Published var showErrorToast: Bool = false
     @Published var errorMessage: String = ""
@@ -211,6 +212,11 @@ class RecordDetailViewModel: ObservableObject {
             return "Не встановлено"
         }
         return nextDate.formatted(date: .abbreviated, time: .omitted)
+    }
+    func checkNotificationPermissions() {
+        NotificationService.shared.checkPermissionStatus { [weak self] status in
+            self?.isNotificationsDenied = (status == .denied)
+        }
     }
 }
 

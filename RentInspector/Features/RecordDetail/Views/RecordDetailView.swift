@@ -7,8 +7,8 @@ import RealmSwift
 struct RecordDetailView: View {
     @StateObject private var viewModel: RecordDetailViewModel
     @Environment(\.dismiss) var dismiss
+    @Environment(\.scenePhase) var scenePhase
     @FocusState private var isTitleFocused: Bool
-    
     @State private var pdfURL: URL?
     
     init(record: Record) {
@@ -139,6 +139,14 @@ struct RecordDetailView: View {
                     roomIndex: index,
                     viewModel: viewModel
                 )
+            }
+        }
+        .onAppear {
+            viewModel.checkNotificationPermissions()
+        }
+        .onChange(of: scenePhase) { newPhase in
+            if newPhase == .active {
+                viewModel.checkNotificationPermissions()
             }
         }
     }
@@ -281,7 +289,6 @@ struct RecordDetailView: View {
             Text("remiender")
                 .font(AppTheme.headline)
                 .foregroundColor(AppTheme.textPrimary)
-            
             Button(action: {
                 viewModel.showReminderPicker = true
             }) {
@@ -313,6 +320,40 @@ struct RecordDetailView: View {
                 .padding()
                 .background(AppTheme.tertiaryBackgroundColor)
                 .cornerRadius(AppTheme.cornerRadiusMedium)
+            }
+            
+            if viewModel.isNotificationsDenied && viewModel.record.reminderInterval > 0 {
+                Button(action: {
+                    if let appSettings = URL(string: UIApplication.openSettingsURLString) {
+                        UIApplication.shared.open(appSettings)
+                    }
+                }) {
+                    HStack(alignment: .top, spacing: 12) {
+                        Image(systemName: "exclamationmark.triangle.fill")
+                            .foregroundColor(.orange)
+                            .font(.system(size: 20))
+                        
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("notifications_disabled_title".localized)
+                                .font(AppTheme.subheadline)
+                                .fontWeight(.semibold)
+                                .foregroundColor(AppTheme.textPrimary)
+                            
+                            Text("notifications_disabled_message".localized)
+                                .font(AppTheme.caption)
+                                .foregroundColor(AppTheme.textSecondary)
+                                .multilineTextAlignment(.leading)
+                        }
+                    }
+                    .padding()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(Color.orange.opacity(0.1))
+                    .cornerRadius(AppTheme.cornerRadiusMedium)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: AppTheme.cornerRadiusMedium)
+                            .stroke(Color.orange.opacity(0.3), lineWidth: 1)
+                    )
+                }
             }
         }
         .padding(16)
