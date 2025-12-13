@@ -4,6 +4,7 @@
 internal import SwiftUI
 internal import Combine
 import RealmSwift
+internal import Realm
 
 @MainActor
 class CreateRecordViewModel: ObservableObject {
@@ -316,6 +317,18 @@ class CreateRecordViewModel: ObservableObject {
         if let property = selectedProperty {
             // Важливо: property може бути detached, тому передаємо його ID або шукаємо "живий"
             realmManager.addRecordToProperty(record: newRecord, property: property)
+        }
+        if reminderInterval > 0 {
+            NotificationService.shared.requestPermissions { granted in
+                if granted {
+                    NotificationService.shared.scheduleReportReminder(
+                        reportId: newRecord.id.stringValue, // Realm ID в String
+                        title: "remiender".localized, // "Нагадування"
+                        body: "record_next_visit".localized(newRecord.titleString),
+                        daysInterval: self.reminderInterval
+                    )
+                }
+            }
         }
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
             self?.isLoading = false

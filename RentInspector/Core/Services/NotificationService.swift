@@ -8,7 +8,13 @@ class NotificationService: NSObject {
     // ПРАПОРЕЦЬ ДЛЯ ТЕСТУВАННЯ
     // true = 1 день сприймається як 1 секунда (для швидких тестів)
     // false = 1 день = 86400 секунд (продакшн)
-    private let isDebug = true
+    private var isDebug: Bool {
+            #if DEBUG
+            return true
+            #else
+            return false
+            #endif
+        }
     
     private override init() {
         super.init()
