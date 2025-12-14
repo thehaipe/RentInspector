@@ -45,7 +45,7 @@ class CreateRecordViewModel: ObservableObject {
     @Published var isNotificationsDenied: Bool = false
     private func autoSelectValidStage() {
         // Якщо об'єкт не вибрано, нічого не робимо
-        guard let property = selectedProperty else { return }
+        guard selectedProperty != nil else { return }
         
         // Перевіряємо, чи поточний обраний етап є забороненим
         if disabledStages.contains(recordStage) {
