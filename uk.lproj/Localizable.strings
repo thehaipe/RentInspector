@@ -213,3 +213,6 @@
 "pdf_total_photos" = "Всього фото: %d";
 "pdf_generated_by" = "Згенеровано RentInspector • %@";
 "pdf_statistics_title" = "Статистика";
+/* Norifications */
+"notifications_disabled_title" = "Сповіщення вимкнено";
+"notifications_disabled_message" = "Натисніть, щоб відкрити Налаштування та увімкнути нагадування.";

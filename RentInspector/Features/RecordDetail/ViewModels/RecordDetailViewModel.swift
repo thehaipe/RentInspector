@@ -4,6 +4,7 @@
 internal import SwiftUI
 internal import Combine
 import RealmSwift
+internal import Realm
 
 class RecordDetailViewModel: ObservableObject {
     @Published var record: Record
@@ -16,6 +17,7 @@ class RecordDetailViewModel: ObservableObject {
     @Published var selectedRoomIndex: Int? = nil
     @Published var selectedProperty: Property?
     @Published var showPropertyPicker: Bool = false
+    @Published var isNotificationsDenied: Bool = false
     
     @Published var showErrorToast: Bool = false
     @Published var errorMessage: String = ""
@@ -50,57 +52,72 @@ class RecordDetailViewModel: ObservableObject {
     }
     
     func updateStage(_ newStage: RecordStage) {
-            let isRestrictedStage = newStage == .moveIn || newStage == .moveOut
-            if isRestrictedStage, let property = selectedProperty {
-                let hasConflict = property.records.contains { record in
-                    return record.id != self.record.id &&
-                           record.recordStage == newStage &&
-                           !record.isInvalidated
+        let isRestrictedStage = newStage == .moveIn || newStage == .moveOut
+        if isRestrictedStage, let property = selectedProperty {
+            let hasConflict = property.records.contains { record in
+                return record.id != self.record.id &&
+                record.recordStage == newStage &&
+                !record.isInvalidated
+            }
+            if hasConflict {
+                errorMessage = "У об'єкті '\(property.displayName)' вже існує звіт етапу '\(newStage.displayName)'. Зміна неможлива."
+                withAnimation {
+                    showErrorToast = true
                 }
-                if hasConflict {
-                    errorMessage = "У об'єкті '\(property.displayName)' вже існує звіт етапу '\(newStage.displayName)'. Зміна неможлива."
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
                     withAnimation {
-                        showErrorToast = true
+                        self.showErrorToast = false
                     }
-                    
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                        withAnimation {
-                            self.showErrorToast = false
-                        }
-                    }
-                    objectWillChange.send()
-                    return
                 }
+                objectWillChange.send()
+                return
             }
-            editedStage = newStage
-            realmManager.updateRecord(record, stage: newStage)
-            refreshRecord()
         }
+        editedStage = newStage
+        realmManager.updateRecord(record, stage: newStage)
+        refreshRecord()
+    }
     var disabledStages: [RecordStage] {
-            guard let property = selectedProperty else { return [] }
-            var disabled: [RecordStage] = []
-            
-            // Перевіряємо, чи є ІНШИЙ звіт із "Заселенням"
-            let hasMoveIn = property.records.contains { r in
-                r.id != self.record.id && r.recordStage == .moveIn && !r.isInvalidated
-            }
-            if hasMoveIn { disabled.append(.moveIn) }
-            
-            // Перевіряємо, чи є ІНШИЙ звіт із "Виселенням"
-            let hasMoveOut = property.records.contains { r in
-                r.id != self.record.id && r.recordStage == .moveOut && !r.isInvalidated
-            }
-            if hasMoveOut { disabled.append(.moveOut) }
-            
-            return disabled
+        guard let property = selectedProperty else { return [] }
+        var disabled: [RecordStage] = []
+        
+        // Перевіряємо, чи є ІНШИЙ звіт із "Заселенням"
+        let hasMoveIn = property.records.contains { r in
+            r.id != self.record.id && r.recordStage == .moveIn && !r.isInvalidated
         }
+        if hasMoveIn { disabled.append(.moveIn) }
+        
+        // Перевіряємо, чи є ІНШИЙ звіт із "Виселенням"
+        let hasMoveOut = property.records.contains { r in
+            r.id != self.record.id && r.recordStage == .moveOut && !r.isInvalidated
+        }
+        if hasMoveOut { disabled.append(.moveOut) }
+        
+        return disabled
+    }
     func updateReminderInterval(_ interval: Int) {
         editedReminderInterval = interval
         realmManager.updateRecord(record, reminderInterval: interval)
+        if interval > 0 {
+            NotificationService.shared.requestPermissions { [weak self] granted in
+                guard let self = self, granted else { return }
+                
+                NotificationService.shared.scheduleReportReminder(
+                    reportId: self.record.id.stringValue,
+                    title: "remiender".localized,
+                    body: "record_next_visit".localized(self.record.titleString),
+                    daysInterval: interval
+                )
+            }
+        } else {
+            NotificationService.shared.removeReportReminder(reportId: record.id.stringValue)
+        }
         refreshRecord()
     }
     
     func deleteRecord(completion: @escaping () -> Void) {
+        NotificationService.shared.removeReportReminder(reportId: record.id.stringValue)
         realmManager.deleteRecord(record)
         completion()
     }
@@ -195,6 +212,11 @@ class RecordDetailViewModel: ObservableObject {
             return "Не встановлено"
         }
         return nextDate.formatted(date: .abbreviated, time: .omitted)
+    }
+    func checkNotificationPermissions() {
+        NotificationService.shared.checkPermissionStatus { [weak self] status in
+            self?.isNotificationsDenied = (status == .denied)
+        }
     }
 }
 

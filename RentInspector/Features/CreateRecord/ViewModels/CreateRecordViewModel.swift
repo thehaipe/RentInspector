@@ -4,6 +4,7 @@
 internal import SwiftUI
 internal import Combine
 import RealmSwift
+internal import Realm
 
 @MainActor
 class CreateRecordViewModel: ObservableObject {
@@ -40,10 +41,11 @@ class CreateRecordViewModel: ObservableObject {
             autoSelectValidStage()
         }
     }
-    
+    // Стан дозволу на сповіщення
+    @Published var isNotificationsDenied: Bool = false
     private func autoSelectValidStage() {
         // Якщо об'єкт не вибрано, нічого не робимо
-        guard let property = selectedProperty else { return }
+        guard selectedProperty != nil else { return }
         
         // Перевіряємо, чи поточний обраний етап є забороненим
         if disabledStages.contains(recordStage) {
@@ -61,6 +63,7 @@ class CreateRecordViewModel: ObservableObject {
     init(preselectedProperty: Property? = nil) {
         self.selectedProperty = preselectedProperty
         autoSelectValidStage()
+        checkNotificationPermissions()
     }
     
     enum OnboardingStep: Int, CaseIterable {
@@ -317,13 +320,30 @@ class CreateRecordViewModel: ObservableObject {
             // Важливо: property може бути detached, тому передаємо його ID або шукаємо "живий"
             realmManager.addRecordToProperty(record: newRecord, property: property)
         }
+        if reminderInterval > 0 {
+            NotificationService.shared.requestPermissions { granted in
+                if granted {
+                    NotificationService.shared.scheduleReportReminder(
+                        reportId: newRecord.id.stringValue, // Realm ID в String
+                        title: "remiender".localized, // "Нагадування"
+                        body: "record_next_visit".localized(newRecord.titleString),
+                        daysInterval: self.reminderInterval
+                    )
+                }
+            }
+        }
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
             self?.isLoading = false
             self?.showSuccessView = true
             completion(newRecord.detached())  // Повертаємо DETACHED копію
         }
     }
-    
+    // MARK: Notification Permissions
+    func checkNotificationPermissions() {
+        NotificationService.shared.checkPermissionStatus { [weak self] status in
+            self?.isNotificationsDenied = (status == .denied)
+        }
+    }
     // MARK: - Reset
     
     func reset() {
