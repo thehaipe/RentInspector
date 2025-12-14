@@ -382,7 +382,8 @@ struct RecordDetailView: View {
                 }
                 
                 Section("form_remiender_range") {
-                    ForEach([30, 60, 90, 180, 360], id: \.self) { days in
+                    // 1 додано для зовнішнього тестування
+                    ForEach([1, 30, 60, 90, 180, 360], id: \.self) { days in
                         Button(action: {
                             viewModel.updateReminderInterval(days)
                             viewModel.showReminderPicker = false

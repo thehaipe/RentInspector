@@ -253,12 +253,12 @@ struct RecordFormView: View {
                                 .font(.system(size: 20))
                             
                             VStack(alignment: .leading, spacing: 4) {
-                                Text("Сповіщення вимкнено") // Локалізуй як "notifications_disabled_title"
+                                Text("notifications_disabled_title")
                                     .font(AppTheme.subheadline)
                                     .fontWeight(.semibold)
                                     .foregroundColor(AppTheme.textPrimary)
                                 
-                                Text("Натисніть тут, щоб перейти в налаштування і увімкнути їх.") // Локалізуй як "notifications_disabled_message"
+                                Text("notifications_disabled_message")
                                     .font(AppTheme.caption)
                                     .foregroundColor(AppTheme.textSecondary)
                                     .multilineTextAlignment(.leading)
@@ -298,7 +298,8 @@ struct RecordFormView: View {
                 }
                 
                 Section("form_remiender_range") {
-                    ForEach([30, 60, 180, 360], id: \.self) { days in
+                    //1 додано для відкритого тестування
+                    ForEach([1, 30, 60, 180, 360], id: \.self) { days in
                         Button(action: {
                             viewModel.reminderInterval = days
                             showReminderPicker = false
