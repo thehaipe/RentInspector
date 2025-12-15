@@ -10,125 +10,123 @@ struct RecordsView: View {
     @State private var showFilterSheet = false
     
     var body: some View {
-        ZStack {
-            if viewModel.records.isEmpty {
-                EmptyRecordsView(onCreateRecord: {
-                    showCreateRecord = true
-                })
-            } else {
-                recordsList
+            ScrollView {
+                VStack(spacing: 0) {
+                    if viewModel.records.isEmpty {
+                        EmptyRecordsView(onCreateRecord: {
+                            showCreateRecord = true
+                        })
+                        .padding(.top, 40)
+                    } else {
+                        recordsList
+                    }
+                }
+                .padding(.bottom, 100)
             }
-            if viewModel.showErrorToast {
-                errorToast
+            .safeAreaInset(edge: .top, spacing: 0) {
+                VStack(spacing: 0) {
+                    customHeader
+                    
+                    if viewModel.isSearching {
+                        SearchBar(text: $viewModel.searchText)
+                            .padding(.horizontal, 16)
+                            .padding(.bottom, 12)
+                            .background(AppTheme.backgroundColor)
+                            .transition(.move(edge: .top).combined(with: .opacity))
+                    }
+                }
+                .background(
+                    AppTheme.backgroundColor.ignoresSafeArea(edges: .top)
+                )
             }
-        }
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            // Title (по центру, але зліва від кнопок)
-            ToolbarItem(placement: .principal) {
-                HStack {
-                    Text("records_title")
-                        .font(AppTheme.title2)
-                        .fontWeight(.bold)
-                    Spacer()
+            .overlay(alignment: .top) {
+                if viewModel.showErrorToast {
+                    errorToast
+                        .padding(.top, viewModel.isSearching ? 160 : 110)
                 }
             }
-            
-            // Кнопки (справа)
-            ToolbarItem(placement: .topBarTrailing) {
+            .toolbar(.hidden, for: .navigationBar)
+            .fullScreenCover(isPresented: $showCreateRecord) {
+                CreateRecordCoordinator()
+            }
+            .sheet(isPresented: $showFilterSheet) {
+                filterSheet
+            }
+        }
+        
+        // MARK: - Header
+        
+        private var customHeader: some View {
+            CustomTopBar(title: "records_title") {
                 if !viewModel.records.isEmpty {
-                    HStack(spacing: 16) {
-                        // Кнопка пошуку
-                        Button(action: {
-                            viewModel.toggleSearch()
-                            
-                        }) {
-                            Image(systemName: "magnifyingglass")
-                                .font(.title3)
-                        }
-                        Menu {
-                            ForEach(RecordsViewModel.SortOrder.allCases, id: \.self) { order in
-                                Button(action: {
-                                    viewModel.setSortOrder(order)
-                                }) {
-                                    Label(
-                                        order.displayName,
-                                        systemImage: viewModel.sortOrder == order ? "arrow.down.circle" : order.icon
-                                    )
-                                }
+                    TopBarButton(icon: "magnifyingglass") {
+                        withAnimation { viewModel.toggleSearch() }
+                    }
+
+                    Menu {
+                        ForEach(RecordsViewModel.SortOrder.allCases, id: \.self) { order in
+                            Button(action: { viewModel.setSortOrder(order) }) {
+                                Label(order.displayName, systemImage: viewModel.sortOrder == order ? "arrow.down.circle" : order.icon)
                             }
-                        } label: {
-                            Image(systemName: "arrow.up.arrow.down.circle")
-                                .font(.title3)
                         }
-                        
-                        // Кнопка фільтрації
-                        Button(action: {
-                            showFilterSheet = true
-                        }) {
-                            Image(systemName: "line.3.horizontal.decrease.circle")
-                                .font(.title3)
-                        }
-                        
-                        // Кнопка створення
-                        Button(action: {
-                            showCreateRecord = true
-                        }) {
-                            Image(systemName: "plus.circle.fill")
-                                .font(.title2)
-                        }
+                    } label: {
+                        Image(systemName: "arrow.up.arrow.down")
+                            .font(.system(size: 15, weight: .bold))
+                            .foregroundColor(AppTheme.primaryColor)
+                            .frame(width: 36, height: 36)
+                            .overlay(
+                                Circle()
+                                    .strokeBorder(AppTheme.primaryColor, lineWidth: 2.2)
+                            )
+                    }
+                    
+                    Button(action: { showFilterSheet = true }) {
+                        Image(systemName: "line.3.horizontal.decrease")
+                            .font(.system(size: 15, weight: .bold))
+                            .foregroundColor(AppTheme.primaryColor)
+                            .frame(width: 36, height: 36)
+                            .overlay(
+                                Circle()
+                                    .strokeBorder(AppTheme.primaryColor, lineWidth: 2.2)
+                            )
+                    }
+                    TopBarPrimaryButton {
+                        showCreateRecord = true
                     }
                 }
             }
         }
-        .fullScreenCover(isPresented: $showCreateRecord) {
-            CreateRecordCoordinator()
-        }
-        .sheet(isPresented: $showFilterSheet) {
-            filterSheet
-        }
-    }
+    
+    // MARK: - List Content
     
     private var recordsList: some View {
-        VStack(spacing: 0) {
-            // Пошукова строка
-            if viewModel.isSearching {
-                SearchBar(text: $viewModel.searchText)
-                    .padding(.horizontal)
-                    .padding(.top, 8)
-                    .transition(.move(edge: .top).combined(with: .opacity))
-            }
-            
-            // Список звітів
-            ScrollView {
-                LazyVStack(spacing: 12) {
-                    ForEach(viewModel.filteredRecords) { record in
-                        RecordCardView(record: record)
-                            .contextMenu {
-                                Button(role: .destructive) {
-                                    viewModel.deleteRecord(record)
-                                } label: {
-                                    Label("general_delete", systemImage: "trash")
-                                }
-                            }
+        LazyVStack(spacing: 12) {
+            ForEach(viewModel.filteredRecords) { record in
+                RecordCardView(record: record)
+                    .contextMenu {
+                        Button(role: .destructive) {
+                            viewModel.deleteRecord(record)
+                        } label: {
+                            Label("general_delete", systemImage: "trash")
+                        }
                     }
-                }
-                .padding()
             }
         }
-        .animation(.easeInOut, value: viewModel.isSearching)
+        .padding(.horizontal, 16)
+        .padding(.top, 10)
     }
+    
+    // MARK: - UI Components
+    
     private var errorToast: some View {
         VStack {
             HStack(spacing: 12) {
                 Image(systemName: "magnifyingglass")
                     .foregroundColor(AppTheme.warningColor)
-                
                 Text(viewModel.errorMessage)
                     .font(AppTheme.callout)
                     .foregroundColor(AppTheme.textPrimary)
                     .lineLimit(2)
-                
                 Spacer()
             }
             .padding()
@@ -136,10 +134,8 @@ struct RecordsView: View {
             .cornerRadius(AppTheme.cornerRadiusMedium)
             .shadow(color: AppTheme.shadowColor, radius: 10, y: 5)
             .padding(.horizontal)
-            
             Spacer()
         }
-        .padding(.top, 16)
         .transition(.move(edge: .top).combined(with: .opacity))
     }
     
@@ -169,19 +165,10 @@ struct RecordsView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("general_done") {
-                        showFilterSheet = false
-                    }
+                    Button("general_done") { showFilterSheet = false }
                 }
             }
         }
         .presentationDetents([.medium])
-    }
-}
-
-#Preview {
-    NavigationStack {
-        RecordsView()
-            .environmentObject(RealmManager.shared)
     }
 }
