@@ -32,7 +32,6 @@ struct CustomTopBar<Actions: View>: View {
     }
 }
 
-// Кнопки лишаємо ті самі, вони гарні
 struct TopBarButton: View {
     let icon: String
     let action: () -> Void
@@ -42,7 +41,7 @@ struct TopBarButton: View {
             Image(systemName: icon)
                 .font(.system(size: 24, weight: .medium))
                 .foregroundColor(AppTheme.primaryColor)
-                .frame(width: 36, height: 36)
+                .frame(width: 28, height: 28)
         }
     }
 }
@@ -55,7 +54,7 @@ struct TopBarPrimaryButton: View {
             Image(systemName: "plus")
                 .font(.system(size: 18, weight: .bold))
                 .foregroundColor(.white)
-                .frame(width: 36, height: 36)
+                .frame(width: 28, height: 28)
                 .background(AppTheme.primaryColor)
                 .clipShape(Circle())
         }
