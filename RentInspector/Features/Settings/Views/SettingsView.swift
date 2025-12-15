@@ -25,7 +25,8 @@ struct SettingsView: View {
                             storageInfo
                         }
                         clearDataButton
-                    } header: {
+                    }
+                    header: {
                         Text("settings_data")
                     }
                     
@@ -38,6 +39,8 @@ struct SettingsView: View {
                         Text("settings_about")
                     }
                 }
+                .scrollContentBackground(.hidden) 
+                .background(AppTheme.backgroundColor)
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     //розташування або principal, або largeTitle, чекаю оновлення аби подивитись Canvas

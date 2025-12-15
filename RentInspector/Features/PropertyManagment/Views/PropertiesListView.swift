@@ -137,6 +137,8 @@ struct PropertiesListView: View {
                 }
                 .onDelete(perform: viewModel.deleteProperty)
             }
+            .scrollContentBackground(.hidden)
+            .background(AppTheme.backgroundColor)
         }
         .animation(.easeInOut, value: viewModel.isSearching)
     }
