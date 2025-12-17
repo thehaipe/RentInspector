@@ -8,189 +8,154 @@ struct SettingsView: View {
     @EnvironmentObject var themeManager: ThemeManager
     @State private var showThemeSheet = false
     @AppStorage("selectedLanguage") private var languageCode = "uk"
+    
     var body: some View {
-            ZStack {
-                List {
-                    // Секція Appearance
-                    Section {
-                        themeButton
-                        languagePicker
-                    } header: {
-                        Text("settings_appearance")
-                    }
-                    // Секція Stats & Data
-                    Section {
-                        infoRow(icon: "clock.fill", title: "profile_app_usage", value: installDate)
-                        NavigationLink(destination: RecordsView()) {
-                            storageInfo
-                        }
-                        clearDataButton
-                    } header: {
-                        Text("settings_data")
+        ScrollView {
+            VStack(spacing: 20) {
+                
+                // MARK: - Секція Appearance
+                SettingsSectionView(title: "settings_appearance") {
+                    Button(action: { showThemeSheet = true }) {
+                        SettingsRow(
+                            icon: themeManager.selectedTheme.icon,
+                            title: "settings_theme",
+                            value: themeManager.selectedTheme.displayName,
+                            showChevron: true
+                        )
                     }
                     
-                    // Секція About
-                    Section {
-                        infoRow(icon: "info.circle.fill", title: "settings_version", value: Constants.AppInfo.version)
-                        infoRow(icon: "number.circle.fill", title: "settings_build", value: Constants.AppInfo.build)
-                        infoRow(icon: "hammer.fill", title: "settings_developer", value: "settings_me")
-                    } header: {
-                        Text("settings_about")
-                    }
-                }
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar {
-                    //розташування або principal, або largeTitle, чекаю оновлення аби подивитись Canvas
-                    ToolbarItem(placement: .principal) {
-                        Text("settings")
-                            .font(AppTheme.title2)
-                            .fontWeight(.bold)
-                    }
-                }
-                .sheet(isPresented: $showThemeSheet) {
-                    themeSelectionSheet
-                }
-                .alert("settings_clear_alert_title", isPresented: $viewModel.showClearDataAlert) {
-                    Button("general_cancel", role: .cancel) { }
-                    Button("general_delete", role: .destructive) {
-                        viewModel.clearAllData()
-                    }
-                } message: {
-                    Text("error_delete_all_records_alert_title")
-                }
-                
-                // Success Toast
-                if viewModel.showSuccessToast {
-                    successToast
-                }
-                
-                // Error Toast
-                if viewModel.showErrorToast {
-                    errorToast
-                }
-            }
-    }
-    
-    // MARK: - Theme Button
-    
-    private var themeButton: some View {
-        Button(action: {
-            showThemeSheet = true
-        }) {
-            HStack {
-                Image(systemName: themeManager.selectedTheme.icon)
-                    .foregroundColor(AppTheme.primaryColor)
-                    .frame(width: 30)
-                
-                Text("settings_theme")
-                    .foregroundColor(AppTheme.textPrimary)
-                
-                Spacer()
-                
-                Text(themeManager.selectedTheme.displayName)
-                    .foregroundColor(AppTheme.textSecondary)
-                
-                Image(systemName: "chevron.right")
-                    .font(.caption)
-                    .foregroundColor(AppTheme.textSecondary)
-            }
-        }
-    }
-    // MARK: - Language Picker
-        
-        private var languagePicker: some View {
-            Picker(selection: $languageCode) {
-                ForEach(Constants.AppLanguage.allCases) { language in
-                    Text(language.displayName)
-                        .tag(language.rawValue)
-                }
-            } label: {
-                HStack {
-                    Image(systemName: "globe")
-                        .foregroundColor(AppTheme.primaryColor)
-                        .frame(width: 30)
+                    customDivider
                     
-                    Text("settings_language")
-                        .foregroundColor(AppTheme.textPrimary)
+                    Menu {
+                        Picker(selection: $languageCode) {
+                            ForEach(Constants.AppLanguage.allCases) { language in
+                                Text(language.displayName).tag(language.rawValue)
+                            }
+                        } label: { EmptyView() }
+                    } label: {
+                        SettingsRow(
+                            icon: "globe",
+                            title: "settings_language",
+                            value: Constants.AppLanguage.allCases.first(where: { $0.rawValue == languageCode })?.displayName,
+                            showChevron: true
+                        )
+                    }
                 }
-            }
-            .pickerStyle(.automatic)
-        }
-    // MARK: - Storage Info
-    
-    private var storageInfo: some View {
-        HStack {
-            Image(systemName: "internaldrive.fill")
-                .foregroundColor(AppTheme.primaryColor)
-                .frame(width: 30)
-            
-            Text("settings_storage_info")
-                .foregroundColor(AppTheme.textPrimary)
-            
-            Spacer()
-            
-            Text("\(RealmManager.shared.getRecordCount())")
-                .foregroundColor(AppTheme.textSecondary)
-        }
-    }
-    
-    // MARK: - Clear Data Button
-    
-    private var clearDataButton: some View {
-        Button(action: {
-            viewModel.showClearDataAlert = true
-        }) {
-            HStack {
-                Image(systemName: "trash.fill")
-                    .foregroundColor(AppTheme.errorColor)
-                    .frame(width: 30)
                 
-                Text("settings_clear_data")
-                    .foregroundColor(AppTheme.errorColor)
+                // MARK: - Секція Stats & Data
+                SettingsSectionView(title: "settings_data") {
+                    SettingsRow(
+                        icon: "clock.fill",
+                        title: "profile_app_usage",
+                        value: installDate
+                    )
+                    
+                    customDivider
+                    
+                    NavigationLink(destination: RecordsView(isNavigationPush: true)) {
+                        SettingsRow(
+                            icon: "internaldrive.fill",
+                            title: "settings_storage_info",
+                            value: "\(RealmManager.shared.getRecordCount())",
+                            showChevron: true
+                        )
+                    }
+                    
+                    customDivider
+                    
+                    Button(action: { viewModel.showClearDataAlert = true }) {
+                        SettingsRow(
+                            icon: "trash.fill",
+                            title: "settings_clear_data",
+                            color: AppTheme.errorColor
+                        )
+                    }
+                }
+                
+                // MARK: - Секція About
+                SettingsSectionView(title: "settings_about") {
+                    SettingsRow(icon: "info.circle.fill", title: "settings_version", value: Constants.AppInfo.version)
+                    
+                    customDivider
+                    
+                    SettingsRow(icon: "number.circle.fill", title: "settings_build", value: Constants.AppInfo.build)
+                    
+                    customDivider
+                    
+                    SettingsRow(icon: "hammer.fill", title: "settings_developer", value: "settings_me")
+                }
+                
+                // Відступ знизу для TabBar
+                Spacer().frame(height: 100)
+            }
+            .padding(.horizontal, 16)
+            .padding(.top, 20) // Відступ від хедера
+        }
+        .safeAreaInset(edge: .top, spacing: 0) {
+            CustomTopBar(title: "settings") {
+                EmptyView()
+            }
+            .background(
+                AppTheme.backgroundColor.ignoresSafeArea(edges: .top)
+            )
+        }
+        .overlay(alignment: .top) {
+            if viewModel.showSuccessToast {
+                successToast
+                    .padding(.top, 110)
+            }
+            if viewModel.showErrorToast {
+                errorToast
+                    .padding(.top, 110)
             }
         }
-    }
-    
-    // MARK: - About Row
-    
-    private func infoRow(icon: String, title: LocalizedStringKey, value: String) -> some View {
-        HStack {
-            Image(systemName: icon)
-                .foregroundColor(AppTheme.primaryColor)
-                .frame(width: 30)
-            
-            Text(title)
-                .foregroundColor(AppTheme.textPrimary)
-            
-            Spacer()
-            
-            Text(value.localized)
-                .foregroundColor(AppTheme.textSecondary)
+        .background(AppTheme.backgroundColor)
+        .toolbar(.hidden, for: .navigationBar)
+        .sheet(isPresented: $showThemeSheet) {
+            themeSelectionSheet
+        }
+        .alert("settings_clear_alert_title", isPresented: $viewModel.showClearDataAlert) {
+            Button("general_cancel", role: .cancel) { }
+            Button("general_delete", role: .destructive) {
+                viewModel.clearAllData()
+            }
+        } message: {
+            Text("error_delete_all_records_alert_title")
         }
     }
     
-    // MARK: - Theme Selection Sheet
+    // MARK: - Helpers & Components
     
+    private var customDivider: some View {
+        Divider()
+            .padding(.leading, 40)
+    }
+    
+    private var installDate: String {
+        if let installDate = UserDefaults.standard.object(forKey: "installDate") as? Date {
+            return installDate.formatted(date: .abbreviated, time: .omitted)
+        } else {
+            let now = Date()
+            UserDefaults.standard.set(now, forKey: "installDate")
+            return now.formatted(date: .abbreviated, time: .omitted)
+        }
+    }
+    
+    // MARK: - Theme Sheet
     private var themeSelectionSheet: some View {
         NavigationStack {
             List {
                 ForEach(ThemeManager.Theme.allCases, id: \.self) { theme in
                     Button(action: {
-                        withAnimation {
-                            themeManager.selectedTheme = theme
-                        }
+                        withAnimation { themeManager.selectedTheme = theme }
                         showThemeSheet = false
                     }) {
                         HStack {
                             Image(systemName: theme.icon)
                                 .foregroundColor(AppTheme.primaryColor)
-                                .frame(width: 30)
-                            
                             Text(theme.displayName)
                                 .foregroundColor(AppTheme.textPrimary)
-                            
                             Spacer()
-                            
                             if themeManager.selectedTheme == theme {
                                 Image(systemName: "checkmark")
                                     .foregroundColor(AppTheme.primaryColor)
@@ -200,77 +165,158 @@ struct SettingsView: View {
                 }
             }
             .navigationTitle("settings_choose_theme")
-            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("general_done") {
-                        showThemeSheet = false
-                    }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("general_done") { showThemeSheet = false }
                 }
             }
         }
         .presentationDetents([.medium])
     }
     
-    // MARK: - Success Toast
-    
+    // MARK: - Toasts
     private var successToast: some View {
-            VStack {
-                HStack(spacing: 12) {
-                    Image(systemName: "checkmark.circle.fill")
-                        .foregroundColor(AppTheme.successColor)
-                    
-                    Text("success_all_records_deleted")
-                        .font(AppTheme.callout)
-                        .foregroundColor(AppTheme.textPrimary)
-                    
-                    Spacer()
-                }
-                .padding()
-                .background(AppTheme.secondaryBackgroundColor)
-                .cornerRadius(AppTheme.cornerRadiusMedium)
-                .shadow(color: AppTheme.shadowColor, radius: 10, y: 5)
-                .padding(.horizontal)
-                
+        VStack {
+            HStack(spacing: 12) {
+                Image(systemName: "checkmark.circle.fill")
+                    .foregroundColor(AppTheme.successColor)
+                Text("success_all_records_deleted")
+                    .font(AppTheme.callout)
+                    .foregroundColor(AppTheme.textPrimary)
                 Spacer()
             }
-            .padding(.top, 16)
-            .transition(.move(edge: .top).combined(with: .opacity))
+            .padding()
+            .background(AppTheme.secondaryBackgroundColor)
+            .cornerRadius(AppTheme.cornerRadiusMedium)
+            .shadow(color: AppTheme.shadowColor, radius: 10, y: 5)
+            .padding(.horizontal)
+            Spacer()
         }
-    // MARK: - Error Toast
+        .transition(.move(edge: .top).combined(with: .opacity))
+        .zIndex(100)
+    }
+    
     private var errorToast: some View {
-            VStack {
-                HStack(spacing: 12) {
-                    Image(systemName: "xmark.circle.fill")
-                        .foregroundColor(AppTheme.warningColor)
-                    
-                    Text(viewModel.errorMessage)
-                        .font(AppTheme.callout)
-                        .foregroundColor(AppTheme.textPrimary)
-                    
-                    Spacer()
-                }
-                .padding()
-                .background(AppTheme.secondaryBackgroundColor)
-                .cornerRadius(AppTheme.cornerRadiusMedium)
-                .shadow(color: AppTheme.shadowColor, radius: 10, y: 5)
-                .padding(.horizontal)
-                
+        VStack {
+            HStack(spacing: 12) {
+                Image(systemName: "xmark.circle.fill")
+                    .foregroundColor(AppTheme.warningColor)
+                Text(viewModel.errorMessage)
+                    .font(AppTheme.callout)
+                    .foregroundColor(AppTheme.textPrimary)
                 Spacer()
             }
-            .padding(.top, 16)
-            .transition(.move(edge: .top).combined(with: .opacity))
+            .padding()
+            .background(AppTheme.secondaryBackgroundColor)
+            .cornerRadius(AppTheme.cornerRadiusMedium)
+            .shadow(color: AppTheme.shadowColor, radius: 10, y: 5)
+            .padding(.horizontal)
+            Spacer()
         }
-        private var installDate: String {
-            if let installDate = UserDefaults.standard.object(forKey: "installDate") as? Date {
-                return installDate.formatted(date: .abbreviated, time: .omitted)
-            } else {
-                // Якщо дати немає (перший запуск), зберігаємо поточну
-                let now = Date()
-                UserDefaults.standard.set(now, forKey: "installDate")
-                return now.formatted(date: .abbreviated, time: .omitted)
+        .transition(.move(edge: .top).combined(with: .opacity))
+        .zIndex(100)
+    }
+}
+
+// MARK: - Reusable UI Components (Вже існуючі в коді)
+
+struct SettingsSectionView<Content: View>: View {
+    let title: LocalizedStringKey?
+    @ViewBuilder let content: Content
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            if let title = title {
+                Text(title)
+                    .font(.headline.bold())
+                    .foregroundColor(AppTheme.textSecondary)
+                    .padding(.leading, 16)
+                    .textCase(nil)
             }
+            
+            VStack(spacing: 0) {
+                content
+            }
+            .padding(.vertical, 4)
+            .padding(.horizontal, 16)
+            .background(AppTheme.secondaryBackgroundColor)
+            .cornerRadius(16)
         }
+    }
+}
+
+struct SettingsRow<Content: View>: View {
+    let icon: String
+    let title: LocalizedStringKey
+    let color: Color
+    @ViewBuilder let trailing: Content
+    
+    init(icon: String, title: LocalizedStringKey, color: Color = AppTheme.primaryColor, @ViewBuilder trailing: () -> Content) {
+        self.icon = icon
+        self.title = title
+        self.color = color
+        self.trailing = trailing()
+    }
+    
+    var body: some View {
+        HStack(spacing: 12) {
+            Image(systemName: icon)
+                .font(.system(size: 20))
+                .foregroundColor(color)
+                .frame(width: 24, alignment: .center)
+            
+            Text(title)
+                .font(AppTheme.body)
+                .foregroundColor(AppTheme.textPrimary)
+            
+            Spacer()
+            
+            trailing
+        }
+        .padding(.vertical, 12)
+    }
+}
+
+extension SettingsRow where Content == AnyView {
+    
+    // Ініціалізатор для звичайного String
+    init(icon: String, title: LocalizedStringKey, value: String? = nil, color: Color = AppTheme.primaryColor, showChevron: Bool = false) {
+        self.init(icon: icon, title: title, color: color) {
+            AnyView(
+                HStack(spacing: 6) {
+                    if let value = value {
+                        Text(value)
+                            .foregroundColor(AppTheme.textSecondary)
+                            .font(.body)
+                    }
+                    if showChevron {
+                        Image(systemName: "chevron.right")
+                            .font(.system(size: 14, weight: .semibold))
+                            .foregroundColor(Color(uiColor: .tertiaryLabel))
+                    }
+                }
+            )
+        }
+    }
+    
+    init(icon: String, title: LocalizedStringKey, value: LocalizedStringKey?, color: Color = AppTheme.primaryColor, showChevron: Bool = false) {
+        self.init(icon: icon, title: title, color: color) {
+            AnyView(
+                HStack(spacing: 6) {
+                    if let value = value {
+                        Text(value)
+                            .foregroundColor(AppTheme.textSecondary)
+                            .font(.body)
+                    }
+                    if showChevron {
+                        Image(systemName: "chevron.right")
+                            .font(.system(size: 14, weight: .semibold))
+                            .foregroundColor(Color(uiColor: .tertiaryLabel))
+                    }
+                }
+            )
+        }
+    }
 }
 
 #Preview {

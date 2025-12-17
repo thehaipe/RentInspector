@@ -6,140 +6,164 @@ struct PropertiesListView: View {
     
     var body: some View {
         NavigationStack {
-            ZStack {
-                if viewModel.properties.isEmpty {
-                    emptyStateView
-                } else {
-                    propertiesContent
+            ScrollView {
+                VStack(spacing: 0) {
+                    if viewModel.properties.isEmpty {
+                        emptyStateView
+                            .padding(.top, 40)
+                    } else {
+                        propertiesList
+                    }
                 }
+                .padding(.bottom, 100)
+            }
+            .safeAreaInset(edge: .top, spacing: 0) {
+                VStack(spacing: 0) {
+                    customHeader
+                    
+                    if viewModel.isSearching {
+                        SearchBar(text: $viewModel.searchText)
+                            .padding(.horizontal, 16)
+                            .padding(.bottom, 12)
+                            .background(AppTheme.backgroundColor)
+                            .transition(.move(edge: .top).combined(with: .opacity))
+                    }
+                }
+                .background(
+                    AppTheme.backgroundColor.ignoresSafeArea(edges: .top)
+                )
+            }
+            .overlay(alignment: .top) {
                 if viewModel.showErrorToast {
                     errorToast
+                        .padding(.top, viewModel.isSearching ? 160 : 110)
                 }
             }
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .principal) {
-                    HStack {
-                        Text("tab_properties")
-                            .font(AppTheme.title2)
-                            .fontWeight(.bold)
-                        Spacer()
-                    }
-                }
-                // Тулбар 
-                ToolbarItem(placement: .topBarTrailing) {
-                    if !viewModel.properties.isEmpty {
-                        HStack(spacing: 16) {
-                            // 1. Пошук
-                            Button(action: {
-                                viewModel.toggleSearch()
-                            }) {
-                                Image(systemName: "magnifyingglass")
-                                    .font(.title3)
-                            }
-                            
-                            // 2. Сортування
-                            Menu {
-                                ForEach(RecordsViewModel.SortOrder.allCases, id: \.self) { order in
-                                    Button(action: {
-                                        viewModel.setSortOrder(order)
-                                    }) {
-                                        Label(
-                                            order.rawValue,
-                                            systemImage: viewModel.sortOrder == order ? "arrow.down.circle" : order.icon
-                                        )
-                                    }
-                                }
-                            } label: {
-                                Image(systemName: "arrow.up.arrow.down.circle")
-                                    .font(.title3)
-                            }
-                            
-                            // 3. Фільтр
-                            Button(action: {
-                                showFilterSheet = true
-                            }) {
-                                Image(systemName: "line.3.horizontal.decrease.circle")
-                                    .font(.title3)
-                            }
-                            
-                            // 4. Додати
-                            Button(action: {
-                                viewModel.showAddPropertySheet = true
-                            }) {
-                                Image(systemName: "plus.circle.fill")
-                                    .font(.title2)
-                            }
-                        }
-                    } else {
-                        // Якщо пусто - тільки плюс
-                        Button(action: {
-                            viewModel.showAddPropertySheet = true
-                        }) {
-                            Image(systemName: "plus")
-                        }
-                    }
-                }
-            }
+            .toolbar(.hidden, for: .navigationBar)
             .sheet(isPresented: $viewModel.showAddPropertySheet) {
                 addPropertySheet
             }
             .sheet(isPresented: $showFilterSheet) {
-                filterSheet
+                if #available(iOS 18.0, *) {
+                    NativeFilterSheetView(
+                        selectedFilter: $viewModel.selectedDateFilter,
+                        isPresented: $showFilterSheet
+                    )
+                } else {
+                    FilterSheetView(
+                        selectedFilter: $viewModel.selectedDateFilter,
+                        isPresented: $showFilterSheet
+                    )
+                }
             }
         }
     }
     
-    private var propertiesContent: some View {
-        VStack(spacing: 0) {
-            // Рядок пошуку
-            if viewModel.isSearching {
-                SearchBar(text: $viewModel.searchText)
-                    .padding(.horizontal)
-                    .padding(.top, 8)
-                    .transition(.move(edge: .top).combined(with: .opacity))
-            }
-            
-            List {
-                ForEach(viewModel.filteredProperties) { property in
-                    NavigationLink(destination: PropertyDetailView(property: property)) {
-                        HStack(spacing: 16) {
-                            Image(systemName: "building.2.fill")
-                                .foregroundColor(AppTheme.primaryColor)
-                                .font(.title2)
-                                .frame(width: 40, height: 40)
-                                .background(AppTheme.primaryColor.opacity(0.1))
-                                .clipShape(Circle())
-                            
-                            VStack(alignment: .leading, spacing: 4) {
-                                if !property.name.isEmpty {
-                                    Text(property.name)
-                                        .font(AppTheme.headline)
-                                        .foregroundColor(AppTheme.textPrimary)
-                                }
-                                
-                                Text(property.address.isEmpty ? "form_blank_address".localized : property.address)
-                                    .font(property.name.isEmpty ? AppTheme.headline : AppTheme.caption)
-                                    .foregroundColor(property.name.isEmpty ? AppTheme.textPrimary : AppTheme.textSecondary)
-                            }
-                            
-                            Spacer()
-                            
-                            Text("\(property.records.count)")
-                                .font(AppTheme.caption)
-                                .padding(.horizontal, 8)
-                                .padding(.vertical, 4)
-                                .background(AppTheme.secondaryBackgroundColor)
-                                .cornerRadius(8)
-                        }
-                        .padding(.vertical, 4)
-                    }
+    // MARK: - Custom Header
+    
+    private var customHeader: some View {
+        CustomTopBar(title: "tab_properties") {
+            if !viewModel.properties.isEmpty {
+                TopBarButton(icon: "magnifyingglass") {
+                    withAnimation { viewModel.toggleSearch() }
                 }
-                .onDelete(perform: viewModel.deleteProperty)
+                
+                Menu {
+                    ForEach(RecordsViewModel.SortOrder.allCases, id: \.self) { order in
+                        Button(action: { viewModel.setSortOrder(order) }) {
+                            Label(order.displayName, systemImage: viewModel.sortOrder == order ? "arrow.down.circle" : order.icon)
+                        }
+                    }
+                } label: {
+                    Image(systemName: "arrow.up.arrow.down")
+                        .font(.system(size: 15, weight: .bold))
+                        .foregroundColor(AppTheme.primaryColor)
+                        .frame(width: 28, height: 28)
+                        .overlay(Circle().strokeBorder(AppTheme.primaryColor, lineWidth: 1.5))
+                }
+                
+                Button(action: { showFilterSheet = true }) {
+                    Image(systemName: "line.3.horizontal.decrease")
+                        .font(.system(size: 15, weight: .bold))
+                        .foregroundColor(AppTheme.primaryColor)
+                        .frame(width: 28, height: 28)
+                        .overlay(Circle().strokeBorder(AppTheme.primaryColor, lineWidth: 1.5))
+                }
+                TopBarPrimaryButton {
+                    viewModel.showAddPropertySheet = true
+                }
             }
         }
-        .animation(.easeInOut, value: viewModel.isSearching)
     }
+    
+    // MARK: - Properties List
+    
+    private var propertiesList: some View {
+        LazyVStack(spacing: 12) {
+            ForEach(viewModel.filteredProperties) { property in
+                NavigationLink(destination: PropertyDetailView(property: property)) {
+                    // Картка об'єкту
+                    HStack(spacing: 16) {
+                        Image(systemName: "building.2.fill")
+                            .foregroundColor(AppTheme.primaryColor)
+                            .font(.title2)
+                            .frame(width: 40, height: 40)
+                            .background(AppTheme.primaryColor.opacity(0.1))
+                            .clipShape(Circle())
+                        
+                        VStack(alignment: .leading, spacing: 4) {
+                            if !property.name.isEmpty {
+                                Text(property.name)
+                                    .font(AppTheme.headline)
+                                    .foregroundColor(AppTheme.textPrimary)
+                                    .multilineTextAlignment(.leading)
+                            }
+                            
+                            Text(property.address.isEmpty ? "form_blank_address".localized : property.address)
+                                .font(property.name.isEmpty ? AppTheme.headline : AppTheme.caption)
+                                .foregroundColor(property.name.isEmpty ? AppTheme.textPrimary : AppTheme.textSecondary)
+                                .multilineTextAlignment(.leading)
+                        }
+                        
+                        Spacer()
+                        
+                        // Лічильник
+                        HStack(spacing: 4) {
+                            Text("\(property.records.count)")
+                                .font(AppTheme.caption)
+                                .fontWeight(.semibold)
+                                .foregroundColor(AppTheme.textPrimary)
+                            Image(systemName: "chevron.right")
+                                .font(.caption2)
+                                .foregroundColor(AppTheme.textSecondary.opacity(0.7))
+                        }
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(AppTheme.secondaryBackgroundColor)
+                        .cornerRadius(8)
+                    }
+                    .padding(16)
+                    .background(AppTheme.secondaryBackgroundColor)
+                    .cornerRadius(AppTheme.cornerRadiusMedium)
+                    .shadow(color: AppTheme.shadowColor, radius: 4, y: 2)
+                }
+                .buttonStyle(PlainButtonStyle())
+                .contextMenu {
+                    Button(role: .destructive) {
+                        if let index = viewModel.properties.firstIndex(where: { $0.id == property.id }) {
+                            viewModel.deleteProperty(at: IndexSet(integer: index))
+                        }
+                    } label: {
+                        Label("general_delete", systemImage: "trash")
+                    }
+                }
+            }
+        }
+        .padding(.horizontal, 16)
+        .padding(.top, 10)
+    }
+    
+    // MARK: - UI Components
     
     private var emptyStateView: some View {
         VStack(spacing: 20) {
@@ -172,42 +196,6 @@ struct PropertiesListView: View {
         }
     }
     
-    // Reuse filter sheet logic
-    private var filterSheet: some View {
-        NavigationStack {
-            List {
-                Section("records_filter_by_date") {
-                    ForEach(RecordsViewModel.DateFilter.allCases, id: \.self) { filter in
-                        Button(action: {
-                            viewModel.selectedDateFilter = filter
-                            showFilterSheet = false
-                        }) {
-                            HStack {
-                                Text(filter.rawValue)
-                                    .foregroundColor(AppTheme.textPrimary)
-                                Spacer()
-                                if viewModel.selectedDateFilter == filter {
-                                    Image(systemName: "checkmark")
-                                        .foregroundColor(AppTheme.primaryColor)
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            .navigationTitle("records_filter")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("general_done") {
-                        showFilterSheet = false
-                    }
-                }
-            }
-        }
-        .presentationDetents([.medium])
-    }
-    
     private var addPropertySheet: some View {
         NavigationStack {
             Form {
@@ -235,7 +223,6 @@ struct PropertiesListView: View {
         }
         .presentationDetents([.medium])
     }
-    
     private var errorToast: some View {
         VStack {
             HStack(spacing: 12) {
@@ -257,7 +244,10 @@ struct PropertiesListView: View {
             
             Spacer()
         }
-        .padding(.top, 16)
         .transition(.move(edge: .top).combined(with: .opacity))
     }
+}
+
+#Preview {
+    PropertiesListView()
 }
