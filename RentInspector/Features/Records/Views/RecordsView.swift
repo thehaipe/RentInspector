@@ -8,6 +8,9 @@ struct RecordsView: View {
     @StateObject private var viewModel = RecordsViewModel()
     @State private var showCreateRecord = false
     @State private var showFilterSheet = false
+    //Тепер, без системного таббару доводиться ходити таким пьоздами, шо просто ужас...
+    @Environment(\.dismiss) private var dismiss
+    var isNavigationPush: Bool = false
     
     var body: some View {
         ScrollView {
@@ -67,45 +70,48 @@ struct RecordsView: View {
     // MARK: - Header
     
     private var customHeader: some View {
-        CustomTopBar(title: "records_title") {
-            if !viewModel.records.isEmpty {
-                TopBarButton(icon: "magnifyingglass") {
-                    withAnimation { viewModel.toggleSearch() }
-                }
-                
-                Menu {
-                    ForEach(RecordsViewModel.SortOrder.allCases, id: \.self) { order in
-                        Button(action: { viewModel.setSortOrder(order) }) {
-                            Label(order.displayName, systemImage: viewModel.sortOrder == order ? "arrow.down.circle" : order.icon)
-                        }
+            CustomTopBar(
+                title: "records_title",
+                onBackButtonTap: isNavigationPush ? { dismiss() } : nil
+            ) {
+                if !viewModel.records.isEmpty {
+                    TopBarButton(icon: "magnifyingglass") {
+                        withAnimation { viewModel.toggleSearch() }
                     }
-                } label: {
-                    Image(systemName: "arrow.up.arrow.down")
-                        .font(.system(size: 15, weight: .bold))
-                        .foregroundColor(AppTheme.primaryColor)
-                        .frame(width: 28, height: 28)
-                        .overlay(
-                            Circle()
-                                .strokeBorder(AppTheme.primaryColor, lineWidth: 2.2)
-                        )
-                }
-                
-                Button(action: { showFilterSheet = true }) {
-                    Image(systemName: "line.3.horizontal.decrease")
-                        .font(.system(size: 15, weight: .bold))
-                        .foregroundColor(AppTheme.primaryColor)
-                        .frame(width: 28, height: 28)
-                        .overlay(
-                            Circle()
-                                .strokeBorder(AppTheme.primaryColor, lineWidth: 2.2)
-                        )
-                }
-                TopBarPrimaryButton {
-                    showCreateRecord = true
+                    
+                    Menu {
+                        ForEach(RecordsViewModel.SortOrder.allCases, id: \.self) { order in
+                            Button(action: { viewModel.setSortOrder(order) }) {
+                                Label(order.displayName, systemImage: viewModel.sortOrder == order ? "arrow.down.circle" : order.icon)
+                            }
+                        }
+                    } label: {
+                        Image(systemName: "arrow.up.arrow.down")
+                            .font(.system(size: 15, weight: .bold))
+                            .foregroundColor(AppTheme.primaryColor)
+                            .frame(width: 28, height: 28)
+                            .overlay(
+                                Circle()
+                                    .strokeBorder(AppTheme.primaryColor, lineWidth: 1.5)
+                            )
+                    }
+                    
+                    Button(action: { showFilterSheet = true }) {
+                        Image(systemName: "line.3.horizontal.decrease")
+                            .font(.system(size: 15, weight: .bold))
+                            .foregroundColor(AppTheme.primaryColor)
+                            .frame(width: 28, height: 28)
+                            .overlay(
+                                Circle()
+                                    .strokeBorder(AppTheme.primaryColor, lineWidth: 1.5)
+                            )
+                    }
+                    TopBarPrimaryButton {
+                        showCreateRecord = true
+                    }
                 }
             }
         }
-    }
     
     // MARK: - List Content
     

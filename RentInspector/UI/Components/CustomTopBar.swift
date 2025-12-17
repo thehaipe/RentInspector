@@ -3,13 +3,22 @@ internal import SwiftUI
 
 struct CustomTopBar<Actions: View>: View {
     let title: LocalizedStringKey
+    var onBackButtonTap: (() -> Void)? = nil
     @ViewBuilder let actions: Actions
     
     var body: some View {
         HStack(alignment: .center, spacing: 0) {
+            if let onBack = onBackButtonTap {
+                Button(action: onBack) {
+                    Image(systemName: "chevron.left")
+                        .font(.system(size: 22, weight: .semibold)) 
+                        .foregroundColor(AppTheme.primaryColor)
+                        .padding(.trailing, 8)
+                }
+            }
             // Заголовок
             Text(title)
-                .font(.system(size: 34, weight: .bold))
+                .font(.system(size: 28, weight: .bold))
                 .foregroundColor(AppTheme.textPrimary)
                 .lineLimit(1)
                 .minimumScaleFactor(0.9)

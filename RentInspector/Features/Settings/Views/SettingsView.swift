@@ -10,112 +10,117 @@ struct SettingsView: View {
     @AppStorage("selectedLanguage") private var languageCode = "uk"
     
     var body: some View {
-        ZStack {
-            AppTheme.backgroundColor
-                .ignoresSafeArea()
-            
-            ScrollView {
-                VStack(spacing: 20) {
-                    
-                    // MARK: - Секція Appearance
-                    SettingsSectionView(title: "settings_appearance") {
-                        Button(action: { showThemeSheet = true }) {
-                            SettingsRow(
-                                icon: themeManager.selectedTheme.icon,
-                                title: "settings_theme",
-                                value: themeManager.selectedTheme.displayName,
-                                showChevron: true
-                            )
-                        }
-                        
-                        customDivider
-                        Menu {
-                            Picker(selection: $languageCode) {
-                                ForEach(Constants.AppLanguage.allCases) { language in
-                                    Text(language.displayName).tag(language.rawValue)
-                                }
-                            } label: { EmptyView() }
-                        } label: {
-                            SettingsRow(
-                                icon: "globe",
-                                title: "settings_language",
-                                value: Constants.AppLanguage.allCases.first(where: { $0.rawValue == languageCode })?.displayName,
-                                showChevron: true
-                            )
-                        }
-                    }
-                    
-                    // MARK: - Секція Stats & Data
-                    SettingsSectionView(title: "settings_data") {
+        ScrollView {
+            VStack(spacing: 20) {
+                
+                // MARK: - Секція Appearance
+                SettingsSectionView(title: "settings_appearance") {
+                    Button(action: { showThemeSheet = true }) {
                         SettingsRow(
-                            icon: "clock.fill",
-                            title: "profile_app_usage",
-                            value: installDate
+                            icon: themeManager.selectedTheme.icon,
+                            title: "settings_theme",
+                            value: themeManager.selectedTheme.displayName,
+                            showChevron: true
                         )
-                        
-                        customDivider
-                        
-                        NavigationLink(destination: RecordsView()) {
-                            SettingsRow(
-                                icon: "internaldrive.fill",
-                                title: "settings_storage_info",
-                                value: "\(RealmManager.shared.getRecordCount())",
-                                showChevron: true
-                            )
-                        }
-                        
-                        customDivider
-                        
-                        Button(action: { viewModel.showClearDataAlert = true }) {
-                            SettingsRow(
-                                icon: "trash.fill",
-                                title: "settings_clear_data",
-                                color: AppTheme.errorColor
-                            )
-                        }
                     }
                     
-                    // MARK: - Секція About
-                    SettingsSectionView(title: "settings_about") {
-                        SettingsRow(icon: "info.circle.fill", title: "settings_version", value: Constants.AppInfo.version)
-                        
-                        customDivider
-                        
-                        SettingsRow(icon: "number.circle.fill", title: "settings_build", value: Constants.AppInfo.build)
-                        
-                        customDivider
-                        
-                        SettingsRow(icon: "hammer.fill", title: "settings_developer", value: "settings_me")
+                    customDivider
+                    
+                    Menu {
+                        Picker(selection: $languageCode) {
+                            ForEach(Constants.AppLanguage.allCases) { language in
+                                Text(language.displayName).tag(language.rawValue)
+                            }
+                        } label: { EmptyView() }
+                    } label: {
+                        SettingsRow(
+                            icon: "globe",
+                            title: "settings_language",
+                            value: Constants.AppLanguage.allCases.first(where: { $0.rawValue == languageCode })?.displayName,
+                            showChevron: true
+                        )
+                    }
+                }
+                
+                // MARK: - Секція Stats & Data
+                SettingsSectionView(title: "settings_data") {
+                    SettingsRow(
+                        icon: "clock.fill",
+                        title: "profile_app_usage",
+                        value: installDate
+                    )
+                    
+                    customDivider
+                    
+                    NavigationLink(destination: RecordsView(isNavigationPush: true)) {
+                        SettingsRow(
+                            icon: "internaldrive.fill",
+                            title: "settings_storage_info",
+                            value: "\(RealmManager.shared.getRecordCount())",
+                            showChevron: true
+                        )
                     }
                     
-                    Spacer().frame(height: 80)
+                    customDivider
+                    
+                    Button(action: { viewModel.showClearDataAlert = true }) {
+                        SettingsRow(
+                            icon: "trash.fill",
+                            title: "settings_clear_data",
+                            color: AppTheme.errorColor
+                        )
+                    }
                 }
-                .padding(.horizontal, 16)
-                .padding(.top, 10)
-            }
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .principal) {
-                    Text("settings")
-                        .font(AppTheme.title2)
-                        .fontWeight(.bold)
+                
+                // MARK: - Секція About
+                SettingsSectionView(title: "settings_about") {
+                    SettingsRow(icon: "info.circle.fill", title: "settings_version", value: Constants.AppInfo.version)
+                    
+                    customDivider
+                    
+                    SettingsRow(icon: "number.circle.fill", title: "settings_build", value: Constants.AppInfo.build)
+                    
+                    customDivider
+                    
+                    SettingsRow(icon: "hammer.fill", title: "settings_developer", value: "settings_me")
                 }
+                
+                // Відступ знизу для TabBar
+                Spacer().frame(height: 100)
             }
-            .sheet(isPresented: $showThemeSheet) {
-                themeSelectionSheet
+            .padding(.horizontal, 16)
+            .padding(.top, 20) // Відступ від хедера
+        }
+        .safeAreaInset(edge: .top, spacing: 0) {
+            CustomTopBar(title: "settings") {
+                EmptyView()
             }
-            .alert("settings_clear_alert_title", isPresented: $viewModel.showClearDataAlert) {
-                Button("general_cancel", role: .cancel) { }
-                Button("general_delete", role: .destructive) {
-                    viewModel.clearAllData()
-                }
-            } message: {
-                Text("error_delete_all_records_alert_title")
+            .background(
+                AppTheme.backgroundColor.ignoresSafeArea(edges: .top)
+            )
+        }
+        .overlay(alignment: .top) {
+            if viewModel.showSuccessToast {
+                successToast
+                    .padding(.top, 110)
             }
-            
-            // Toasts
-            if viewModel.showSuccessToast { successToast }
-            if viewModel.showErrorToast { errorToast }
+            if viewModel.showErrorToast {
+                errorToast
+                    .padding(.top, 110)
+            }
+        }
+        .background(AppTheme.backgroundColor)
+        .toolbar(.hidden, for: .navigationBar)
+        .sheet(isPresented: $showThemeSheet) {
+            themeSelectionSheet
+        }
+        .alert("settings_clear_alert_title", isPresented: $viewModel.showClearDataAlert) {
+            Button("general_cancel", role: .cancel) { }
+            Button("general_delete", role: .destructive) {
+                viewModel.clearAllData()
+            }
+        } message: {
+            Text("error_delete_all_records_alert_title")
         }
     }
     
@@ -187,7 +192,6 @@ struct SettingsView: View {
             .padding(.horizontal)
             Spacer()
         }
-        .padding(.top, 16)
         .transition(.move(edge: .top).combined(with: .opacity))
         .zIndex(100)
     }
@@ -209,13 +213,12 @@ struct SettingsView: View {
             .padding(.horizontal)
             Spacer()
         }
-        .padding(.top, 16)
         .transition(.move(edge: .top).combined(with: .opacity))
         .zIndex(100)
     }
 }
 
-// MARK: - Reusable UI Components
+// MARK: - Reusable UI Components (Вже існуючі в коді)
 
 struct SettingsSectionView<Content: View>: View {
     let title: LocalizedStringKey?
