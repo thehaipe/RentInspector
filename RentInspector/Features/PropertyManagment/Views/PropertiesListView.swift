@@ -9,7 +9,7 @@ struct PropertiesListView: View {
             ScrollView {
                 VStack(spacing: 0) {
                     if viewModel.properties.isEmpty {
-                        emptyStateView
+                        EmptyPropertiesView(viewModel: viewModel)
                             .padding(.top, 40)
                     } else {
                         propertiesList
@@ -164,37 +164,6 @@ struct PropertiesListView: View {
     }
     
     // MARK: - UI Components
-    
-    private var emptyStateView: some View {
-        VStack(spacing: 20) {
-            Image(systemName: "building.2.crop.circle")
-                .font(.system(size: 80))
-                .foregroundColor(AppTheme.textSecondary.opacity(0.5))
-            
-            Text("no_properties")
-                .font(AppTheme.title2)
-                .foregroundColor(AppTheme.textPrimary)
-            
-            Text("create_first_property")
-                .font(AppTheme.body)
-                .foregroundColor(AppTheme.textSecondary)
-                .multilineTextAlignment(.center)
-                .padding(.horizontal)
-            
-            Button(action: {
-                viewModel.showAddPropertySheet = true
-            }) {
-                Text("add_property")
-                    .font(AppTheme.headline)
-                    .foregroundColor(.white)
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 50)
-                    .background(AppTheme.primaryColor)
-                    .cornerRadius(AppTheme.cornerRadiusMedium)
-            }
-            .padding(.horizontal, 32)
-        }
-    }
     
     private var addPropertySheet: some View {
         NavigationStack {

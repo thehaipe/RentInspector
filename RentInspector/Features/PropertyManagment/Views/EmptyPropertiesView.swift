@@ -1,28 +1,29 @@
-/*
- Екран, при випадку коли звітів ще не створено
- */
-internal import SwiftUI
+//
+//  EmptyPropertiesView.swift
+//  RentInspector
+//
+//  Created by Valentyn on 18.12.2025.
+//
 
-struct EmptyRecordsView: View {
-    let onCreateRecord: () -> Void
-    @AppStorage(Constants.UserDefaultsKeys.userName) private var userName = Constants.Defaults.defaultUserName
-    
+internal import SwiftUI
+struct EmptyPropertiesView: View {
+    @ObservedObject var viewModel: PropertyViewModel
     var body: some View {
         VStack(spacing: 24) {
             
             Spacer()
             
             // Іконка
-            Image(systemName: "doc.text.magnifyingglass")
+            Image(systemName: "building.2.crop.circle")
                 .font(.system(size: 80))
                 .foregroundColor(AppTheme.secondaryColor.opacity(0.5))
             // Текст
             VStack(spacing: 8) {
-                Text("records_empty_title")
+                Text("no_properties")
                     .font(AppTheme.title2)
                     .foregroundColor(AppTheme.textPrimary)
                 
-                Text("records_empty_desc")
+                Text("create_first_property")
                     .font(AppTheme.body)
                     .foregroundColor(AppTheme.textSecondary)
                     .multilineTextAlignment(.center)
@@ -30,11 +31,13 @@ struct EmptyRecordsView: View {
             }
             
             // Кнопка створення
-            Button(action: onCreateRecord) {
+            Button(action: {
+                viewModel.showAddPropertySheet =  true
+            }) {
                 HStack(spacing: 12) {
                     Image(systemName: "plus.circle.fill")
                         .font(.title3)
-                    Text("records_create_button")
+                    Text("add_property")
                         .font(AppTheme.headline)
                 }
                 .foregroundColor(.white)
@@ -52,8 +55,4 @@ struct EmptyRecordsView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(AppTheme.backgroundColor)
     }
-}
-
-#Preview {
-    EmptyRecordsView(onCreateRecord: {})
 }
