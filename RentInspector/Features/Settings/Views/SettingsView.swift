@@ -6,7 +6,6 @@ internal import SwiftUI
 struct SettingsView: View {
     @StateObject private var viewModel = SettingsViewModel()
     @EnvironmentObject var themeManager: ThemeManager
-    @State private var showThemeSheet = false
     @AppStorage("selectedLanguage") private var languageCode = "uk"
     
     var body: some View {
@@ -15,7 +14,16 @@ struct SettingsView: View {
                 
                 // MARK: - Секція Appearance
                 SettingsSectionView(title: "settings_appearance") {
-                    Button(action: { showThemeSheet = true }) {
+                    Menu {
+                        Picker(selection: $themeManager.selectedTheme) {
+                            ForEach(ThemeManager.Theme.allCases, id: \.self) { theme in
+                                Label(theme.displayName, systemImage: theme.icon)
+                                    .tag(theme)
+                            }
+                        } label: {
+                            EmptyView()
+                        }
+                    } label: {
                         SettingsRow(
                             icon: themeManager.selectedTheme.icon,
                             title: "settings_theme",
@@ -111,9 +119,6 @@ struct SettingsView: View {
         }
         .background(AppTheme.backgroundColor)
         .toolbar(.hidden, for: .navigationBar)
-        .sheet(isPresented: $showThemeSheet) {
-            themeSelectionSheet
-        }
         .alert("settings_clear_alert_title", isPresented: $viewModel.showClearDataAlert) {
             Button("general_cancel", role: .cancel) { }
             Button("general_delete", role: .destructive) {
@@ -141,38 +146,6 @@ struct SettingsView: View {
         }
     }
     
-    // MARK: - Theme Sheet
-    private var themeSelectionSheet: some View {
-        NavigationStack {
-            List {
-                ForEach(ThemeManager.Theme.allCases, id: \.self) { theme in
-                    Button(action: {
-                        withAnimation { themeManager.selectedTheme = theme }
-                        showThemeSheet = false
-                    }) {
-                        HStack {
-                            Image(systemName: theme.icon)
-                                .foregroundColor(AppTheme.primaryColor)
-                            Text(theme.displayName)
-                                .foregroundColor(AppTheme.textPrimary)
-                            Spacer()
-                            if themeManager.selectedTheme == theme {
-                                Image(systemName: "checkmark")
-                                    .foregroundColor(AppTheme.primaryColor)
-                            }
-                        }
-                    }
-                }
-            }
-            .navigationTitle("settings_choose_theme")
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("general_done") { showThemeSheet = false }
-                }
-            }
-        }
-        .presentationDetents([.medium])
-    }
     
     // MARK: - Toasts
     private var successToast: some View {
