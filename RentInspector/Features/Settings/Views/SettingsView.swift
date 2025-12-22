@@ -82,7 +82,7 @@ struct SettingsView: View {
                     
                     customDivider
                     
-                    SettingsRow(icon: "hammer.fill", title: "settings_developer", value: "settings_me")
+                    SettingsRow(icon: "hammer.fill", title: "settings_developer", value: "settings_me".localized)
                 }
                 
                 // Відступ знизу для TabBar
