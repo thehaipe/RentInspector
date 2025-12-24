@@ -1,5 +1,5 @@
 /*
- Екран додавання балкону, лоджі
+ Екран додавання балкону, лоджі 
  */
 internal import SwiftUI
 
@@ -26,19 +26,21 @@ struct BalconySelectionView: View {
             
             Spacer()
             
-            // Toggles
+            // Лічильники
             VStack(spacing: 20) {
-                toggleOption(
+                CounterRowView(
                     icon: "sun.max.fill",
                     title: "room_type_Balcony",
-                    isOn: $viewModel.hasBalcony
+                    count: $viewModel.balconyCount
                 )
                 
-                toggleOption(
+                CounterRowView(
                     icon: "rectangle.stack.fill",
                     title: "room_type_Loggia",
-                    isOn: $viewModel.hasLoggia
+                    count: $viewModel.loggiaCount
                 )
+                
+                
             }
             .padding(.horizontal, 24)
             
@@ -75,27 +77,6 @@ struct BalconySelectionView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(AppTheme.backgroundColor)
-    }
-    
-    private func toggleOption(icon: String, title: LocalizedStringKey, isOn: Binding<Bool>) -> some View {
-        HStack {
-            Image(systemName: icon)
-                .font(.title2)
-                .foregroundColor(isOn.wrappedValue ? AppTheme.primaryColor : AppTheme.textSecondary)
-                .frame(width: 40)
-            
-            Text(title)
-                .font(AppTheme.headline)
-                .foregroundColor(AppTheme.textPrimary)
-            
-            Spacer()
-            
-            Toggle("", isOn: isOn)
-                .labelsHidden()
-        }
-        .padding(20)
-        .background(AppTheme.secondaryBackgroundColor)
-        .cornerRadius(AppTheme.cornerRadiusMedium)
     }
 }
 
