@@ -17,8 +17,8 @@ class CreateRecordViewModel: ObservableObject {
     @Published var selectedRoomCount: Int = 1
     
     // Step 2: Балкон/Лоджа
-    @Published var hasBalcony: Bool = false
-    @Published var hasLoggia: Bool = false
+    @Published var balconyCount: Int = 0
+    @Published var loggiaCount: Int = 0
     
     // Step 3: Додаткові кімнати
     @Published var wardrobeCount: Int = 0
@@ -176,23 +176,27 @@ class CreateRecordViewModel: ObservableObject {
         ))
         
         // Додаємо балкон
-        if hasBalcony {
-            rooms.append(RoomData(
-                type: .balcony,
-                customName: "default_room_balcony".localized(1),
-                comment: "",
-                photos: []
-            ))
+        if balconyCount > 0 {
+            for i in 1...balconyCount {
+                rooms.append(RoomData(
+                    type: .balcony,
+                    customName: "default_room_balcony".localized(i),
+                    comment: "",
+                    photos: []
+                ))
+            }
         }
         
         // Додаємо лоджію
-        if hasLoggia {
-            rooms.append(RoomData(
-                type: .loggia,
-                customName: "default_room_loggia".localized(1),
-                comment: "",
-                photos: []
-            ))
+        if loggiaCount > 0 {
+            for i in 1...loggiaCount {
+                rooms.append(RoomData(
+                    type: .loggia,
+                    customName: "default_room_loggia".localized(i),
+                    comment: "",
+                    photos: []
+                ))
+            }
         }
         
         // Додаємо гардероби
@@ -349,8 +353,8 @@ class CreateRecordViewModel: ObservableObject {
     func reset() {
         currentStep = .roomCount
         selectedRoomCount = 1
-        hasBalcony = false
-        hasLoggia = false
+        balconyCount = 0
+        loggiaCount = 0
         wardrobeCount = 0
         storageCount = 0
         otherCount = 0
