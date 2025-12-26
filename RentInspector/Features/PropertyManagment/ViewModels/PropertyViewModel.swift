@@ -33,13 +33,19 @@ class PropertyViewModel: ObservableObject {
     }
     
     private func setupBindings() {
-        realmManager.$properties
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] props in
-                self?.properties = props
-            }
-            .store(in: &cancellables)
-    }
+            realmManager.$properties
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] props in
+                    self?.properties = props
+                }
+                .store(in: &cancellables)
+            realmManager.$records
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] _ in
+                    self?.realmManager.loadProperties()
+                }
+                .store(in: &cancellables)
+        }
     
     // MARK: - Computed Properties
     

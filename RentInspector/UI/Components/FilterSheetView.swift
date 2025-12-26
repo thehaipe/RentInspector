@@ -2,6 +2,9 @@ internal import SwiftUI
 
 struct FilterSheetView: View {
     @Binding var selectedFilter: RecordsViewModel.DateFilter
+    // Опціональний фільтр по етапу
+    var selectedStageFilter: Binding<RecordStage?>? = nil
+    
     @Binding var isPresented: Bool
     
     var body: some View {
@@ -10,49 +13,62 @@ struct FilterSheetView: View {
                 AppTheme.secondaryBackgroundColor.ignoresSafeArea()
                 
                 ScrollView {
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("records_filter_by_date".localized.uppercased())
-                            .font(.caption)
-                            .fontWeight(.medium)
-                            .foregroundColor(AppTheme.textSecondary)
-                            .padding(.leading, 32)
-                            .padding(.top, 24)
-                        
-                        VStack(spacing: 0) {
-                            ForEach(Array(RecordsViewModel.DateFilter.allCases.enumerated()), id: \.element) { index, filter in
-                                Button(action: {
-                                    withAnimation(.spring(response: 0.3)) {
-                                        selectedFilter = filter
-                                    }
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                                        isPresented = false
-                                    }
-                                }) {
-                                    HStack {
-                                        Text(filter.displayName)
-                                            .font(.body)
-                                            .foregroundColor(AppTheme.textPrimary)
-                                        Spacer()
-                                        if selectedFilter == filter {
-                                            Image(systemName: "checkmark")
-                                                .font(.system(size: 14, weight: .bold))
-                                                .foregroundColor(AppTheme.primaryColor)
+                    VStack(alignment: .leading, spacing: 24) {
+                        VStack(alignment: .leading, spacing: 8) {
+                            sectionHeader("records_filter_by_date")
+                            VStack(spacing: 0) {
+                                ForEach(Array(RecordsViewModel.DateFilter.allCases.enumerated()), id: \.element) { index, filter in
+                                    filterOptionRow(
+                                        title: filter.displayName,
+                                        isSelected: selectedFilter == filter,
+                                        isLast: index == RecordsViewModel.DateFilter.allCases.count - 1
+                                    ) {
+                                        withAnimation(.spring(response: 0.3)) {
+                                            selectedFilter = filter
                                         }
                                     }
-                                    .padding(.vertical, 16)
-                                    .padding(.horizontal, 16)
-                                    .contentShape(Rectangle())
-                                }
-                                
-                                if index < RecordsViewModel.DateFilter.allCases.count - 1 {
-                                    Divider().padding(.horizontal, 16)
                                 }
                             }
+                            .background(AppTheme.backgroundColor)
+                            .cornerRadius(16)
                         }
-                        .background(AppTheme.backgroundColor)
-                        .cornerRadius(16)
-                        .padding(.horizontal, 16)
+                        if let stageBinding = selectedStageFilter {
+                            VStack(alignment: .leading, spacing: 8) {
+                                sectionHeader("record_stage")
+                                
+                                VStack(spacing: 0) {
+                                    // Option: All
+                                    filterOptionRow(
+                                        title: "filter_all".localized,
+                                        isSelected: stageBinding.wrappedValue == nil,
+                                        isLast: false
+                                    ) {
+                                        withAnimation(.spring(response: 0.3)) {
+                                            stageBinding.wrappedValue = nil
+                                        }
+                                    }
+                                    
+                                    // Stages
+                                    ForEach(Array(RecordStage.allCases.enumerated()), id: \.element) { index, stage in
+                                        filterOptionRow(
+                                            title: stage.displayName,
+                                            icon: stage.icon,
+                                            isSelected: stageBinding.wrappedValue == stage,
+                                            isLast: index == RecordStage.allCases.count - 1
+                                        ) {
+                                            withAnimation(.spring(response: 0.3)) {
+                                                stageBinding.wrappedValue = stage
+                                            }
+                                        }
+                                    }
+                                }
+                                .background(AppTheme.backgroundColor)
+                                .cornerRadius(16)
+                            }
+                        }
                     }
+                    .padding(.horizontal, 16)
+                    .padding(.top, 24)
                 }
             }
             .navigationTitle("records_filter")
@@ -74,5 +90,79 @@ struct FilterSheetView: View {
         .presentationDetents([.medium])
         .presentationDragIndicator(.visible)
         .presentationCornerRadius(24)
+    }
+    
+    private func sectionHeader(_ key: String) -> some View {
+        Text(key.localized.uppercased())
+            .font(.caption)
+            .fontWeight(.medium)
+            .foregroundColor(AppTheme.textSecondary)
+            .padding(.leading, 16)
+    }
+    
+    private func filterOptionRow(title: String, icon: String? = nil, isSelected: Bool, isLast: Bool, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            VStack(spacing: 0) {
+                HStack {
+                    if let icon = icon {
+                        Image(systemName: icon)
+                            .foregroundColor(AppTheme.primaryColor)
+                            .frame(width: 24)
+                    }
+                    
+                    Text(title)
+                        .font(.body)
+                        .foregroundColor(AppTheme.textPrimary)
+                    
+                    Spacer()
+                    
+                    if isSelected {
+                        Image(systemName: "checkmark")
+                            .font(.system(size: 14, weight: .bold))
+                            .foregroundColor(AppTheme.primaryColor)
+                    }
+                }
+                .padding(.vertical, 16)
+                .padding(.horizontal, 16)
+                
+                if !isLast {
+                    Divider().padding(.leading, 16)
+                }
+            }
+            .contentShape(Rectangle())
+        }
+    }
+    // Overload for LocalizedStringKey
+    private func filterOptionRow(title: LocalizedStringKey, icon: String? = nil, isSelected: Bool, isLast: Bool, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            VStack(spacing: 0) {
+                HStack {
+                    if let icon = icon {
+                        Image(systemName: icon)
+                            .foregroundColor(AppTheme.primaryColor)
+                            .frame(width: 24)
+                    }
+                    
+                    Text(title)
+                        .font(.body)
+                        .foregroundColor(AppTheme.textPrimary)
+                    
+                    Spacer()
+                    
+                    if isSelected {
+                        Image(systemName: "checkmark")
+                            .font(.system(size: 14, weight: .bold))
+                            .foregroundColor(AppTheme.primaryColor)
+                    }
+                }
+                .padding(.vertical, 16)
+                .padding(.horizontal, 16)
+                
+                if !isLast {
+                    Divider().padding(.leading, 16)
+                }
+            }
+            .contentShape(Rectangle())
+        }
     }
 }

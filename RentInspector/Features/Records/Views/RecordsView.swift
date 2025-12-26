@@ -8,7 +8,6 @@ struct RecordsView: View {
     @StateObject private var viewModel = RecordsViewModel()
     @State private var showCreateRecord = false
     @State private var showFilterSheet = false
-    //Тепер, без системного таббару доводиться ходити таким пьоздами, шо просто ужас...
     @Environment(\.dismiss) private var dismiss
     var isNavigationPush: Bool = false
     
@@ -56,11 +55,13 @@ struct RecordsView: View {
             if #available(iOS 18.0, *) {
                 NativeFilterSheetView(
                     selectedFilter: $viewModel.selectedDateFilter,
+                    selectedStageFilter: $viewModel.selectedStageFilter, // Додано фільтр етапів
                     isPresented: $showFilterSheet
                 )
             } else {
                 FilterSheetView(
                     selectedFilter: $viewModel.selectedDateFilter,
+                    selectedStageFilter: $viewModel.selectedStageFilter, // Додано фільтр етапів
                     isPresented: $showFilterSheet
                 )
             }
@@ -70,48 +71,50 @@ struct RecordsView: View {
     // MARK: - Header
     
     private var customHeader: some View {
-            CustomTopBar(
-                title: "records_title",
-                onBackButtonTap: isNavigationPush ? { dismiss() } : nil
-            ) {
-                if !viewModel.records.isEmpty {
-                    TopBarButton(icon: "magnifyingglass") {
-                        withAnimation { viewModel.toggleSearch() }
-                    }
-                    
-                    Menu {
-                        ForEach(RecordsViewModel.SortOrder.allCases, id: \.self) { order in
-                            Button(action: { viewModel.setSortOrder(order) }) {
-                                Label(order.displayName, systemImage: viewModel.sortOrder == order ? "arrow.down.circle" : order.icon)
-                            }
+        CustomTopBar(
+            title: "records_title",
+            isActionsVisible: !viewModel.records.isEmpty,
+            onBackButtonTap: isNavigationPush ? { dismiss() } : nil
+        ) {
+            if !viewModel.records.isEmpty {
+                TopBarButton(icon: "magnifyingglass") {
+                    withAnimation { viewModel.toggleSearch() }
+                }
+                
+                Menu {
+                    ForEach(RecordsViewModel.SortOrder.allCases, id: \.self) { order in
+                        Button(action: { viewModel.setSortOrder(order) }) {
+                            Label(order.displayName, systemImage: viewModel.sortOrder == order ? "arrow.down.circle" : order.icon)
                         }
-                    } label: {
-                        Image(systemName: "arrow.up.arrow.down")
-                            .font(.system(size: 15, weight: .bold))
-                            .foregroundColor(AppTheme.primaryColor)
-                            .frame(width: 28, height: 28)
-                            .overlay(
-                                Circle()
-                                    .strokeBorder(AppTheme.primaryColor, lineWidth: 1.5)
-                            )
                     }
-                    
-                    Button(action: { showFilterSheet = true }) {
-                        Image(systemName: "line.3.horizontal.decrease")
-                            .font(.system(size: 15, weight: .bold))
-                            .foregroundColor(AppTheme.primaryColor)
-                            .frame(width: 28, height: 28)
-                            .overlay(
-                                Circle()
-                                    .strokeBorder(AppTheme.primaryColor, lineWidth: 1.5)
-                            )
-                    }
-                    TopBarPrimaryButton {
-                        showCreateRecord = true
-                    }
+                } label: {
+                    Image(systemName: "arrow.up.arrow.down")
+                        .font(.system(size: 15, weight: .bold))
+                        .foregroundColor(AppTheme.primaryColor)
+                        .frame(width: 28, height: 28)
+                        .overlay(
+                            Circle()
+                                .strokeBorder(AppTheme.primaryColor, lineWidth: 1.5)
+                        )
+                }
+                
+                Button(action: { showFilterSheet = true }) {
+                    Image(systemName: "line.3.horizontal.decrease")
+                        .font(.system(size: 15, weight: .bold))
+                        .foregroundColor(AppTheme.primaryColor)
+                        .frame(width: 28, height: 28)
+                    //індикатор, якщо фільтр етапу активний
+                        .overlay(
+                            Circle()
+                                .strokeBorder(viewModel.selectedStageFilter != nil ? AppTheme.accentColor : AppTheme.primaryColor, lineWidth: 1.5)
+                        )
+                }
+                TopBarPrimaryButton {
+                    showCreateRecord = true
                 }
             }
         }
+    }
     
     // MARK: - List Content
     
@@ -154,6 +157,4 @@ struct RecordsView: View {
         }
         .transition(.move(edge: .top).combined(with: .opacity))
     }
-    
-    
 }

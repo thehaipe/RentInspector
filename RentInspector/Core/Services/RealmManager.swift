@@ -306,12 +306,18 @@ class RealmManager: ObservableObject {
         
         do {
             try realm.write {
-                if let newProperty = newProperty,
-                   let liveProperty = realm.object(ofType: Property.self, forPrimaryKey: newProperty.id) {
-                    if !liveProperty.records.contains(liveRecord) {
-                        liveProperty.records.append(liveRecord)
+                if let oldProperty = liveRecord.assignee.first {
+                    if let index = oldProperty.records.firstIndex(of: liveRecord) {
+                        oldProperty.records.remove(at: index)
                     }
-                    liveRecord.parentId = liveProperty.id
+                }
+                
+                if let newProperty = newProperty,
+                   let liveNewProperty = realm.object(ofType: Property.self, forPrimaryKey: newProperty.id) {
+                    if !liveNewProperty.records.contains(liveRecord) {
+                        liveNewProperty.records.append(liveRecord)
+                    }
+                    liveRecord.parentId = liveNewProperty.id
                 } else {
                     liveRecord.parentId = nil
                 }
@@ -396,7 +402,7 @@ class RealmManager: ObservableObject {
     }
     
     func clearAllData() throws {
-        guard !records.isEmpty else {
+        guard !records.isEmpty || !properties.isEmpty else {
             throw RealmError.noRecordsToDelete
         }
         guard let realm = realm else {
@@ -405,7 +411,6 @@ class RealmManager: ObservableObject {
         
         let allRecords = realm.objects(Record.self)
         var allPhotosToDelete: [String] = []
-        
         for record in allRecords {
             for room in record.rooms {
                 allPhotosToDelete.append(contentsOf: room.photoPaths)
@@ -413,11 +418,17 @@ class RealmManager: ObservableObject {
         }
         
         do {
-            records.removeAll()
             try realm.write {
                 realm.deleteAll()
             }
             
+            //Оновлення Published властивості вручну для миттєвої реакції UI
+            DispatchQueue.main.async {
+                self.records = []
+                self.properties = []
+            }
+            
+            // Видаляємо файли у фоні
             DispatchQueue.global(qos: .background).async {
                 for path in allPhotosToDelete {
                     ImageManager.shared.deleteImage(named: path)

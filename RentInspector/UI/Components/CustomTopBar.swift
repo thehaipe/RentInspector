@@ -3,8 +3,8 @@ internal import SwiftUI
 struct CustomTopBar<Actions: View>: View {
     
     let title: LocalizedStringKey
-    var realmManager = RealmManager.shared
-    var showActions: Bool { return !RealmManager.shared.records.isEmpty } // hide toolbar shadow if we have no records
+    // За замовчуванням true, щоб не ламати SettingsView
+    var isActionsVisible: Bool = true
     var onBackButtonTap: (() -> Void)? = nil
     @ViewBuilder let actions: Actions
     @Environment(\.colorScheme) var colorScheme
@@ -31,7 +31,8 @@ struct CustomTopBar<Actions: View>: View {
             
             Spacer(minLength: 16)
             
-            if Actions.self != EmptyView.self && showActions{
+            // Логіка відображення кнопок
+            if Actions.self != EmptyView.self && isActionsVisible {
                 HStack(spacing: 12) {
                     actions
                 }

@@ -47,11 +47,13 @@ struct PropertiesListView: View {
                 if #available(iOS 18.0, *) {
                     NativeFilterSheetView(
                         selectedFilter: $viewModel.selectedDateFilter,
+                        selectedStageFilter: nil, 
                         isPresented: $showFilterSheet
                     )
                 } else {
                     FilterSheetView(
                         selectedFilter: $viewModel.selectedDateFilter,
+                        selectedStageFilter: nil,
                         isPresented: $showFilterSheet
                     )
                 }
@@ -62,7 +64,8 @@ struct PropertiesListView: View {
     // MARK: - Custom Header
     
     private var customHeader: some View {
-        CustomTopBar(title: "tab_properties") {
+        // isActionsVisible залежить від наявності об'єктів
+        CustomTopBar(title: "tab_properties", isActionsVisible: !viewModel.properties.isEmpty) {
             if !viewModel.properties.isEmpty {
                 TopBarButton(icon: "magnifyingglass") {
                     withAnimation { viewModel.toggleSearch() }
@@ -127,7 +130,7 @@ struct PropertiesListView: View {
                         
                         Spacer()
                         
-                        // Лічильник
+                        // Лічильник звітів
                         HStack(spacing: 4) {
                             Text("\(property.records.count)")
                                 .font(AppTheme.caption)
@@ -192,6 +195,7 @@ struct PropertiesListView: View {
         }
         .presentationDetents([.medium])
     }
+    
     private var errorToast: some View {
         VStack {
             HStack(spacing: 12) {
@@ -215,8 +219,4 @@ struct PropertiesListView: View {
         }
         .transition(.move(edge: .top).combined(with: .opacity))
     }
-}
-
-#Preview {
-    PropertiesListView()
 }
